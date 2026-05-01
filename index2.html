@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VibeCoding OS — Sistema Operativo Personal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS — LIGHT THEME
+═══════════════════════════════════════════ */
+:root {
+  --bg:        #f5f4f0;
+  --bg2:       #ffffff;
+  --bg3:       #eeece8;
+  --border:    #d8d5ce;
+  --border2:   #c4c0b8;
+  --text:      #1e1c18;
+  --muted:     #6b6560;
+  --faint:     #a09890;
+
+  /* tab accent colors — darker/richer for light bg */
+  --t1: #b5870a;   /* Frameworks  */
+  --t2: #1a6fbe;   /* Design Sys  */
+  --t3: #1a8a52;   /* Glosario    */
+  --t4: #c45c10;   /* VibeTips    */
+  --t5: #7040c0;   /* Hosting     */
+  --t6: #c02060;   /* Roadmap     */
+  --t7: #0a8a92;   /* Despliegue  */
+  --t8: #3b6fd4;   /* Docker Curso */
+  --t9: #c084fc;   /* DS Tools     */
+
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Syne', sans-serif;
+
+  /* ds colors */
+  --ds-blue:   #1a6fbe;
+  --ds-green:  #1a8a52;
+  --ds-orange: #c45c10;
+  --ds-amber:  #b5870a;
+}
+
+/* ═══════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   SHELL LAYOUT
+═══════════════════════════════════════════ */
+.shell {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.topbar-logo {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: #f0c040;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.topbar-logo::before {
+  content: '◈';
+  font-size: 1rem;
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.topbar-subtitle {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.06em;
+}
+
+.topbar-badges {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.topbar-badge {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+}
+
+/* ── TAB NAV ── */
+.tabnav {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0 1rem;
+  position: sticky;
+  top: 52px;
+  z-index: 190;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.tabnav::-webkit-scrollbar { display: none; }
+
+.tabitem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 1.1rem;
+  height: 48px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.tabitem:hover { color: var(--text); }
+.tabitem.active { color: var(--text); font-weight: 700; }
+.tabitem[data-tab="frameworks"].active { border-bottom-color: var(--t1); color: var(--t1); }
+.tabitem[data-tab="ds"].active         { border-bottom-color: var(--t2); color: var(--t2); }
+.tabitem[data-tab="glosario"].active   { border-bottom-color: var(--t3); color: var(--t3); }
+.tabitem[data-tab="vibetips"].active   { border-bottom-color: var(--t4); color: var(--t4); }
+.tabitem[data-tab="hosting"].active    { border-bottom-color: var(--t5); color: var(--t5); }
+.tabitem[data-tab="despliegue"].active { border-bottom-color: var(--t7); color: var(--t7); }
+.tabitem[data-tab="docker-curso"].active { border-bottom-color: var(--t8); color: var(--t8); }
+.tabitem[data-tab="ds-tools"].active     { border-bottom-color: var(--t9); color: var(--t9); }
+.tabitem[data-tab="roadmap"].active    { border-bottom-color: var(--t6); color: var(--t6); }
+
+.tab-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tab-status {
+  font-size: 0.55rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  margin-left: 0.1rem;
+}
+
+.status-live { background: #d4f5e4; color: #1a7a48; border: 1px solid #a8e0c4; }
+.status-wip  { background: #fef3cc; color: #8a6000; border: 1px solid #f0d070; }
+.status-plan { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+
+/* ── CONTENT ── */
+.content {
+  padding: 2rem 1.5rem;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp 0.25s ease; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════════ */
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.panel-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.panel-desc {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  margin-top: 2rem;
+}
+
+.section-label:first-child { margin-top: 0; }
+
+/* ═══════════════════════════════════════════
+   TAB 1 — FRAMEWORKS
+═══════════════════════════════════════════ */
+
+/* sub-tabs */
+.subtabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stab {
+  padding: 0.45rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  border: 1.5px solid var(--border2);
+  background: var(--bg2);
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.stab:hover { border-color: var(--t1); color: var(--t1); }
+.stab.active { background: var(--t1); color: #fff; border-color: var(--t1); font-weight: 600; }
+
+/* legend */
+.legend {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg2);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.ldot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
+/* table */
+.tbl-wrap {
+  overflow-x: auto;
+  border: 1.5px solid var(--border2);
+  background: var(--bg2);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+table { width:100%; border-collapse:collapse; font-size:0.8rem; font-family:var(--mono); min-width:900px; }
+
+thead { position:static; }
+
+th {
+  background: var(--bg3);
+  color: var(--muted);
+  padding: 0.7rem 0.6rem;
+  text-align:center;
+  font-size:0.65rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  border-right:1px solid var(--border);
+  border-bottom:2px solid var(--border2);
+  white-space:nowrap;
+  font-weight: 600;
+}
+th:first-child { text-align:left; min-width:185px; }
+th:nth-child(2){ text-align:left; min-width:210px; color:var(--faint); }
+
+th.c-fe   { color:#a03020; }
+th.c-meta { color:#1a5a90; }
+th.c-be   { color:#1a7040; }
+th.c-cms  { color:#6030a0; }
+th.c-nc   { color:#a04810; }
+
+td {
+  padding:0.65rem 0.6rem;
+  border-bottom:1px solid var(--border);
+  border-right:1px solid var(--border);
+  vertical-align:middle;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.78rem;
+}
+td:first-child { text-align:left; color:var(--text); font-weight:600; font-family:var(--sans); font-size:0.82rem; }
+td:nth-child(2){ text-align:left; color:var(--muted); font-size:0.75rem; font-family:var(--sans); line-height:1.4; }
+
+tbody tr:hover td { background: #f8f6f2; }
+tbody tr:last-child td { border-bottom: none; }
+
+.w2 { display:inline-flex; align-items:center; justify-content:center; width:22px;height:22px; border-radius:3px; font-size:0.7rem; font-weight:600; }
+.w2.s2 { background:#d4f5e4; color:#1a7040; }
+.w2.s1 { background:#dceeff; color:#1a5a90; }
+.w2.s0 { color:var(--border2); }
+
+/* profiles grid */
+.cat-block { margin-bottom: 2.5rem; }
+.cat-title {
+  font-size:1.15rem; font-weight:800; letter-spacing:0.01em;
+  margin-bottom:0.75rem; padding-bottom:0.5rem;
+  border-bottom:2px solid currentColor;
+  display:flex; align-items:center; gap:0.6rem;
+}
+.cat-count { font-family:var(--mono); font-size:0.6rem; opacity:0.5; font-weight:400; margin-top:0.3rem; letter-spacing:0.08em; }
+
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:2px; background:var(--border); border:1.5px solid var(--border2); border-radius:4px; overflow:hidden; }
+
+.fw-card {
+  background:var(--bg2);
+  padding:1.25rem;
+  position:relative;
+  transition:background 0.15s;
+}
+.fw-card:hover { background:#faf8f4; }
+.fw-card-bar { position:absolute; top:0; left:0; width:3px; height:100%; }
+.fw-name { font-size:1.05rem; font-weight:700; margin-bottom:0.2rem; }
+.fw-tagline { font-family:var(--mono); font-size:0.62rem; color:var(--muted); margin-bottom:0.75rem; letter-spacing:0.02em; }
+.fw-desc { font-size:0.75rem; color:var(--text); line-height:1.6; margin-bottom:0.8rem; }
+.fw-uses-label { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--faint); margin-bottom:0.35rem; }
+.fw-uses { list-style:none; }
+.fw-uses li { font-size:0.7rem; color:var(--muted); padding-left:0.8rem; position:relative; margin-bottom:0.25rem; line-height:1.4; }
+.fw-uses li::before { content:'→'; position:absolute; left:0; opacity:0.4; }
+
+/* guide */
+.guide-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:2px; background:var(--border); border:1.5px solid var(--border2); border-radius:4px; overflow:hidden; }
+.guide-card { background:var(--bg2); padding:1.35rem; }
+.guide-card:hover { background:#faf8f4; }
+.guide-if { font-family:var(--mono); font-size:0.68rem; color:var(--muted); line-height:1.5; margin-bottom:0.6rem; }
+.guide-if strong { display:block; font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--faint); margin-bottom:0.35rem; font-weight:500; }
+.guide-then { font-size:1.15rem; font-weight:800; color:var(--text); }
+.guide-note { font-family:var(--mono); font-size:0.65rem; color:var(--muted); margin-top:0.6rem; padding-top:0.6rem; border-top:1px solid var(--border); line-height:1.5; }
+
+/* ═══════════════════════════════════════════
+   TAB 2 — DESIGN SYSTEMS (inherited styles + overrides)
+═══════════════════════════════════════════ */
+.ds-subtabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.ds-stab {
+  padding:0.35rem 0.9rem;
+  font-family:var(--mono); font-size:0.6rem; letter-spacing:0.06em;
+  border:1px solid var(--border2); background:var(--bg3);
+  color:var(--muted); cursor:pointer; border-radius:20px;
+  transition:all 0.15s;
+}
+.ds-stab:hover { border-color:var(--t2); color:var(--t2); }
+.ds-stab.active { background:var(--t2); color:var(--bg); border-color:var(--t2); font-weight:500; }
+
+.ds-note {
+  background:var(--bg3); border:1px solid var(--border); border-left:3px solid var(--t2);
+  padding:0.75rem 1rem; font-size:0.68rem; color:var(--muted);
+  margin-bottom:1.25rem; line-height:1.5; border-radius:0 2px 2px 0;
+}
+.ds-note strong { color:var(--text); }
+
+.ds-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.75rem; margin-bottom:1rem; }
+
+.ds-card {
+  background:var(--bg2); border:1px solid var(--border);
+  padding:1rem 1.1rem; border-radius:2px;
+}
+.ds-card-head { display:flex; align-items:center; gap:8px; margin-bottom:0.6rem; }
+.ds-card-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+.ds-card-title { font-size:0.75rem; font-weight:600; color:var(--text); }
+.ds-list { list-style:none; }
+.ds-list li { font-size:0.63rem; color:var(--muted); padding:4px 0; border-bottom:1px solid var(--border); line-height:1.4; }
+.ds-list li:last-child { border-bottom:none; }
+.ds-list li span { color:var(--text); font-weight:500; }
+
+.ds-team-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem; }
+.ds-team-card { background:var(--bg2); border:1px solid var(--border); padding:1rem 1.1rem; border-radius:2px; }
+.ds-team-card.triada { grid-column:1/-1; border-color:var(--border2); }
+.ds-team-label { font-family:var(--mono); font-size:0.58rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.6rem; }
+.ds-team-label.l-large { color:var(--ds-blue); }
+.ds-team-label.l-small { color:var(--ds-green); }
+.ds-team-label.l-triada { color:#e07050; }
+
+.triada-cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:0.75rem; margin-top:0.75rem; }
+.tcol-title { font-family:var(--mono); font-size:0.58rem; font-weight:600; color:var(--muted); margin-bottom:0.4rem; padding-bottom:0.3rem; border-bottom:1px solid var(--border); }
+
+.ds-warning {
+  background:rgba(200,80,30,0.08); border:1px solid rgba(200,80,30,0.2); border-left:3px solid #e07050;
+  padding:0.75rem 1rem; font-size:0.63rem; color:#e8a090;
+  margin-top:0.75rem; line-height:1.5; border-radius:0 2px 2px 0;
+}
+.ds-warning strong { color:#f0b8a0; }
+
+@media (max-width:540px) { .ds-team-grid { grid-template-columns:1fr; } .ds-team-card.triada { grid-column:1; } }
+
+/* ═══════════════════════════════════════════
+   TAB 3 — GLOSARIO
+═══════════════════════════════════════════ */
+.glosario-search {
+  width:100%; background:var(--bg2); border:1px solid var(--border2);
+  padding:0.6rem 1rem; font-family:var(--mono); font-size:0.7rem;
+  color:var(--text); outline:none; margin-bottom:1.25rem;
+  transition:border-color 0.15s;
+}
+.glosario-search::placeholder { color:var(--muted); }
+.glosario-search:focus { border-color:var(--t3); }
+
+.glosario-cats { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+.gcat {
+  padding:0.3rem 0.75rem; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.06em;
+  border:1px solid var(--border2); background:var(--bg3); color:var(--muted);
+  cursor:pointer; border-radius:1px; transition:all 0.15s;
+}
+.gcat.active { background:var(--t3); color:var(--bg); border-color:var(--t3); font-weight:500; }
+.gcat:hover:not(.active) { border-color:var(--t3); color:var(--t3); }
+
+.glossary-grid { display:grid; gap:1px; background:var(--border); border:1px solid var(--border2); }
+
+.gterm {
+  background:var(--bg2); padding:1rem 1.1rem;
+  display:grid; grid-template-columns:180px 1fr;
+  gap:1rem; align-items:start;
+  transition:background 0.1s;
+}
+.gterm:hover { background:var(--bg3); }
+.gterm.hidden { display:none; }
+
+.gterm-name { font-size:0.8rem; font-weight:700; color:var(--text); margin-bottom:0.2rem; }
+.gterm-cat-tag {
+  display:inline-block; font-family:var(--mono); font-size:0.5rem;
+  padding:0.1rem 0.4rem; border-radius:2px; letter-spacing:0.08em;
+  text-transform:uppercase; margin-top:0.25rem;
+}
+.gterm-def { font-size:0.68rem; color:var(--muted); line-height:1.6; margin-bottom:0.5rem; }
+.gterm-example {
+  font-family:var(--mono); font-size:0.6rem; color:var(--t3);
+  padding:0.4rem 0.7rem; background:rgba(168,240,200,0.05);
+  border-left:2px solid rgba(168,240,200,0.3); line-height:1.5;
+}
+.gterm-example::before { content:'Ejemplo: '; opacity:0.5; }
+
+@media (max-width:600px) { .gterm { grid-template-columns:1fr; } }
+
+/* ═══════════════════════════════════════════
+   TAB 4 — VIBETIPS
+═══════════════════════════════════════════ */
+.vibe-filter { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+.vfil {
+  padding:0.3rem 0.75rem; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.06em;
+  border:1px solid var(--border2); background:var(--bg3); color:var(--muted);
+  cursor:pointer; border-radius:1px; transition:all 0.15s;
+}
+.vfil.active { background:var(--t4); color:var(--bg); border-color:var(--t4); }
+.vfil:hover:not(.active) { border-color:var(--t4); color:var(--t4); }
+
+.vibe-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); }
+
+.vibe-card { background:var(--bg2); padding:1.25rem; }
+.vibe-card.hidden { display:none; }
+
+.vibe-card-top { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
+.vibe-fw-tag { font-family:var(--mono); font-size:0.55rem; padding:0.2rem 0.5rem; border-radius:2px; font-weight:500; letter-spacing:0.05em; }
+.vibe-type-tag { font-family:var(--mono); font-size:0.52rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
+
+.vibe-title { font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; }
+.vibe-desc { font-size:0.65rem; color:var(--muted); line-height:1.5; margin-bottom:0.75rem; }
+
+.vibe-prompt {
+  background:var(--bg); border:1px solid var(--border2); border-left:2px solid var(--t4);
+  padding:0.65rem 0.85rem; font-family:var(--mono); font-size:0.6rem;
+  color:var(--text); line-height:1.6; white-space:pre-wrap; word-break:break-word;
+  position:relative;
+}
+
+.copy-btn {
+  position:absolute; top:0.4rem; right:0.4rem;
+  font-family:var(--mono); font-size:0.5rem; padding:0.2rem 0.5rem;
+  background:var(--bg3); border:1px solid var(--border2); color:var(--muted);
+  cursor:pointer; transition:all 0.15s; letter-spacing:0.05em;
+}
+.copy-btn:hover { border-color:var(--t4); color:var(--t4); }
+.copy-btn.copied { color:var(--t3); border-color:var(--t3); }
+
+/* ═══════════════════════════════════════════
+   TAB 5 — HOSTING
+═══════════════════════════════════════════ */
+.hosting-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:2rem; }
+.hosting-card { background:var(--bg2); padding:1.1rem; position:relative; }
+.hcard-bar { position:absolute; top:0; left:0; width:100%; height:2px; }
+.hcard-name { font-size:1rem; font-weight:700; margin-bottom:0.15rem; }
+.hcard-tagline { font-family:var(--mono); font-size:0.56rem; color:var(--muted); margin-bottom:0.7rem; }
+.hcard-desc { font-size:0.64rem; color:var(--text); line-height:1.5; margin-bottom:0.75rem; opacity:0.75; }
+.hcard-pills { display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:0.6rem; }
+.hpill { font-family:var(--mono); font-size:0.52rem; padding:0.15rem 0.4rem; border-radius:2px; border:1px solid var(--border2); color:var(--muted); }
+.hcard-best { font-family:var(--mono); font-size:0.58rem; color:var(--muted); }
+.hcard-best strong { color:var(--text); }
+.hosting-note {
+  background:var(--bg3); border:1px solid var(--border); border-left:3px solid var(--t5);
+  padding:0.75rem 1rem; font-size:0.65rem; color:var(--muted); line-height:1.5; border-radius:0 2px 2px 0;
+}
+.hosting-note strong { color:var(--text); }
+
+/* ═══════════════════════════════════════════
+   TAB 6 — ROADMAP
+═══════════════════════════════════════════ */
+.roadmap-intro {
+  background:var(--bg3); border:1px solid var(--border); border-left:3px solid var(--t6);
+  padding:1rem 1.25rem; font-size:0.68rem; color:var(--muted); line-height:1.6;
+  margin-bottom:2rem; border-radius:0 2px 2px 0;
+}
+.roadmap-intro strong { color:var(--text); }
+
+.phases { display:flex; flex-direction:column; gap:1.5rem; }
+
+.phase {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:2px; overflow:hidden;
+}
+
+.phase-header {
+  display:flex; align-items:center; gap:1rem; padding:1rem 1.25rem;
+  border-bottom:1px solid var(--border); flex-wrap:wrap;
+}
+
+.phase-num {
+  font-family:var(--mono); font-size:0.55rem; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--muted); flex-shrink:0;
+}
+
+.phase-title { font-size:0.95rem; font-weight:700; }
+
+.phase-status {
+  font-family:var(--mono); font-size:0.52rem; padding:0.2rem 0.5rem;
+  border-radius:2px; letter-spacing:0.06em; text-transform:uppercase; margin-left:auto;
+}
+
+.ps-live { background:rgba(168,240,200,0.15); color:var(--t3); border:1px solid rgba(168,240,200,0.25); }
+.ps-next { background:rgba(232,200,74,0.12); color:var(--t1); border:1px solid rgba(232,200,74,0.2); }
+.ps-later { background:rgba(90,96,128,0.15); color:var(--muted); border:1px solid var(--border2); }
+
+.phase-body { padding:1.25rem; }
+.phase-why { font-size:0.67rem; color:var(--muted); line-height:1.6; margin-bottom:1rem; }
+.phase-why strong { color:var(--text); }
+
+.phase-items { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.75rem; }
+
+.pitem {
+  background:var(--bg3); border:1px solid var(--border);
+  padding:0.85rem 1rem; border-radius:2px;
+}
+
+.pitem-name { font-size:0.75rem; font-weight:600; margin-bottom:0.3rem; display:flex; align-items:center; gap:0.4rem; }
+.pitem-tag { font-family:var(--mono); font-size:0.48rem; padding:0.1rem 0.35rem; border-radius:2px; font-weight:500; }
+.pitem-desc { font-size:0.62rem; color:var(--muted); line-height:1.45; }
+
+.phase-connection {
+  margin-top:1rem; padding:0.65rem 0.9rem;
+  background:rgba(240,127,168,0.06); border:1px solid rgba(240,127,168,0.15);
+  font-family:var(--mono); font-size:0.6rem; color:rgba(240,127,168,0.8); line-height:1.5;
+  border-radius:2px;
+}
+.phase-connection::before { content:'↗ Conexión: '; font-weight:600; }
+
+/* ═══════════════════════════════════════════
+   TAB 7 — DESPLIEGUE
+═══════════════════════════════════════════ */
+.dep-subtabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.dep-stab {
+  padding:0.35rem 0.9rem;
+  font-family:var(--mono); font-size:0.6rem; letter-spacing:0.06em;
+  border:1px solid var(--border2); background:var(--bg3);
+  color:var(--muted); cursor:pointer; border-radius:1px; transition:all 0.15s;
+}
+.dep-stab:hover { border-color:var(--t7); color:var(--t7); }
+.dep-stab.active { background:var(--t7); color:var(--bg); border-color:var(--t7); font-weight:500; }
+
+.dep-panel { display:none; }
+.dep-panel.active { display:block; animation:fadeUp 0.2s ease; }
+
+.dep-note {
+  background:var(--bg3); border:1px solid var(--border); border-left:3px solid var(--t7);
+  padding:0.75rem 1rem; font-size:0.68rem; color:var(--muted);
+  margin-bottom:1.25rem; line-height:1.6; border-radius:0 2px 2px 0;
+}
+.dep-note strong { color:var(--text); }
+
+/* Concept cards grid */
+.dep-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.dep-card { background:var(--bg2); padding:1.1rem; position:relative; transition:background 0.15s; }
+.dep-card:hover { background:var(--bg3); }
+.dep-card-accent { position:absolute; top:0; left:0; width:2px; height:100%; }
+.dep-card-name { font-size:0.85rem; font-weight:700; margin-bottom:0.2rem; }
+.dep-card-type { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.6rem; }
+.dep-card-def { font-size:0.66rem; color:var(--text); line-height:1.55; margin-bottom:0.65rem; opacity:0.8; }
+.dep-card-example {
+  font-family:var(--mono); font-size:0.59rem; color:var(--t7);
+  padding:0.4rem 0.65rem; background:rgba(77,217,224,0.05);
+  border-left:2px solid rgba(77,217,224,0.25); line-height:1.5;
+}
+.dep-card-example::before { content:'ej: '; opacity:0.45; }
+.dep-card-warn {
+  font-family:var(--mono); font-size:0.59rem; color:#f5a97f;
+  padding:0.4rem 0.65rem; background:rgba(245,169,127,0.06);
+  border-left:2px solid rgba(245,169,127,0.25); line-height:1.5; margin-top:0.5rem;
+}
+.dep-card-warn::before { content:'⚠ '; }
+
+/* DNS records table */
+.dns-table-wrap { overflow-x:auto; border:1px solid var(--border2); background:var(--bg2); margin-bottom:1.5rem; }
+.dns-table { width:100%; border-collapse:collapse; font-size:0.65rem; font-family:var(--mono); min-width:700px; }
+.dns-table th { background:var(--bg); color:var(--muted); padding:0.6rem 0.75rem; text-align:left; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid var(--border2); border-right:1px solid var(--border); }
+.dns-table td { padding:0.55rem 0.75rem; border-bottom:1px solid var(--border); border-right:1px solid var(--border); vertical-align:top; line-height:1.4; color:var(--muted); }
+.dns-table td:first-child { color:var(--t7); font-weight:600; white-space:nowrap; }
+.dns-table td:nth-child(2) { color:var(--text); }
+.dns-table tbody tr:hover td { background:rgba(255,255,255,0.02); }
+
+/* Flow diagram */
+.flow-diagram {
+  background:var(--bg2); border:1px solid var(--border2);
+  padding:1.5rem; margin-bottom:1.5rem; overflow-x:auto;
+}
+.flow-title { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
+.flow-row { display:flex; align-items:center; gap:0; flex-wrap:nowrap; margin-bottom:0.6rem; overflow-x:auto; }
+.flow-node {
+  background:var(--bg3); border:1px solid var(--border2);
+  padding:0.5rem 0.75rem; font-family:var(--mono); font-size:0.6rem;
+  color:var(--text); white-space:nowrap; flex-shrink:0; line-height:1.3; text-align:center;
+}
+.flow-node.public { border-color:var(--t7); color:var(--t7); }
+.flow-node.private { border-color:var(--muted); color:var(--muted); }
+.flow-node.external { border-color:#c9a7f5; color:#c9a7f5; }
+.flow-node small { display:block; font-size:0.5rem; opacity:0.6; margin-top:0.15rem; }
+.flow-arrow { font-family:var(--mono); font-size:0.65rem; color:var(--muted); padding:0 0.3rem; flex-shrink:0; }
+.flow-arrow-label { font-size:0.5rem; display:block; text-align:center; color:var(--muted); opacity:0.6; }
+
+/* Security rules grid */
+.sec-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.75rem; margin-bottom:1.5rem; }
+.sec-card { background:var(--bg2); border:1px solid var(--border); padding:1rem; border-radius:2px; }
+.sec-card-head { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; }
+.sec-icon { font-size:1rem; }
+.sec-name { font-size:0.78rem; font-weight:700; }
+.sec-level { font-family:var(--mono); font-size:0.52rem; padding:0.1rem 0.4rem; border-radius:2px; margin-left:auto; }
+.sl-critical { background:rgba(240,80,80,0.15); color:#f09090; border:1px solid rgba(240,80,80,0.25); }
+.sl-high { background:rgba(245,169,127,0.15); color:#f5a97f; border:1px solid rgba(245,169,127,0.25); }
+.sl-medium { background:rgba(232,200,74,0.12); color:var(--t1); border:1px solid rgba(232,200,74,0.2); }
+.sec-desc { font-size:0.63rem; color:var(--muted); line-height:1.5; }
+.sec-desc strong { color:var(--text); }
+
+/* Cache comparison table */
+.cache-compare { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.cache-col { background:var(--bg2); padding:1rem; }
+.cache-col-name { font-size:0.78rem; font-weight:700; margin-bottom:0.2rem; }
+.cache-col-type { font-family:var(--mono); font-size:0.52rem; color:var(--muted); letter-spacing:0.08em; margin-bottom:0.6rem; }
+.cache-col-desc { font-size:0.63rem; color:var(--text); line-height:1.5; margin-bottom:0.6rem; opacity:0.8; }
+.cache-pros, .cache-cons { font-family:var(--mono); font-size:0.58rem; line-height:1.6; padding:0.35rem 0.6rem; }
+.cache-pros { color:#4ade80; background:rgba(74,222,128,0.05); border-left:2px solid rgba(74,222,128,0.25); margin-bottom:0.3rem; }
+.cache-cons { color:#f09090; background:rgba(240,144,144,0.05); border-left:2px solid rgba(240,144,144,0.2); }
+
+/* ═══════════════════════════════════════════
+   TAB 8 — DOCKER CURSO
+═══════════════════════════════════════════ */
+.dk-subtabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.dk-stab { padding:0.35rem 0.9rem; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.06em; border:1px solid var(--border2); background:var(--bg3); color:var(--muted); cursor:pointer; border-radius:1px; transition:all 0.15s; }
+.dk-stab:hover { border-color:var(--t8); color:var(--t8); }
+.dk-stab.active { background:var(--t8); color:#fff; border-color:var(--t8); font-weight:500; }
+.dk-panel { display:none; }
+.dk-panel.active { display:block; animation:fadeUp 0.2s ease; }
+.dk-note { background:var(--bg3); border:1px solid var(--border); border-left:3px solid var(--t8); padding:0.75rem 1rem; font-size:0.68rem; color:var(--muted); margin-bottom:1.25rem; line-height:1.6; border-radius:0 2px 2px 0; }
+.dk-note strong { color:var(--text); }
+.ud-header { display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; padding:0.6rem 1rem; background:var(--bg3); border:1px solid var(--border2); }
+.ud-num { font-family:var(--mono); font-size:0.6rem; color:var(--t8); letter-spacing:0.12em; font-weight:600; flex-shrink:0; }
+.ud-title { font-size:0.8rem; font-weight:700; }
+.ud-sub { font-family:var(--mono); font-size:0.55rem; color:var(--muted); margin-left:auto; flex-shrink:0; }
+.dk-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.dk-card { background:var(--bg2); padding:1.1rem; position:relative; transition:background 0.15s; }
+.dk-card:hover { background:var(--bg3); }
+.dk-card-bar { position:absolute; top:0; left:0; width:2px; height:100%; }
+.dk-card-name { font-size:0.82rem; font-weight:700; margin-bottom:0.15rem; }
+.dk-card-cat { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.55rem; }
+.dk-card-def { font-size:0.65rem; color:var(--text); line-height:1.55; margin-bottom:0.6rem; opacity:0.82; }
+.dk-card-cmd { font-family:var(--mono); font-size:0.58rem; color:var(--t8); padding:0.35rem 0.6rem; background:rgba(59,111,212,0.07); border-left:2px solid rgba(59,111,212,0.3); line-height:1.6; white-space:pre; overflow-x:auto; margin-bottom:0.4rem; }
+.dk-card-tip { font-family:var(--mono); font-size:0.56rem; color:#f5a97f; padding:0.3rem 0.6rem; background:rgba(245,169,127,0.06); border-left:2px solid rgba(245,169,127,0.25); line-height:1.5; margin-top:0.35rem; }
+.dk-card-tip::before { content:'💡 '; }
+.dk-cheat-wrap { overflow-x:auto; border:1px solid var(--border2); background:var(--bg2); margin-bottom:1.5rem; }
+.dk-cheat { width:100%; border-collapse:collapse; font-size:0.63rem; font-family:var(--mono); }
+.dk-cheat th { background:var(--bg); color:var(--muted); padding:0.55rem 0.75rem; text-align:left; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid var(--border2); border-right:1px solid var(--border); white-space:nowrap; }
+.dk-cheat td { padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); border-right:1px solid var(--border); vertical-align:top; line-height:1.4; }
+.dk-cheat td:first-child { color:var(--t8); white-space:pre; font-size:0.6rem; }
+.dk-cheat td:nth-child(2) { color:var(--text); font-family:var(--sans); font-size:0.64rem; }
+.dk-cheat td:nth-child(3) { color:var(--muted); font-family:var(--sans); font-size:0.6rem; }
+.dk-cheat tr:hover td { background:rgba(59,111,212,0.04); }
+.dk-cheat .section-row td { background:var(--bg3); color:var(--t8); font-size:0.5rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.3rem 0.75rem; font-weight:600; border-color:var(--border2); }
+.dockerfile-block { background:var(--bg2); border:1px solid var(--border2); padding:1.25rem; margin-bottom:1.5rem; font-family:var(--mono); }
+.df-title { font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
+.df-line { display:flex; gap:0.75rem; margin-bottom:0.5rem; align-items:flex-start; }
+.df-instr { color:var(--t8); font-size:0.65rem; font-weight:600; flex-shrink:0; min-width:100px; }
+.df-code { color:#a8f0c8; font-size:0.62rem; flex:1; line-height:1.4; }
+.df-desc { color:var(--muted); font-size:0.6rem; flex:1.5; line-height:1.4; font-family:var(--sans); }
+.compose-block { background:var(--bg2); border:1px solid var(--border2); padding:1.25rem; margin-bottom:1.5rem; }
+.compose-section { margin-bottom:1rem; }
+.compose-key { font-family:var(--mono); font-size:0.7rem; font-weight:600; color:var(--t8); margin-bottom:0.4rem; }
+.compose-fields { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.5rem; }
+.compose-field { background:var(--bg3); padding:0.6rem 0.75rem; border:1px solid var(--border); border-radius:1px; }
+.compose-field-key { font-family:var(--mono); font-size:0.6rem; color:#a8f0c8; margin-bottom:0.2rem; }
+.compose-field-desc { font-size:0.6rem; color:var(--muted); line-height:1.4; }
+.net-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.net-card { background:var(--bg2); padding:1rem; }
+.net-name { font-size:0.78rem; font-weight:700; margin-bottom:0.15rem; }
+.net-type { font-family:var(--mono); font-size:0.5rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem; }
+.net-desc { font-size:0.62rem; color:var(--text); line-height:1.5; margin-bottom:0.5rem; opacity:0.8; }
+.net-cmd { font-family:var(--mono); font-size:0.57rem; color:var(--t8); }
+.vol-compare { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.vol-col { background:var(--bg2); padding:1rem; }
+.vol-name { font-size:0.78rem; font-weight:700; margin-bottom:0.15rem; }
+.vol-sub { font-family:var(--mono); font-size:0.5rem; color:var(--muted); margin-bottom:0.5rem; letter-spacing:0.06em; }
+.vol-desc { font-size:0.62rem; color:var(--text); line-height:1.5; margin-bottom:0.5rem; opacity:0.8; }
+.vol-when { font-family:var(--mono); font-size:0.57rem; color:#a8f0c8; padding:0.3rem 0.5rem; background:rgba(168,240,200,0.05); border-left:2px solid rgba(168,240,200,0.2); }
+.k8s-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.k8s-card { background:var(--bg2); padding:1rem; }
+.k8s-name { font-size:0.78rem; font-weight:700; margin-bottom:0.15rem; }
+.k8s-layer { font-family:var(--mono); font-size:0.5rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+.k8s-desc { font-size:0.62rem; color:var(--text); line-height:1.5; opacity:0.82; }
+.cases-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:0.75rem; margin-bottom:1.5rem; }
+.case-card { background:var(--bg2); border:1px solid var(--border); padding:0.9rem 1rem; border-radius:1px; }
+.case-ud { font-family:var(--mono); font-size:0.5rem; color:var(--t8); letter-spacing:0.12em; margin-bottom:0.3rem; }
+.case-title { font-size:0.72rem; font-weight:600; margin-bottom:0.35rem; }
+.case-stack { display:flex; flex-wrap:wrap; gap:0.25rem; }
+.case-pill { font-family:var(--mono); font-size:0.52rem; padding:0.1rem 0.4rem; border-radius:2px; border:1px solid var(--border2); color:var(--muted); }
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem; }
+.tool-card { background:var(--bg2); padding:1rem; }
+.tool-name { font-size:0.78rem; font-weight:700; margin-bottom:0.15rem; }
+.tool-kind { font-family:var(--mono); font-size:0.5rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; }
+.tool-desc { font-size:0.62rem; color:var(--text); line-height:1.5; opacity:0.82; margin-bottom:0.45rem; }
+.tool-cmd { font-family:var(--mono); font-size:0.57rem; color:var(--t8); }
+
+/* ═══════════════════════════════════════════
+   TAB 9 — DS TOOLS
+═══════════════════════════════════════════ */
+.dst-cat-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.dst-ctab {
+  padding:0.35rem 1rem; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.06em;
+  border:1px solid var(--border2); background:var(--bg3); color:var(--muted);
+  cursor:pointer; border-radius:1px; transition:all 0.15s;
+  display:flex; align-items:center; gap:0.4rem;
+}
+.dst-ctab:hover { border-color:var(--t9); color:var(--t9); }
+.dst-ctab.active { background:var(--t9); color:var(--bg); border-color:var(--t9); font-weight:500; }
+.dst-ctab .cat-count-badge {
+  font-size:0.5rem; background:rgba(0,0,0,0.15); border-radius:10px;
+  padding:0.05rem 0.35rem; font-weight:600;
+}
+.dst-ctab.active .cat-count-badge { background:rgba(0,0,0,0.2); }
+
+.dst-cat-panel { display:none; }
+.dst-cat-panel.active { display:block; animation:fadeUp 0.2s ease; }
+
+/* Add tool form */
+.dst-add-bar {
+  display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;
+  margin-bottom:1.5rem; padding:1rem 1.1rem;
+  background:var(--bg3); border:1px solid var(--border2);
+}
+.dst-add-bar input, .dst-add-bar select, .dst-add-bar textarea {
+  background:var(--bg2); border:1px solid var(--border2); color:var(--text);
+  font-family:var(--mono); font-size:0.62rem; padding:0.4rem 0.7rem;
+  outline:none; transition:border-color 0.15s; border-radius:1px;
+}
+.dst-add-bar input:focus, .dst-add-bar select:focus, .dst-add-bar textarea:focus { border-color:var(--t9); }
+.dst-add-bar input { flex:1; min-width:140px; }
+.dst-add-bar select { min-width:120px; cursor:pointer; }
+.dst-add-bar textarea { flex:2; min-width:200px; resize:vertical; min-height:36px; }
+.dst-add-btn {
+  padding:0.4rem 1rem; font-family:var(--mono); font-size:0.6rem; font-weight:500;
+  background:var(--t9); color:var(--bg); border:none; cursor:pointer;
+  letter-spacing:0.05em; border-radius:1px; transition:opacity 0.15s; white-space:nowrap;
+}
+.dst-add-btn:hover { opacity:0.85; }
+.dst-add-bar label { font-family:var(--mono); font-size:0.55rem; color:var(--muted); letter-spacing:0.1em; white-space:nowrap; }
+
+/* Tool cards */
+.dst-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border2); }
+.dst-card {
+  background:var(--bg2); padding:1.1rem; position:relative;
+  transition:background 0.15s; display:flex; flex-direction:column; gap:0.5rem;
+}
+.dst-card:hover { background:var(--bg3); }
+.dst-card-top { display:flex; align-items:flex-start; gap:0.6rem; }
+.dst-card-icon {
+  width:32px; height:32px; border-radius:4px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; border:1px solid var(--border2);
+}
+.dst-card-meta { flex:1; min-width:0; }
+.dst-card-name { font-size:0.8rem; font-weight:700; margin-bottom:0.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dst-card-type { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.dst-card-desc { font-size:0.63rem; color:var(--text); line-height:1.55; opacity:0.8; flex:1; }
+.dst-card-footer { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; margin-top:auto; padding-top:0.4rem; border-top:1px solid var(--border); }
+.dst-card-tag { font-family:var(--mono); font-size:0.5rem; padding:0.1rem 0.4rem; border-radius:2px; border:1px solid var(--border2); color:var(--muted); }
+.dst-card-link {
+  margin-left:auto; font-family:var(--mono); font-size:0.55rem;
+  color:var(--t9); text-decoration:none; letter-spacing:0.05em;
+  border:1px solid rgba(192,132,252,0.3); padding:0.15rem 0.5rem; border-radius:1px;
+  transition:all 0.15s; white-space:nowrap;
+}
+.dst-card-link:hover { background:rgba(192,132,252,0.1); }
+.dst-card-delete {
+  font-family:var(--mono); font-size:0.52rem; color:var(--muted);
+  background:none; border:none; cursor:pointer; padding:0.15rem 0.4rem;
+  transition:color 0.15s; border-radius:1px;
+}
+.dst-card-delete:hover { color:#f09090; background:rgba(240,144,144,0.08); }
+
+.dst-empty { padding:2rem; text-align:center; font-family:var(--mono); font-size:0.62rem; color:var(--muted); }
+
+/* progress bar */
+.progress-strip {
+  display:flex; gap:2px; margin-bottom:2rem; overflow:hidden; border-radius:2px;
+}
+.pseg {
+  height:4px; flex:1; border-radius:1px; transition:opacity 0.2s;
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-logo">VIBECODING OS</div>
+  <div class="topbar-divider"></div>
+  <div class="topbar-subtitle">Sistema operativo personal de aprendizaje · v0.5</div>
+  <div class="topbar-badges">
+    <div class="topbar-badge">9 módulos</div>
+    <div class="topbar-badge">5 activos · 4 en plan</div>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tabnav">
+  <button class="tabitem active" data-tab="frameworks" onclick="switchTab('frameworks',this)">
+    <span class="tab-dot" style="background:var(--t1)"></span>
+    Frameworks
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="ds" onclick="switchTab('ds',this)">
+    <span class="tab-dot" style="background:var(--t2)"></span>
+    Design Systems
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="glosario" onclick="switchTab('glosario',this)">
+    <span class="tab-dot" style="background:var(--t3)"></span>
+    Glosario Técnico
+    <span class="tab-status status-wip">wip</span>
+  </button>
+  <button class="tabitem" data-tab="vibetips" onclick="switchTab('vibetips',this)">
+    <span class="tab-dot" style="background:var(--t4)"></span>
+    VibeTips
+    <span class="tab-status status-wip">wip</span>
+  </button>
+  <button class="tabitem" data-tab="hosting" onclick="switchTab('hosting',this)">
+    <span class="tab-dot" style="background:var(--t5)"></span>
+    Hosting
+    <span class="tab-status status-plan">plan</span>
+  </button>
+  <button class="tabitem" data-tab="despliegue" onclick="switchTab('despliegue',this)">
+    <span class="tab-dot" style="background:var(--t7)"></span>
+    Despliegue
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="docker-curso" onclick="switchTab('docker-curso',this)">
+    <span class="tab-dot" style="background:var(--t8)"></span>
+    Docker · Curso
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="ds-tools" onclick="switchTab('ds-tools',this)">
+    <span class="tab-dot" style="background:var(--t9)"></span>
+    DS Tools
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="roadmap" onclick="switchTab('roadmap',this)">
+    <span class="tab-dot" style="background:var(--t6)"></span>
+    Roadmap
+    <span class="tab-status status-plan">plan</span>
+  </button>
+</nav>
+
+<!-- CONTENT -->
+<main class="content">
+
+<!-- ══════════════════════════════════════════
+     PANEL 1 · FRAMEWORKS
+══════════════════════════════════════════ -->
+<div class="panel active" id="panel-frameworks">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t1)">Frameworks & Tecnologías</div>
+      <div class="panel-desc">25 tecnologías · 5 categorías · Guía de cuándo usar cada una</div>
+    </div>
+  </div>
+
+  <div class="subtabs">
+    <button class="stab active" onclick="showStab('fw-criteria',this,'fw')">Por criterio</button>
+    <button class="stab" onclick="showStab('fw-profiles',this,'fw')">Perfiles</button>
+    <button class="stab" onclick="showStab('fw-guide',this,'fw')">Guía rápida</button>
+  </div>
+
+  <!-- CRITERIA -->
+  <div class="fw-sub active" id="fw-criteria">
+    <div class="legend">
+      <div class="legend-item"><div class="ldot" style="background:#c0392b"></div>Frontend UI</div>
+      <div class="legend-item"><div class="ldot" style="background:#1a5276"></div>Meta-fw</div>
+      <div class="legend-item"><div class="ldot" style="background:#196f3d"></div>Backend</div>
+      <div class="legend-item"><div class="ldot" style="background:#6c3483"></div>CMS</div>
+      <div class="legend-item"><div class="ldot" style="background:#d35400"></div>No-Code</div>
+      <div class="legend-item" style="margin-left:auto">
+        <span class="w2 s2" style="margin-right:4px">★</span>Gana &nbsp;
+        <span class="w2 s1" style="margin-right:4px">◆</span>Válido &nbsp;
+        <span class="w2 s0" style="margin-right:4px">·</span>No ideal
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table><thead><tr id="fw-crit-head"></tr></thead><tbody id="fw-crit-body"></tbody></table>
+    </div>
+  </div>
+
+  <!-- PROFILES -->
+  <div class="fw-sub" id="fw-profiles" style="display:none">
+    <div id="fw-profiles-wrap"></div>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="fw-sub" id="fw-guide" style="display:none">
+    <div class="guide-grid" id="fw-guide-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 2 · DESIGN SYSTEMS
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-ds">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t2)">Métricas de Design Systems</div>
+      <div class="panel-desc">Lista exhaustiva de métricas organizadas por categoría · Fuente: design_system_metrics_exhaustive_v2</div>
+    </div>
+  </div>
+
+  <div class="ds-subtabs">
+    <button class="ds-stab active" onclick="showDsTab('ds-adopcion',this)">Adopción y uso</button>
+    <button class="ds-stab" onclick="showDsTab('ds-eficiencia',this)">Eficiencia</button>
+    <button class="ds-stab" onclick="showDsTab('ds-calidad',this)">Calidad y consistencia</button>
+    <button class="ds-stab" onclick="showDsTab('ds-equipo',this)">Equipo y cultura</button>
+    <button class="ds-stab" onclick="showDsTab('ds-negocio',this)">Impacto de negocio</button>
+    <button class="ds-stab" onclick="showDsTab('ds-tamano',this)">Por tamaño de equipo</button>
+  </div>
+
+  <!-- DS: ADOPCIÓN -->
+  <div class="ds-panel active" id="ds-adopcion">
+    <div class="ds-note"><strong>Adopción no es solo "cuánto se usa."</strong> Lo más importante es si se usa correctamente y por qué razón cuando no se usa.</div>
+    <div class="ds-grid">
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Adopción en diseño (Figma)</div></div><ul class="ds-list"><li><span>% de componentes usados</span> del total publicado en la librería</li><li><span>Tasa de detach</span> — cuántos componentes se desvinculan. Señala gaps del sistema</li><li><span>Frecuencia de uso</span> por componente — cuáles se usan casi nunca</li><li><span>Equipos activos</span> que han insertado componentes en el último mes</li><li><span>% de archivos</span> de producto que usan la librería conectada</li><li><span>Adopción de tokens</span> (colores, tipografía, espaciado) además de componentes</li><li><span>Adopción de variables</span> y estilos de la librería</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-green)"></div><div class="ds-card-title">Adopción en código</div></div><ul class="ds-list"><li><span>Cobertura</span> — % de UI construida con componentes del DS vs custom</li><li><span>Instancias en producción</span> de cada componente (no solo en diseño)</li><li><span>Desviaciones activas</span> — componentes custom que no son del DS</li><li><span>Versión adoptada</span> — cuántos proyectos siguen en versiones antiguas</li><li><span>Descargas/dependencias npm</span> del paquete del DS</li><li><span>Cobertura de tokens</span> en CSS/variables del código base</li><li><span>Adopción por equipo o repositorio</span> — para identificar quién no usa</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-orange)"></div><div class="ds-card-title">Adopción de documentación</div></div><ul class="ds-list"><li><span>Visitas a la doc</span> (páginas vistas, usuarios únicos, tiempo de sesión)</li><li><span>Páginas más visitadas</span> vs páginas que nadie visita</li><li><span>Tasa de rebote</span> — si entran y salen sin navegar</li><li><span>Búsquedas sin resultado</span> — qué busca la gente y no encuentra</li><li><span>Tickets de soporte</span> por temas que deberían estar en la doc</li><li><span>Tiempo hasta encontrar</span> lo que necesitan (en tests de usabilidad)</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-amber)"></div><div class="ds-card-title">Adopción cualitativa</div></div><ul class="ds-list"><li><span>Awareness</span> — ¿los equipos saben que el DS existe?</li><li><span>Percepción</span> — ¿lo ven como una herramienta o como una restricción?</li><li><span>Participación</span> en office hours, reuniones del DS</li><li><span>NPS interno</span> — ¿lo recomendarían a otro equipo?</li><li><span>Razones de no uso</span> — por qué no lo adoptan (encuestas)</li><li><span>Scorecard por equipo</span> — autoevaluación del nivel de adopción</li></ul></div>
+    </div>
+  </div>
+
+  <!-- DS: EFICIENCIA -->
+  <div class="ds-panel" id="ds-eficiencia" style="display:none">
+    <div class="ds-note"><strong>La eficiencia tiene dos caras:</strong> la del equipo que hace el DS, y la de los equipos que lo consumen.</div>
+    <div class="ds-grid">
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Velocidad de entrega</div></div><ul class="ds-list"><li><span>Time to market</span> — antes vs después del DS</li><li><span>Tiempo de diseño de pantalla</span> estándar (benchmarking con/sin DS)</li><li><span>Tiempo de desarrollo</span> de un componente nuevo vs reusar uno</li><li><span>Tiempo de handoff</span> diseño → desarrollo (¿mejora con la doc del DS?)</li><li><span>Ciclos de revisión</span> — cuántas iteraciones necesita un diseño hasta aprobarse</li><li><span>Lead time</span> de un componente nuevo desde petición hasta publicación</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-green)"></div><div class="ds-card-title">Ahorro de tiempo y coste</div></div><ul class="ds-list"><li><span>Horas ahorradas por reutilización</span> de componentes (tiempo estimado vs construir desde cero)</li><li><span>Coste de diseño duplicado</span> — cuántos equipos hacen lo mismo por separado</li><li><span>Reducción de deuda técnica</span> en CSS o estilos redundantes</li><li><span>Coste de refactoring evitado</span> gracias a componentes estandarizados</li><li><span>Ratio de reutilización</span> — cuántos componentes reutilizados vs creados desde cero por sprint</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-orange)"></div><div class="ds-card-title">Calidad del proceso</div></div><ul class="ds-list"><li><span>Bugs visuales en producción</span> relacionados con inconsistencias de UI</li><li><span>Bugs evitados</span> por tener componentes testeados de base</li><li><span>Tasa de revisiones de QA</span> antes vs después de adoptar el DS</li><li><span>Errores de handoff</span> — discrepancias entre diseño y código final</li><li><span>Tiempo de onboarding</span> de nuevos diseñadores/devs hasta ser autosuficientes</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-amber)"></div><div class="ds-card-title">Salud del propio DS</div></div><ul class="ds-list"><li><span>Cadencia de publicación</span> — cada cuánto se actualiza el DS</li><li><span>Backlog pendiente</span> — peticiones acumuladas sin resolver</li><li><span>Tiempo de respuesta</span> a issues o peticiones de equipos</li><li><span>% de componentes deprecated</span> que aún se usan</li><li><span>Cobertura Figma-código</span> — cuántos componentes existen en ambos lados</li><li><span>Número de librerías activas</span> — síntoma de fragmentación si hay muchas</li></ul></div>
+    </div>
+  </div>
+
+  <!-- DS: CALIDAD -->
+  <div class="ds-panel" id="ds-calidad" style="display:none">
+    <div class="ds-note"><strong>La consistencia es medible.</strong> No hay que quedarse en la percepción subjetiva.</div>
+    <div class="ds-grid">
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Consistencia visual</div></div><ul class="ds-list"><li><span>Redundancia CSS</span> — duplicados de colores, tipografías, espaciados</li><li><span>Estilos custom</span> fuera del DS en archivos de diseño</li><li><span>Variaciones no documentadas</span> de componentes en producción</li><li><span>Divergencia visual</span> entre productos del mismo ecosistema</li><li><span>Parity diseño-código</span> — % de componentes de Figma con equivalente exacto en código</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-green)"></div><div class="ds-card-title">Accesibilidad</div></div><ul class="ds-list"><li><span>% de componentes</span> que pasan WCAG AA o AAA</li><li><span>Ratio de contraste</span> en tokens de color</li><li><span>Cobertura de ARIA</span> en componentes interactivos</li><li><span>Regresiones de accesibilidad</span> introducidas en updates</li><li><span>Tests automatizados</span> de a11y que pasan en CI/CD</li><li><span>Issues de accesibilidad</span> reportados en producción</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-orange)"></div><div class="ds-card-title">Usabilidad del propio DS</div></div><ul class="ds-list"><li><span>SUS score</span> (System Usability Scale) aplicado al DS como producto interno</li><li><span>Tasa de éxito</span> en tareas clave de la doc (¿pueden encontrar lo que buscan?)</li><li><span>Tasa de error</span> al implementar un componente por primera vez</li><li><span>Tiempo en completar tareas</span> con el DS vs sin él</li><li><span>Claridad percibida</span> de la documentación (escala 1–5 en encuestas)</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-amber)"></div><div class="ds-card-title">Impacto en el usuario final</div></div><ul class="ds-list"><li><span>Quejas de usuarios</span> sobre inconsistencias visuales o de interacción</li><li><span>Tasa de error en tareas</span> clave de los productos (refleja calidad de UI)</li><li><span>NPS o CSAT</span> de los productos como proxy de coherencia de experiencia</li><li><span>Satisfacción con la UI</span> en investigación de usuario periódica</li><li><span>Flujos coherentes</span> — ¿los usuarios reconocen patrones entre productos?</li></ul></div>
+    </div>
+  </div>
+
+  <!-- DS: EQUIPO -->
+  <div class="ds-panel" id="ds-equipo" style="display:none">
+    <div class="ds-note"><strong>Las métricas de equipo son las más ignoradas y las más importantes.</strong> Un DS que nadie quiere usar no vale nada.</div>
+    <div class="ds-grid">
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Satisfacción y motivación</div></div><ul class="ds-list"><li><span>Satisfacción laboral</span> — encuestas periódicas sobre cómo se siente el equipo</li><li><span>Aumento de creatividad percibida</span> — ¿el DS libera tiempo para innovar?</li><li><span>Rotación del equipo</span> de diseño como señal de motivación</li><li><span>Compromiso</span> — participación voluntaria en mejoras del DS</li><li><span>Autonomía percibida</span> — ¿sienten que el DS los limita o los empodera?</li><li><span>Framework AMP</span> — autonomía, maestría y propósito (Daniel Pink)</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-green)"></div><div class="ds-card-title">Contribución y gobernanza</div></div><ul class="ds-list"><li><span>Contribuciones externas</span> — propuestas de componentes de equipos no-core</li><li><span>Pull requests o issues</span> creados por equipos consumidores</li><li><span>Participación en reuniones</span> de DS (office hours, sincs)</li><li><span>Feedback recibido</span> sobre el DS — volumen y calidad</li><li><span>Peticiones de nuevos componentes</span> vs peticiones resueltas</li><li><span>Embajadores del DS</span> — personas en otros equipos que lo promueven</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-orange)"></div><div class="ds-card-title">Colaboración entre disciplinas</div></div><ul class="ds-list"><li><span>Fricción diseño-dev</span> — quejas cruzadas, malentendidos en handoff</li><li><span>Alineación percibida</span> con producto, marketing, ingeniería</li><li><span>Ritmo de sincronización</span> — ¿se mantienen reuniones regulares de DS?</li><li><span>Uso compartido</span> — diseñadores y devs consultan la misma fuente de verdad</li><li><span>Decisiones bloqueadas</span> por falta de un componente o patrón definido</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-amber)"></div><div class="ds-card-title">Cultura de diseño</div></div><ul class="ds-list"><li><span>Visibilidad del DS</span> en la organización — ¿los stakeholders lo conocen?</li><li><span>Apoyo ejecutivo</span> — inversión y reconocimiento desde arriba</li><li><span>Evangelización</span> — cuánta gente habla del DS proactivamente</li><li><span>Percepción de valor</span> por parte de equipos no-diseño</li><li><span>Sentimiento de "alivio"</span> (Dann Mall) — el DS reduce la carga mental</li></ul></div>
+    </div>
+  </div>
+
+  <!-- DS: NEGOCIO -->
+  <div class="ds-panel" id="ds-negocio" style="display:none">
+    <div class="ds-note"><strong>Conectar el DS con métricas de negocio es lo que le da peso frente a stakeholders.</strong></div>
+    <div class="ds-grid">
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">ROI y valor económico</div></div><ul class="ds-list"><li><span>Coste de mantener el DS</span> vs coste de no tenerlo (inconsistencias, bugs, duplicación)</li><li><span>Horas de diseño/dev ahorradas</span> × coste hora → valor en €</li><li><span>Reducción de bugs en prod</span> y su coste de resolución</li><li><span>Velocidad de lanzamiento</span> de nuevas features — ¿el DS acelera?</li><li><span>Coste de onboarding</span> antes vs después del DS</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-green)"></div><div class="ds-card-title">Impacto en producto</div></div><ul class="ds-list"><li><span>Tasa de conversión</span> en flujos rediseñados con el DS</li><li><span>Retención de usuarios</span> como proxy de calidad de experiencia</li><li><span>Reducción de soporte</span> por confusión de UI</li><li><span>Velocidad de escala</span> — cuántos productos nuevos se lanzan usando el DS</li><li><span>Consistencia de marca</span> — percepción externa de coherencia</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-orange)"></div><div class="ds-card-title">OKRs y frameworks</div></div><ul class="ds-list"><li><span>OKRs del DS</span> — objetivos trimestrales con resultados clave medibles</li><li><span>Alineación con OKRs de producto</span> — ¿el DS contribuye a métricas del negocio?</li><li><span>Progreso de madurez</span> — modelo de madurez del DS (inicial → gestionado → optimizado)</li><li><span>Escalabilidad</span> — cuántos productos puede soportar el DS actual</li><li><span>Cobertura de superficie</span> — % del portfolio que usa el DS</li></ul></div>
+      <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-amber)"></div><div class="ds-card-title">Métricas de DesignOps</div></div><ul class="ds-list"><li><span>Eficacia del equipo de diseño</span> — % de tareas completadas vs planificadas</li><li><span>Iteraciones necesarias</span> para refinar un diseño hasta aprobarse</li><li><span>Frecuencia de errores</span> de usuario en diseños producidos con el DS</li><li><span>Tasa de éxito de tarea</span> — usuarios que completan una tarea en los productos</li><li><span>Tiempo en completar tareas</span> por usuarios en los productos</li></ul></div>
+    </div>
+  </div>
+
+  <!-- DS: TAMAÑO -->
+  <div class="ds-panel" id="ds-tamano" style="display:none">
+    <div class="ds-note"><strong>El tamaño del equipo cambia qué medir, cómo medirlo y qué hacer con los datos.</strong></div>
+    <div class="ds-team-grid">
+      <div class="ds-team-card"><div class="ds-team-label l-large">Equipos grandes (10+ diseñadores)</div><ul class="ds-list"><li><span>Adopción por equipo/squad</span> — identifica quién no usa y por qué</li><li><span>Gobernanza formal</span> — métricas de contribuciones, PRs, aprobaciones</li><li><span>Cobertura en código</span> con herramientas automáticas (react-scanner, Omlet)</li><li><span>Versión adoptada</span> por repositorio — evitar fragmentación de versiones</li><li><span>Dashboards en tiempo real</span> de uso de componentes</li><li><span>SUS score</span> del DS como producto interno formal</li><li><span>NPS interno</span> con encuestas periódicas estructuradas</li><li><span>Embajadores por equipo</span> como multiplicadores de adopción</li><li><span>ROI documentado</span> para justificar inversión ejecutiva</li><li><span>OKRs formales</span> del equipo del DS alineados con la empresa</li></ul></div>
+      <div class="ds-team-card"><div class="ds-team-label l-small">Equipos pequeños (2–5 diseñadores)</div><ul class="ds-list"><li><span>Adopción binaria</span> primero — ¿se usa? ¿lo conocen todos?</li><li><span>Conversaciones directas</span> en vez de encuestas — más fácil y más rico</li><li><span>Tiempo ahorrado</span> percibido por los propios diseñadores</li><li><span>Detach rate</span> en Figma — señal práctica de gaps sin necesitar herramientas</li><li><span>Backlog de componentes</span> pendientes — proxy de salud del DS</li><li><span>Riesgo de abandono</span> — si no se siente útil, el DS muere solo</li><li><span>Documentación accesible</span> — ¿puedes explicarlo a alguien nuevo en 10 min?</li><li><span>Coste de mantenimiento</span> — ¿cabe en la carga del equipo?</li><li><span>Flexibilidad percibida</span> — si es muy rígido, se abandona</li></ul></div>
+      <div class="ds-team-card triada">
+        <div class="ds-team-label l-triada">Tríada: 1 designer + 1 PM + 1–3 devs</div>
+        <div class="triada-cols">
+          <div><div class="tcol-title">Qué medir</div><ul class="ds-list"><li><span>Fricción en handoff</span> — el dev trabaja directamente con el diseñador, cualquier ambigüedad del DS se nota inmediatamente</li><li><span>Tiempo de implementación</span> por componente — el dev es quien más sufre si el DS no tiene tokens o doc clara</li><li><span>Detach rate</span> — en triadas es normal que el dev adapte porque el DS no cubre el caso de uso exacto</li><li><span>Alineación PM-diseño</span> — ¿el PM conoce qué existe en el DS antes de definir features?</li><li><span>Velocidad de prototipado</span> — si el DS acelera las demos al PM o los primeros wireframes</li><li><span>Deuda acumulada</span> — componentes custom que "ya arreglaremos" y nunca se arreglan</li></ul></div>
+          <div><div class="tcol-title">Particularidades clave</div><ul class="ds-list"><li><span>El designer hace y consume el DS</span> — es al mismo tiempo quien lo mantiene y quien lo usa, lo que crea un sesgo enorme</li><li><span>El dev puede volverse el DS</span> — si hay 2–3 devs, uno puede desarrollar un sistema propio en código que diverge del diseño</li><li><span>El PM decide sin datos de DS</span> — si el PM no tiene visibilidad de qué componentes existen, pedirá cosas que ya están resueltas</li><li><span>No hay quién mida</span> — en una tríada nadie tiene el rol de DesignOps, así que medir tiene que ser casi automático</li></ul></div>
+          <div><div class="tcol-title">Señales prácticas (sin infraestructura)</div><ul class="ds-list"><li><span>¿Cuántas veces por sprint</span> el dev pregunta al designer sobre estilos o comportamientos ya definidos?</li><li><span>¿El PM revisa el DS</span> antes de escribir una historia de usuario?</li><li><span>¿Hay componentes en código</span> que el designer no sabe que existen?</li><li><span>¿Cuánto tarda un nuevo dev</span> en entender qué hay en el DS y empezar a usarlo?</li><li><span>¿Se abre Figma para reusar</span> o se clona código de otro sitio?</li><li><span>¿El DS aparece en la retro?</span> — si aparece como problema, está fallando</li></ul></div>
+        </div>
+        <div class="ds-warning"><strong>Riesgo principal de la tríada:</strong> que el DS sea invisible para el PM y el dev acabe construyendo su propio sistema de facto en código. La métrica más valiosa aquí es si los tres hablan el mismo lenguaje cuando se refieren a un componente — si no, el DS no está funcionando.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 3 · GLOSARIO
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-glosario">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t3)">Glosario Técnico</div>
+      <div class="panel-desc">Términos que la IA usa y que confunden · Qué significan · Cómo afectan a tu proyecto</div>
+    </div>
+  </div>
+  <input class="glosario-search" id="glosario-search" placeholder="Buscar término… (ej: hydration, SSR, API)" oninput="filterGlossary()">
+  <div class="glosario-cats">
+    <button class="gcat active" data-gcat="all" onclick="filterGlossaryBycat('all',this)">Todos</button>
+    <button class="gcat" data-gcat="rendering" onclick="filterGlossaryBycat('rendering',this)">Renderizado</button>
+    <button class="gcat" data-gcat="arquitectura" onclick="filterGlossaryBycat('arquitectura',this)">Arquitectura</button>
+    <button class="gcat" data-gcat="datos" onclick="filterGlossaryBycat('datos',this)">Datos y estado</button>
+    <button class="gcat" data-gcat="deploy" onclick="filterGlossaryBycat('deploy',this)">Deploy</button>
+    <button class="gcat" data-gcat="ds" onclick="filterGlossaryBycat('ds',this)">Design Systems</button>
+  </div>
+  <div class="glossary-grid" id="glossary-grid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 4 · VIBETIPS
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-vibetips">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t4)">VibeTips · Prompts Estructurales</div>
+      <div class="panel-desc">Recetas de prompts para pedirle a la IA código de calidad con cada tecnología</div>
+    </div>
+  </div>
+  <div class="vibe-filter" id="vibe-filter"></div>
+  <div class="vibe-grid" id="vibe-grid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 5 · HOSTING
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-hosting">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t5)">Dónde Desplegar</div>
+      <div class="panel-desc">Plataformas de hosting · Cuándo usar cada una · Compatible con qué frameworks</div>
+    </div>
+  </div>
+  <div class="hosting-grid" id="hosting-grid"></div>
+  <div class="hosting-note" style="margin-top:1rem">
+    <strong>Regla general:</strong> Si usas Astro/Next.js → empieza en Vercel. Si usas Django/Laravel → Railway o Render. Si es solo frontend estático → Netlify o Cloudflare Pages. Si quieres BaaS → Supabase ya lo incluye.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 7 · DESPLIEGUE
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-despliegue">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t7)">Despliegue & Infraestructura</div>
+      <div class="panel-desc">DNS · cPanel · Caché · Docker · Nginx · Seguridad · Integraciones CRM</div>
+    </div>
+  </div>
+
+  <div class="dep-subtabs">
+    <button class="dep-stab active" onclick="showDepTab('dep-dns',this)">DNS y Dominios</button>
+    <button class="dep-stab" onclick="showDepTab('dep-cpanel',this)">cPanel y Servidor</button>
+    <button class="dep-stab" onclick="showDepTab('dep-cache',this)">Caché y Rendimiento</button>
+    <button class="dep-stab" onclick="showDepTab('dep-docker',this)">Docker y Nginx</button>
+    <button class="dep-stab" onclick="showDepTab('dep-seguridad',this)">Seguridad</button>
+    <button class="dep-stab" onclick="showDepTab('dep-integraciones',this)">Integraciones API</button>
+  </div>
+
+  <!-- ── DNS ── -->
+  <div class="dep-panel active" id="dep-dns">
+    <div class="dep-note"><strong>El DNS es la agenda de teléfonos de internet.</strong> Traduce nombres de dominio legibles (miweb.com) a direcciones IP numéricas. Sin entender DNS, no puedes controlar dónde apunta tu web ni tu email.</div>
+
+    <div class="flow-diagram">
+      <div class="flow-title">Flujo: ¿Qué pasa cuando alguien escribe tu dominio?</div>
+      <div class="flow-row">
+        <div class="flow-node public">Browser<small>escribe miweb.com</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Resolver DNS local<small>¿lo tengo en caché?</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Root DNS<small>¿quién gestiona .com?</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Nameserver del dominio<small>tabla de registros DNS</small></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node public">IP del servidor<small>registro A</small></div>
+      </div>
+    </div>
+
+    <div id="dns-records-table-wrap"></div>
+
+    <div class="dep-cards" id="dns-concepts-grid"></div>
+  </div>
+
+  <!-- ── CPANEL ── -->
+  <div class="dep-panel" id="dep-cpanel">
+    <div class="dep-note"><strong>cPanel es el panel de control del servidor.</strong> Una aplicación web instalada en tu servidor (o gestionada por tu hosting como Verpex) que te permite gestionar dominios, emails, bases de datos, archivos y métricas desde una interfaz visual.</div>
+    <div class="dep-cards" id="cpanel-grid"></div>
+  </div>
+
+  <!-- ── CACHÉ ── -->
+  <div class="dep-panel" id="dep-cache">
+    <div class="dep-note"><strong>La caché es guardar una copia de algo para no tener que calcularlo o pedirlo de nuevo.</strong> Cada capa de caché tiene su lugar: no todas son iguales ni sirven para lo mismo.</div>
+    <div class="cache-compare" id="cache-compare-grid"></div>
+    <div class="dep-cards" id="cache-concepts-grid"></div>
+  </div>
+
+  <!-- ── DOCKER ── -->
+  <div class="dep-panel" id="dep-docker">
+    <div class="dep-note"><strong>Docker empaqueta tu aplicación y todo lo que necesita para correr en un contenedor portátil.</strong> Docker Compose orquesta múltiples contenedores (frontend, backend, base de datos) para que funcionen juntos con una sola configuración.</div>
+
+    <div class="flow-diagram">
+      <div class="flow-title">Arquitectura: Frontend + API + HubSpot (tu caso real)</div>
+      <div class="flow-row">
+        <div class="flow-node public">Visitante<small>browser HTTPS</small></div>
+        <div class="flow-arrow">→<span class="flow-arrow-label">GET / o POST /api/*</span></div>
+        <div class="flow-node public">Nginx Container<small>único punto de entrada público</small></div>
+        <div class="flow-arrow">→<span class="flow-arrow-label">sirve estáticos directamente</span></div>
+        <div class="flow-node">Frontend estático<small>HTML/JS/CSS en disco</small></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node" style="visibility:hidden;flex-shrink:0;min-width:80px"></div>
+        <div class="flow-arrow">→<span class="flow-arrow-label">proxy_pass /api/*</span></div>
+        <div class="flow-node private">Node.js Express<small>red interna · nunca expuesto</small></div>
+        <div class="flow-arrow">→<span class="flow-arrow-label">POST + API token</span></div>
+        <div class="flow-node external">HubSpot CRM API<small>servicio externo</small></div>
+      </div>
+    </div>
+
+    <div class="dep-cards" id="docker-grid"></div>
+  </div>
+
+  <!-- ── SEGURIDAD ── -->
+  <div class="dep-panel" id="dep-seguridad">
+    <div class="dep-note"><strong>La seguridad no es una capa que se añade al final.</strong> Cada capa tiene sus propias vulnerabilidades. Cloudflare protege a nivel de red, SSL cifra el canal, SSH protege el acceso al servidor, y las variables de entorno protegen las credenciales.</div>
+    <div class="sec-grid" id="security-grid"></div>
+  </div>
+
+  <!-- ── INTEGRACIONES ── -->
+  <div class="dep-panel" id="dep-integraciones">
+    <div class="dep-note"><strong>Integrar un CRM o servicio externo siempre sigue el mismo patrón: credenciales seguras en el backend, nunca en el frontend.</strong> El browser es público — cualquier token que pongas en el JS del cliente puede ser extraído.</div>
+    <div class="dep-cards" id="integrations-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 8 · DOCKER CURSO
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-docker-curso">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t8)">Docker · Curso Completo</div>
+      <div class="panel-desc">8 unidades · Conceptos · Comandos · Dockerfile · Compose · Redes · Volúmenes · Kubernetes · Herramientas</div>
+    </div>
+  </div>
+
+  <div class="dk-subtabs">
+    <button class="dk-stab active" onclick="showDkTab('dk-fundamentos',this)">Fundamentos</button>
+    <button class="dk-stab" onclick="showDkTab('dk-comandos',this)">CheatSheet</button>
+    <button class="dk-stab" onclick="showDkTab('dk-imagenes',this)">Imágenes y Dockerfile</button>
+    <button class="dk-stab" onclick="showDkTab('dk-redes-vol',this)">Redes y Volúmenes</button>
+    <button class="dk-stab" onclick="showDkTab('dk-compose',this)">Docker Compose</button>
+    <button class="dk-stab" onclick="showDkTab('dk-herramientas',this)">Herramientas</button>
+    <button class="dk-stab" onclick="showDkTab('dk-kubernetes',this)">Kubernetes</button>
+    <button class="dk-stab" onclick="showDkTab('dk-casos',this)">Casos Prácticos</button>
+  </div>
+
+  <!-- FUNDAMENTOS -->
+  <div class="dk-panel active" id="dk-fundamentos">
+    <div class="ud-header"><span class="ud-num">UD01 + UD02</span><span class="ud-title">Introducción a contenedores y Docker</span><span class="ud-sub">Conceptos base</span></div>
+    <div class="dk-note"><strong>Un contenedor no es una VM.</strong> Comparte el kernel del host pero aísla procesos, red y sistema de archivos. Más ligero, arranca en milisegundos y consume mucha menos RAM que una máquina virtual.</div>
+    <div class="dk-cards" id="dk-fund-cards"></div>
+  </div>
+
+  <!-- CHEATSHEET -->
+  <div class="dk-panel" id="dk-comandos">
+    <div class="ud-header"><span class="ud-num">UD03 · UD04 · UD05 · UD06</span><span class="ud-title">CheatSheet de comandos Docker</span><span class="ud-sub">Referencia rápida</span></div>
+    <div class="dk-note">Los comandos más usados organizados por categoría. <strong>docker</strong> para contenedores e imágenes individuales, <strong>docker compose</strong> para stacks multi-servicio.</div>
+    <div class="dk-cheat-wrap"><table class="dk-cheat" id="dk-cheat-table"></table></div>
+  </div>
+
+  <!-- IMAGENES -->
+  <div class="dk-panel" id="dk-imagenes">
+    <div class="ud-header"><span class="ud-num">UD04</span><span class="ud-title">Gestión de imágenes y Dockerfile</span><span class="ud-sub">Build personalizado</span></div>
+    <div class="dk-note"><strong>Una imagen es la receta; un contenedor es el plato cocinado.</strong> El Dockerfile define paso a paso cómo construir tu imagen personalizada. Cada instrucción crea una capa — Docker reutiliza capas cacheadas para acelerar los builds.</div>
+    <div class="dockerfile-block">
+      <div class="df-title">Anatomía de un Dockerfile · Instrucciones principales</div>
+      <div id="dk-dockerfile-lines"></div>
+    </div>
+    <div class="dk-cards" id="dk-img-cards"></div>
+  </div>
+
+  <!-- REDES Y VOLÚMENES -->
+  <div class="dk-panel" id="dk-redes-vol">
+    <div class="ud-header"><span class="ud-num">UD05</span><span class="ud-title">Redes y volúmenes en Docker</span><span class="ud-sub">Comunicación y persistencia</span></div>
+    <div class="dk-note"><strong>Sin red, los contenedores son islas. Sin volúmenes, los datos mueren con el contenedor.</strong> Redes Docker controlan qué contenedores se pueden ver entre sí. Volúmenes persisten datos más allá del ciclo de vida del contenedor.</div>
+    <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Tipos de red</div>
+    <div class="net-grid" id="dk-net-grid"></div>
+    <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Tipos de volumen / almacenamiento</div>
+    <div class="vol-compare" id="dk-vol-grid"></div>
+    <div class="dk-cards" id="dk-net-concepts"></div>
+  </div>
+
+  <!-- COMPOSE -->
+  <div class="dk-panel" id="dk-compose">
+    <div class="ud-header"><span class="ud-num">UD06</span><span class="ud-title">Docker Compose</span><span class="ud-sub">Orquestación multi-contenedor</span></div>
+    <div class="dk-note"><strong>Docker Compose define toda tu infraestructura en un archivo YAML.</strong> Un solo <code style="color:var(--t8);font-family:var(--mono)">docker compose up -d</code> levanta todos los servicios, redes y volúmenes configurados. Es el estándar para desarrollo y despliegues pequeños.</div>
+    <div class="compose-block">
+      <div class="df-title">Anatomía de docker-compose.yml · Claves principales</div>
+      <div id="dk-compose-anatomy"></div>
+    </div>
+    <div class="dk-cards" id="dk-compose-cards"></div>
+  </div>
+
+  <!-- HERRAMIENTAS -->
+  <div class="dk-panel" id="dk-herramientas">
+    <div class="ud-header"><span class="ud-num">UD07</span><span class="ud-title">Utilidades para gestionar Docker</span><span class="ud-sub">GUIs y monitores</span></div>
+    <div class="dk-note">Más allá de la línea de comandos, hay herramientas que hacen el día a día con Docker mucho más visual y manejable. Desde extensiones de VS Code hasta paneles web completos.</div>
+    <div class="tools-grid" id="dk-tools-grid"></div>
+  </div>
+
+  <!-- KUBERNETES -->
+  <div class="dk-panel" id="dk-kubernetes">
+    <div class="ud-header"><span class="ud-num">UD08</span><span class="ud-title">Introducción a Kubernetes</span><span class="ud-sub">Orquestación a escala</span></div>
+    <div class="dk-note"><strong>Kubernetes (K8s) es el siguiente nivel de Docker Compose.</strong> Mientras Compose gestiona contenedores en un solo host, Kubernetes los orquesta en un clúster de máquinas: auto-scaling, self-healing, rolling updates y balanceo de carga incluidos.</div>
+    <div class="dk-cards" id="dk-k8s-concepts"></div>
+    <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)">Objetos principales de Kubernetes</div>
+    <div class="k8s-grid" id="dk-k8s-objects"></div>
+  </div>
+
+  <!-- CASOS PRÁCTICOS -->
+  <div class="dk-panel" id="dk-casos">
+    <div class="ud-header"><span class="ud-num">UD03–UD08</span><span class="ud-title">Casos prácticos del curso</span><span class="ud-sub">Lo que realmente construyes</span></div>
+    <div class="dk-note">Los casos prácticos del curso van de lo simple a lo complejo. Cada uno introduce una capa nueva: primero un contenedor solo, luego redes, luego Compose, luego stacks reales con IA y proxies.</div>
+    <div class="cases-grid" id="dk-cases-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 9 · DS TOOLS
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-ds-tools">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t9)">Herramientas de Design Systems & UI</div>
+      <div class="panel-desc">Glosario personal de herramientas · Organizado por categoría · Añade nuevas con un clic</div>
+    </div>
+  </div>
+
+  <!-- ADD TOOL FORM -->
+  <div class="dst-add-bar">
+    <label>NOMBRE</label>
+    <input id="dst-inp-name" placeholder="ej: ColorBox by Lyft" />
+    <label>URL</label>
+    <input id="dst-inp-url" placeholder="https://..." style="flex:1.2" />
+    <label>TIPO</label>
+    <select id="dst-inp-type">
+      <option>Extensión</option>
+      <option>Web App</option>
+      <option>Plugin Figma</option>
+      <option>Plugin VS Code</option>
+      <option>Librería</option>
+      <option>CLI</option>
+      <option>Documentación</option>
+      <option>Otro</option>
+    </select>
+    <label>CATEGORÍA</label>
+    <select id="dst-inp-cat"></select>
+    <label>DESCRIPCIÓN</label>
+    <textarea id="dst-inp-desc" placeholder="Para qué sirve, cuándo usarla…" rows="1"></textarea>
+    <label>EMOJI</label>
+    <input id="dst-inp-emoji" placeholder="🎨" style="flex:0;min-width:52px;text-align:center" maxlength="2" />
+    <button class="dst-add-btn" onclick="dstAddTool()">+ Añadir</button>
+  </div>
+
+  <!-- CATEGORY TABS -->
+  <div class="dst-cat-tabs" id="dst-cat-tabs"></div>
+
+  <!-- TOOL PANELS per category -->
+  <div id="dst-panels-wrap"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PANEL 6 · ROADMAP
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-roadmap">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--t6)">Roadmap del Sistema</div>
+      <div class="panel-desc">Plan de evolución de este OS · Qué viene, por qué y en qué orden</div>
+    </div>
+  </div>
+
+  <div class="progress-strip">
+    <div class="pseg" style="background:var(--t1);flex:2"></div>
+    <div class="pseg" style="background:var(--t2);flex:2"></div>
+    <div class="pseg" style="background:var(--t3);flex:1;opacity:0.6"></div>
+    <div class="pseg" style="background:var(--t4);flex:1;opacity:0.6"></div>
+    <div class="pseg" style="background:var(--t5);flex:1;opacity:0.25"></div>
+    <div class="pseg" style="background:var(--border2);flex:1;opacity:0.25"></div>
+    <div class="pseg" style="background:var(--border2);flex:1;opacity:0.15"></div>
+  </div>
+
+  <div class="roadmap-intro">
+    Este sistema nació como una <strong>matriz de decisión de frameworks</strong>. La conversación lo está convirtiendo en un <strong>sistema operativo personal de aprendizaje para VibeCoding</strong>: un lugar donde entender qué usas, cómo medirlo, qué significa lo que la IA te dice, y dónde vive lo que construyes. Este roadmap es el plan estructurado para llegar ahí.
+  </div>
+
+  <div class="phases" id="roadmap-phases"></div>
+</div>
+
+</main>
+</div><!-- /shell -->
+
+<script>
+// ═══════════════════════════════════════
+// DATA: FRAMEWORKS
+// ═══════════════════════════════════════
+const CATS = {
+  fe:  {label:'Frontend UI',   color:'#c0392b', cls:'c-fe'  },
+  meta:{label:'Meta-framework',color:'#1a5276', cls:'c-meta'},
+  be:  {label:'Backend/API',   color:'#196f3d', cls:'c-be'  },
+  cms: {label:'CMS Headless',  color:'#6c3483', cls:'c-cms' },
+  nc:  {label:'No-Code',       color:'#d35400', cls:'c-nc'  },
+};
+const CAT_ORDER = ['fe','meta','be','cms','nc'];
+
+const FWS = [
+  {id:'react',     cat:'fe',   name:'React',       color:'#0f9aba', tagline:'La librería dominante de UI',           desc:'Librería de Facebook para interfaces basadas en componentes. Sin opiniones sobre router o estado — tú eliges todo. Base de Next.js, Remix y Gatsby.', uses:['SPA y dashboards interactivos','Apps con estado complejo','Cuando el equipo ya conoce React','Base para meta-frameworks']},
+  {id:'angular',   cat:'fe',   name:'Angular',     color:'#dd0031', tagline:'Framework enterprise de Google',        desc:'Framework opinado y completo: router, HTTP, forms y DI incluidos. TypeScript obligatorio. Curva alta pero muy estructurado para equipos grandes.', uses:['Proyectos enterprise y corporativos','Equipos grandes con convenciones estrictas','Apps de gestión interna','Cuando TypeScript nativo importa']},
+  {id:'vue',       cat:'fe',   name:'Vue.js',      color:'#42b883', tagline:'Progresivo y fácil de adoptar',         desc:'El equilibrio entre Angular y React. Progresivo: puedes añadirlo a una web existente o construir una SPA completa. Sintaxis limpia y curva suave.', uses:['Apps medianas con estado moderado','Equipos que vienen de templates HTML','Base para Nuxt','Proyectos que prefieren Vue sobre React']},
+  {id:'svelte',    cat:'fe',   name:'Svelte',      color:'#ff3e00', tagline:'Sin virtual DOM, compilado',            desc:'Compila a JS vanilla en build time: sin runtime, sin virtual DOM. Bundle muy pequeño y sintaxis limpia. Base para SvelteKit.', uses:['Componentes con máximo rendimiento','Bundle muy reducido','Aprender compilación moderna','Base para SvelteKit']},
+  {id:'next',      cat:'meta', name:'Next.js',     color:'#888',    tagline:'React full-stack, el estándar',         desc:'Meta-framework React más usado. Combina SSR, SSG, ISR, API Routes y Server Actions. Enorme ecosistema. Algo complejo en su App Router nuevo.', uses:['Apps React con SEO y SSR','SaaS y dashboards full-stack','Máxima demanda laboral JS','Cuando el equipo usa React']},
+  {id:'astro',     cat:'meta', name:'Astro',       color:'#ff5d01', tagline:'HTML primero, JS mínimo',               desc:'Genera HTML estático por defecto y añade JS solo donde se necesita (Islands). Multi-framework. Ideal para sitios de contenido con SEO crítico.', uses:['Webs corporativas y portfolios','Blogs con SEO fuerte','Multiidioma (i18n nativo)','Rendimiento y velocidad críticos']},
+  {id:'nuxt',      cat:'meta', name:'Nuxt',        color:'#00dc82', tagline:'El Next.js del ecosistema Vue',         desc:'Meta-framework Vue equivalente a Next.js. Excelente DX, auto-imports, i18n integrado y soporte SSR/SSG/ISR.', uses:['Webs Vue con SSR y SEO','Full-stack con convenciones Vue','Proyectos multiidioma','Si el equipo prefiere Vue']},
+  {id:'remix',     cat:'meta', name:'Remix',       color:'#3992ff', tagline:'Web standards, rutas anidadas',         desc:'Abraza la plataforma web: loaders, actions y rutas anidadas. Excelente gestión de errores y formularios. Ahora parte de React Router v7.', uses:['SaaS con formularios complejos','Apps resilientes','Arquitectura web clásica actualizada','Cuando la DX de datos importa']},
+  {id:'sveltekit', cat:'meta', name:'SvelteKit',   color:'#ff3e00', tagline:'Svelte con full-stack integrado',       desc:'Meta-framework sobre Svelte. Bundle mínimo, rendimiento top, DX excelente. Menos ecosistema que React/Vue pero creciendo.', uses:['Máximo rendimiento con SSR','Bundle pequeño prioritario','Full-stack Svelte','Apps donde JS mínimo importa']},
+  {id:'gatsby',    cat:'meta', name:'Gatsby',      color:'#663399', tagline:'SSG pionero, hoy superado',             desc:'Pionero del SSG con React y GraphQL. Todavía funcional para sitios estáticos, pero Astro y Next.js lo superan en la mayoría de casos.', uses:['Proyectos legacy en Gatsby','Sites con fuentes GraphQL complejas','Migración progresiva','Blogs con plugin ecosystem']},
+  {id:'express',   cat:'be',   name:'Express.js',  color:'#68a063', tagline:'Backend Node.js minimalista',           desc:'El framework Node.js más usado. Minimalista y sin opiniones: tú eliges todo. Base de miles de APIs REST y stacks MERN/MEAN.', uses:['APIs REST rápidas','Microservicios Node.js','Máxima libertad en backend','Base para aprender backend JS']},
+  {id:'nest',      cat:'be',   name:'NestJS',      color:'#e0234e', tagline:'Node.js enterprise con TypeScript',     desc:'Framework Node.js opinado inspirado en Angular. TypeScript nativo, modular, soporte GraphQL, WebSockets y microservicios.', uses:['Backends enterprise con Node.js','APIs GraphQL y REST complejas','Equipos con experiencia Angular','Estructura estricta en backend']},
+  {id:'fastapi',   cat:'be',   name:'FastAPI',     color:'#009688', tagline:'Python moderno y ultrarrápido',         desc:'El framework Python más rápido. Async nativo, validación automática con Pydantic, documentación Swagger auto-generada.', uses:['APIs de AI/ML','Data pipelines Python','Documentación automática','Prototipos rápidos en Python']},
+  {id:'django',    cat:'be',   name:'Django',      color:'#2d7a4f', tagline:'Python batteries-included',             desc:'Framework Python completo con ORM, admin, auth y todo incluido. Seguro, estable y con décadas de producción.', uses:['Apps con datos complejos y admin','Plataformas con ML/AI integrado','Sectores educación, gobierno, fintech','Equipo Python-first']},
+  {id:'laravel',   cat:'be',   name:'Laravel',     color:'#ff2d20', tagline:'PHP elegante y productivo',             desc:'El framework PHP más popular y elegante. Ecosistema maduro, Eloquent ORM, queues y broadcasting.', uses:['Apps de negocio en PHP','Equipo PHP existente','SaaS con backend robusto','Ecosistema PHP']},
+  {id:'rails',     cat:'be',   name:'Ruby on Rails',color:'#cc0000',tagline:'Convenciones sobre configuración',     desc:'Convention over configuration. Productivísimo para CRUDs y MVPs. Dos décadas de track record.', uses:['Startups que necesitan ir rápido','MVPs y prototipos CRUD','Equipo con experiencia Ruby','REST arquitectura clásica']},
+  {id:'strapi',    cat:'cms',  name:'Strapi',      color:'#4945ff', tagline:'CMS headless open-source',             desc:'CMS headless Node.js open-source. Panel de admin personalizable, API REST y GraphQL automáticas. Self-hosted o cloud.', uses:['CMS con control total','Backend de contenido para Astro/Next','Sin vendor lock-in','API de contenido personalizada']},
+  {id:'sanity',    cat:'cms',  name:'Sanity',      color:'#f03e2f', tagline:'CMS estructurado y flexible',           desc:'CMS headless con editor (Sanity Studio) personalizable en React. Esquemas en código, tiempo real, excelente DX para devs.', uses:['CMS como producto','Contenido muy estructurado','CMS como código','Tiempo real y colaboración']},
+  {id:'contentful',cat:'cms',  name:'Contentful',  color:'#2478cc', tagline:'CMS headless SaaS líder',              desc:'El CMS headless SaaS más adoptado en enterprise. Fiable, bien documentado, con SDKs para todo.', uses:['Enterprise con presupuesto CMS','Equipos no técnicos','CDN global','Integraciones marketing']},
+  {id:'wordpress', cat:'cms',  name:'WordPress',   color:'#21759b', tagline:'El rey del CMS clásico',               desc:'El CMS más usado del mundo. Puede usarse como headless (REST API + WPGraphQL) o clásico. Enorme ecosistema de plugins.', uses:['Marketing publicando a diario','Blogs y medios','Cuando el cliente exige WordPress','CMS headless con WPGraphQL']},
+  {id:'webflow',   cat:'nc',   name:'Webflow',     color:'#4353ff', tagline:'Diseño visual sin backend',            desc:'La herramienta no-code más potente para marketing. Editor visual, CMS integrado, animaciones CSS avanzadas.', uses:['Sites de marketing y landings','Agencias con clientes no técnicos','Time-to-market muy corto','Diseño como prioridad']},
+  {id:'framer',    cat:'nc',   name:'Framer',      color:'#0055ff', tagline:'Diseño + publicación en uno',           desc:'Herramienta de diseño que genera sitios publicables. Basada en React, soporte CMS, animaciones avanzadas. Popular en diseño.', uses:['Portfolios de diseñadores','Landings con animaciones complejas','Equipos sin devs','Prototipado que va a producción']},
+  {id:'bubble',    cat:'nc',   name:'Bubble',      color:'#4040c8', tagline:'No-code para apps complejas',           desc:'Plataforma no-code para construir apps web con lógica real: bases de datos, flujos, pagos, auth incluidos.', uses:['MVPs sin equipo técnico','Apps con lógica de negocio','Startups validando ideas','Presupuesto de desarrollo bajo']},
+  {id:'shopify',   cat:'nc',   name:'Shopify',     color:'#96bf48', tagline:'E-commerce sin reinventar la rueda',   desc:'Plataforma SaaS de e-commerce más usada. Checkout, pagos, inventario y logística integrados.', uses:['Tiendas online','Sin gestionar infra','Headless commerce + Next.js','Escalabilidad e-commerce']},
+  {id:'supabase',  cat:'nc',   name:'Supabase',    color:'#3ecf8e', tagline:'Firebase open-source alternativo',     desc:'Backend-as-a-Service open-source: PostgreSQL, auth, storage, realtime y edge functions incluidos. Combina con cualquier frontend.', uses:['Backend rápido con auth','SQL con BaaS','Alternativa open-source a Firebase','Full-stack React/Vue/Svelte']},
+];
+const FW_MAP = {};
+FWS.forEach(f => FW_MAP[f.id] = f);
+
+const CRITERIA = [
+  {crit:'SEO y rendimiento inicial',        cond:'Cargar rápido, posicionar bien',                 wins:{astro:2,nuxt:2,sveltekit:2,next:1,gatsby:1,wordpress:1,webflow:1,framer:1}},
+  {crit:'Sitio de contenido / corporativo', cond:'Web empresa, landing, portfolio, blog',           wins:{astro:2,webflow:2,framer:2,next:1,nuxt:1,gatsby:1,wordpress:1}},
+  {crit:'Multiidioma (i18n)',               cond:'Muchas páginas por idioma',                       wins:{astro:2,nuxt:2,next:1,sveltekit:1,wordpress:1}},
+  {crit:'App interactiva compleja',         cond:'Dashboard, panel, estados complejos',             wins:{react:2,angular:2,next:2,remix:2,nuxt:1,vue:1}},
+  {crit:'Backend integrado',                cond:'APIs, auth, server actions, SSR avanzado',        wins:{next:2,nuxt:2,remix:2,sveltekit:2,nest:2,django:2,laravel:2,rails:2,express:1}},
+  {crit:'APIs REST o GraphQL',              cond:'Exponer endpoints para consumir desde frontend',  wins:{fastapi:2,nest:2,express:2,django:2,laravel:2,strapi:2,supabase:2,rails:1}},
+  {crit:'AI / ML integrado',               cond:'Modelos de IA, data pipelines, inferencia',       wins:{fastapi:2,django:2,express:1,nest:1,supabase:1}},
+  {crit:'Máxima flexibilidad de stack',     cond:'Elegir tú router, estado, librerías',             wins:{react:2,express:2,svelte:1,vue:1}},
+  {crit:'Curva de entrada baja',            cond:'Avanzar rápido con menos complejidad',            wins:{astro:2,vue:2,webflow:2,framer:2,bubble:2,nuxt:1,supabase:1}},
+  {crit:'Ecosistema y empleo',              cond:'Stack muy demandado en mercado laboral',          wins:{react:2,next:2,angular:2,django:1,laravel:1,vue:1}},
+  {crit:'Full-stack con convenciones',      cond:'El framework marca la estructura',                wins:{next:2,nuxt:2,sveltekit:2,remix:2,laravel:2,rails:2,django:2}},
+  {crit:'CMS para equipo no técnico',       cond:'Equipo editorial publicando a diario',            wins:{wordpress:2,contentful:2,sanity:2,strapi:1,webflow:1}},
+  {crit:'E-commerce',                       cond:'Tienda, checkout, catálogo de productos',         wins:{shopify:2,next:1,nuxt:1,laravel:1,wordpress:1}},
+  {crit:'Bundle pequeño / JS mínimo',       cond:'Máximo rendimiento, menos KB al cliente',         wins:{astro:2,svelte:2,sveltekit:2,remix:1,vue:1}},
+  {crit:'Time-to-market muy rápido',        cond:'Entregar en días, sin montar infra compleja',     wins:{webflow:2,framer:2,bubble:2,shopify:2,supabase:2,astro:1,rails:1}},
+  {crit:'Proyecto enterprise / gran equipo',cond:'Estructura, tipado, gobernanza del código',       wins:{angular:2,nest:2,django:2,laravel:2,next:1,contentful:1}},
+  {crit:'MVP / startup validando idea',     cond:'Ir rápido, pivotar fácil, mínima infra',          wins:{bubble:2,supabase:2,rails:2,laravel:1,next:1,webflow:1}},
+  {crit:'Realtime (websockets, live data)', cond:'Chat, notificaciones, datos en tiempo real',      wins:{supabase:2,nest:2,express:1,next:1,sveltekit:1}},
+];
+
+const GUIDE_RULES = [
+  {if_:'El 80% del proyecto es contenido, SEO y páginas informativas',  then:'Astro',            note:'Añade un CMS headless (Strapi, Sanity) para contenido dinámico'},
+  {if_:'Necesitas una app React con lógica compleja y SEO',             then:'Next.js',           note:'El estándar del mercado para React full-stack'},
+  {if_:'El equipo prefiere Vue en lugar de React',                      then:'Nuxt',              note:'Equivalente a Next.js en el ecosistema Vue'},
+  {if_:'Quieres aprender las bases puras del frontend',                 then:'React + Vite',      note:'Sin opiniones, tú montas todas las piezas'},
+  {if_:'Necesitas máximo rendimiento y bundle mínimo',                  then:'Astro / SvelteKit', note:'Ambos priorizan JS mínimo al cliente'},
+  {if_:'API en Python para proyectos AI/ML',                            then:'FastAPI',           note:'Async nativo, validación automática, Swagger incluido'},
+  {if_:'El stack es PHP o el cliente lo exige',                         then:'Laravel',           note:'El framework PHP más elegante y productivo'},
+  {if_:'Startup validando un MVP lo antes posible',                     then:'Rails o Bubble',    note:'Rails si hay dev, Bubble si no hay equipo técnico'},
+  {if_:'Backend Node.js para proyecto enterprise',                      then:'NestJS',            note:'Modular, TypeScript nativo, inspirado en Angular'},
+  {if_:'Equipo de contenido no técnico publicando a diario',            then:'WordPress / Contentful', note:'Headless o clásico según complejidad del frontend'},
+  {if_:'CMS headless personalizable open-source',                       then:'Strapi',            note:'Self-hosted, API automática, sin vendor lock-in'},
+  {if_:'Prioridad: entrega rápida con diseño visual sin backend',       then:'Webflow / Framer',  note:'No-code para sites de marketing y portfolios'},
+  {if_:'Tienda online funcional desde el primer día',                   then:'Shopify',           note:'Checkout, pagos y logística incluidos'},
+  {if_:'Backend con auth, DB y storage sin configurar servidores',      then:'Supabase',          note:'Firebase open-source con PostgreSQL real'},
+  {if_:'App con alta interactividad y formularios complejos',           then:'Remix',             note:'Loaders y actions sobre estándares web'},
+  {if_:'Proyecto enterprise JS con estructura muy estricta',            then:'Angular + NestJS',  note:'El stack más opinado del mundo JS'},
+];
+
+// ═══════════════════════════════════════
+// DATA: GLOSSARY
+// ═══════════════════════════════════════
+const GLOSSARY = [
+  {term:'SSR',             cat:'rendering',     def:'Server-Side Rendering. La página HTML se genera en el servidor en cada petición. El usuario recibe HTML listo, no un JS vacío que luego se rellena. Mejora SEO y primera carga visible.', example:'Next.js con getServerSideProps genera una página de producto en el servidor antes de enviarla al browser.'},
+  {term:'SSG',             cat:'rendering',     def:'Static Site Generation. Las páginas HTML se generan en el momento del build, no en cada petición. Velocísimo y barato de servir. Ideal cuando el contenido no cambia por usuario.', example:'Astro genera tu blog completo en HTML durante el deploy. No hay servidor procesando cada visita.'},
+  {term:'CSR',             cat:'rendering',     def:'Client-Side Rendering. El servidor envía un HTML casi vacío + un JS grande. El browser ejecuta el JS y construye la página. Peor SEO y primera carga más lenta, pero muy reactivo tras cargar.', example:'Una SPA de React pura (Create React App) es CSR: el HTML inicial tiene un solo div vacío.'},
+  {term:'ISR',             cat:'rendering',     def:'Incremental Static Regeneration. Híbrido: genera páginas estáticas pero las regenera en background cada N segundos. Combina velocidad de SSG con frescura de SSR.', example:'Tu tienda en Next.js regenera la página de producto cada 60 segundos aunque sirva HTML estático en cache.'},
+  {term:'Hydration',       cat:'rendering',     def:'El proceso de "dar vida" al HTML estático: el JS descargado conecta los event handlers y el estado a la estructura HTML ya existente. Si falla, el HTML se ve pero los botones no hacen nada.', example:'Astro envía HTML puro. Cuando el usuario hace scroll y aparece un slider, Astro hidrata solo ese componente.'},
+  {term:'Islands Architecture',cat:'rendering',def:'Patrón donde la mayoría de la página es HTML estático y solo pequeñas "islas" son componentes interactivos que se hidratan. Minimiza el JS enviado al cliente.', example:'Astro usa este patrón: tu navbar y footer son HTML puro, pero el carrusel es una isla React que carga solo cuando es visible.'},
+  {term:'API Endpoint',    cat:'arquitectura',  def:'Una URL específica que tu servidor expone para recibir o devolver datos. Como una ventanilla: tú preguntas a /api/productos y el servidor te devuelve la lista en JSON.', example:'GET /api/users/123 devuelve el usuario con id 123. POST /api/users crea uno nuevo.'},
+  {term:'REST',            cat:'arquitectura',  def:'Estilo de diseño de APIs usando HTTP (GET, POST, PUT, DELETE) con URLs que representan recursos. El estándar más común para comunicar frontend y backend.', example:'GET /api/posts → lista posts. POST /api/posts → crea post. DELETE /api/posts/5 → borra post 5.'},
+  {term:'GraphQL',         cat:'arquitectura',  def:'Alternativa a REST donde el cliente especifica exactamente qué datos quiere en una sola petición. Evita over-fetching (recibir más datos de los necesarios) y under-fetching.', example:'En REST necesitarías 3 llamadas para usuario + posts + comentarios. En GraphQL una sola query trae exactamente lo que pides.'},
+  {term:'Middleware',      cat:'arquitectura',  def:'Código que se ejecuta entre que llega una petición al servidor y llega a tu lógica principal. Útil para auth, logging, validación o transformar datos en tránsito.', example:'En Express: el middleware de auth verifica el token JWT antes de que la petición llegue a tu función que devuelve los datos del usuario.'},
+  {term:'State Management',cat:'datos',         def:'Sistema para gestionar el estado (datos que cambian) de tu app. Cuando el estado es complejo o compartido entre muchos componentes, necesitas una solución dedicada como Redux, Zustand o Pinia.', example:'Un carrito de compra que debe estar disponible en el header, la página de producto y el checkout necesita state management.'},
+  {term:'Fetch / Data Fetching',cat:'datos',    def:'El proceso de obtener datos de una API externa o propia. En el frontend se hace con fetch(), axios o librerías como React Query / TanStack Query que añaden cache y estados de carga.', example:'Al cargar tu perfil, el frontend hace fetch(\'/api/me\') y mientras espera muestra un spinner.'},
+  {term:'ORM',             cat:'datos',         def:'Object-Relational Mapper. Librería que te permite interactuar con la base de datos usando código en lugar de SQL puro. Convierte filas de tabla en objetos de tu lenguaje.', example:'Con Prisma (ORM): const users = await prisma.user.findMany() en lugar de SELECT * FROM users;'},
+  {term:'Token / JWT',     cat:'datos',         def:'JSON Web Token. Un string codificado que contiene información del usuario (id, rol, expiración) y viaja en cada petición para demostrar que estás autenticado sin consultar la DB cada vez.', example:'Tras hacer login, el servidor te da un JWT. Lo guardas en localStorage y lo mandas en el header de cada petición: Authorization: Bearer <token>'},
+  {term:'Build',           cat:'deploy',        def:'El proceso de transformar tu código fuente (TypeScript, JSX, SCSS) en archivos optimizados que el browser puede entender (JS, CSS, HTML). Incluye minificación, tree-shaking y optimización de imágenes.', example:'npm run build convierte tus archivos .jsx en un directorio /dist con JS minimizado y con hash en el nombre para cache-busting.'},
+  {term:'CI/CD',           cat:'deploy',        def:'Continuous Integration / Continuous Deployment. Sistema que automáticamente testea y despliega tu código cada vez que haces push. Si los tests pasan, va a producción solo.', example:'Cada vez que haces git push, GitHub Actions ejecuta los tests y si pasan, Vercel despliega automáticamente en 2 minutos.'},
+  {term:'CDN',             cat:'deploy',        def:'Content Delivery Network. Red de servidores distribuidos por el mundo que sirven tus archivos estáticos desde el servidor más cercano al usuario. Reduce latencia enormemente.', example:'Un usuario en Tokio que visita tu web europea recibe las imágenes y CSS desde un servidor CDN en Asia, no desde tu servidor en Frankfurt.'},
+  {term:'Edge Functions',  cat:'deploy',        def:'Funciones que se ejecutan en los nodos del CDN, no en un servidor central. Latencia casi cero porque se ejecutan "cerca" del usuario. Perfectas para auth, personalizaciones y A/B testing.', example:'Vercel Edge Functions: la lógica de redirección según el país del usuario se ejecuta en el nodo CDN más cercano, no en tu servidor de Frankfurt.'},
+  {term:'Design Token',    cat:'ds',            def:'Variable que almacena un valor de diseño (color, tamaño, espaciado, tipografía) de forma nombrada y reutilizable. Son la fuente de verdad que conecta Figma con el código.', example:'El token --color-primary: #0055FF en CSS corresponde al "Primary/500" en Figma. Si cambia en Figma, se actualiza en código automáticamente.'},
+  {term:'Component Library',cat:'ds',           def:'Colección de componentes UI reutilizables (botones, inputs, modales) con su código y documentación. Es la implementación en código del Design System.', example:'shadcn/ui es una component library: instalas el paquete y tienes Button, Dialog, Input listos para usar con tokens ya configurados.'},
+  {term:'Headless Component',cat:'ds',          def:'Componente que provee la lógica y accesibilidad (ARIA, keyboard nav, estados) pero sin estilos visuales. Tú añades el CSS. Máxima flexibilidad visual manteniendo la funcionalidad.', example:'Radix UI provee un Headless Dialog: gestiona el foco, el escape, el overlay y el ARIA, pero tú le pones los estilos que quieras.'},
+  {term:'Storybook',       cat:'ds',            def:'Herramienta para desarrollar y documentar componentes UI de forma aislada. Cada componente tiene sus "stories" que muestran todos sus estados posibles. Es la UI del Design System.', example:'En Storybook puedes ver tu Button en estado default, hover, disabled, loading y con icono, todo sin abrir la app real.'},
+];
+
+// ═══════════════════════════════════════
+// DATA: VIBETIPS
+// ═══════════════════════════════════════
+const VIBETIPS = [
+  {fw:'next',    fwlabel:'Next.js', fwcolor:'#888', type:'Arquitectura', title:'App Router con Server Components', desc:'Indica el patrón correcto de Next.js 14+ para que la IA no mezcle paradigmas viejos con nuevos.', prompt:'Actúa como experto en Next.js 14 con App Router. Usa Server Components por defecto y solo añade "use client" cuando sea estrictamente necesario (eventos, hooks de estado). Estructura el proyecto así: /app para rutas, /components/ui para componentes reutilizables, /lib para utilidades. No uses getServerSideProps ni getStaticProps — esos son del Pages Router antiguo.'},
+  {fw:'next',    fwlabel:'Next.js', fwcolor:'#888', type:'Datos',        title:'Fetching de datos con cache',      desc:'Evita que la IA genere fetch sin control de cache, lo más común en código Next.js de mala calidad.', prompt:'En Next.js App Router, implementa fetching de datos con estas reglas: usa fetch() nativo con opciones de revalidación explícitas ({next: {revalidate: 60}} para ISR, {cache: "no-store"} para datos en tiempo real). Nunca uses useEffect para fetching en Server Components. Para datos de usuario, usa cookies() o headers() del paquete next/headers.'},
+  {fw:'astro',   fwlabel:'Astro',   fwcolor:'#ff5d01', type:'Rendimiento', title:'Islands con carga diferida',   desc:'El error más común en Astro es hidratar todo. Este prompt fuerza el patrón correcto.', prompt:'Actúa como experto en Astro. Sigue estas reglas de hidratación: usa client:load solo si el componente es crítico y visible al inicio. Usa client:idle para componentes secundarios. Usa client:visible para componentes que aparecen con scroll. Usa client:only para componentes que no pueden renderizarse en el servidor (mapas, gráficos con DOM). El resto del HTML debe ser estático sin JS.'},
+  {fw:'react',   fwlabel:'React',   fwcolor:'#0f9aba', type:'Estado',     title:'Estado con Zustand',             desc:'Zustand es la solución de estado más limpia para React. Este prompt genera código idiomático.', prompt:'Usa Zustand para gestionar el estado global de esta feature. Crea el store en /store/[nombre]Store.ts con tipado TypeScript completo. Estructura el store con: state (los datos), actions (funciones que modifican el estado, siempre inmutables con set()), y selectors (funciones para derivar datos del estado). No uses Redux ni Context API para esto.'},
+  {fw:'astro',   fwlabel:'Astro',   fwcolor:'#ff5d01', type:'i18n',       title:'Multiidioma con i18n nativo',   desc:'La forma correcta de implementar i18n en Astro sin librerías externas.', prompt:'Implementa multiidioma en Astro usando su sistema de i18n nativo (Astro 4+). Configura en astro.config.mjs: i18n con defaultLocale y locales. Crea la estructura /src/i18n/[idioma].json para las traducciones. Genera rutas automáticas por idioma. Usa la función getRelativeLocaleUrl() para los enlaces entre idiomas. No uses react-i18next ni i18next — Astro tiene esto integrado.'},
+  {fw:'fastapi', fwlabel:'FastAPI', fwcolor:'#009688', type:'API',        title:'Endpoint con validación Pydantic', desc:'FastAPI sin Pydantic bien definido es código frágil. Este prompt genera el patrón correcto.', prompt:'Actúa como experto en FastAPI. Para cada endpoint: define un modelo Pydantic de Request y otro de Response con tipos explícitos y validaciones (Field con constraints). Usa status_code explícito en el decorador. Documenta con docstring para la descripción en Swagger. Gestiona errores con HTTPException y códigos semánticos (400 para validación, 404 para no encontrado, 422 para datos inválidos). Añade el router en un archivo separado, no todo en main.py.'},
+  {fw:'supabase',fwlabel:'Supabase',fwcolor:'#3ecf8e', type:'Auth',       title:'Auth con Row Level Security', desc:'Supabase sin RLS es una base de datos abierta. Este prompt genera el patrón seguro.', prompt:'Implementa auth con Supabase siguiendo estas reglas de seguridad: activa Row Level Security (RLS) en todas las tablas. Crea policies específicas: SELECT para que cada usuario solo vea sus propios datos (auth.uid() = user_id). Usa el cliente de servidor (createServerClient) en Next.js Server Components, nunca el cliente browser para operaciones sensibles. Nunca expongas el service_role key en el frontend.'},
+  {fw:'general', fwlabel:'General', fwcolor:'#5a6080', type:'Estructura', title:'Estructura de proyecto limpia', desc:'El prompt más universal: fuerza al agente a generar código organizado desde el principio.', prompt:'Antes de escribir código, define la estructura de carpetas completa y el propósito de cada una. Sigue estas reglas: separa concerns (UI, lógica de negocio, acceso a datos). Usa barrel files (index.ts) para re-exportar. Nombra archivos en kebab-case, componentes en PascalCase, hooks con use prefix. Escribe TypeScript estricto (no any). Añade comentarios solo cuando el "por qué" no es obvio — nunca el "qué".'},
+  {fw:'general', fwlabel:'General', fwcolor:'#5a6080', type:'Revisión',   title:'Auditar código generado',       desc:'Usa este prompt para que la IA revise código que ya generó antes de aceptarlo.', prompt:'Revisa el código anterior como si fueras un senior developer haciendo code review. Identifica: 1) Problemas de seguridad (datos expuestos, validación faltante). 2) Problemas de rendimiento (renders innecesarios, fetching ineficiente, N+1 queries). 3) Malas prácticas del framework usado. 4) Código duplicado que debería extraerse. 5) Tipado incompleto o uso de any. Proporciona el código corregido con comentarios explicando cada cambio.'},
+];
+
+// ═══════════════════════════════════════
+// DATA: HOSTING
+// ═══════════════════════════════════════
+const HOSTING = [
+  {name:'Vercel',        color:'#fff',    tagline:'El hosting de Next.js y meta-frameworks', desc:'Creado por el equipo de Next.js. Despliega con git push, preview URLs automáticas, Edge Functions y CDN global. El estándar para proyectos JS modernos.', pills:['Next.js','Astro','Nuxt','SvelteKit','Remix'], best:'Frontend y full-stack JS. Gratis para proyectos pequeños.'},
+  {name:'Netlify',       color:'#00c7b7', tagline:'Hosting JAMstack maduro y fiable',        desc:'Pionero en el hosting estático con CI/CD integrado. Excelente para sitios Astro o sites puramente estáticos. Forms y functions incluidas.', pills:['Astro','Gatsby','Vue','Svelte'], best:'Sites estáticos y JAMstack. Muy estable y bien documentado.'},
+  {name:'Railway',       color:'#7b5ea7', tagline:'Backend en contenedores sin fricción',    desc:'Despliega cualquier backend con Dockerfile o buildpack automático. Bases de datos PostgreSQL, MySQL y Redis incluidas. El Heroku moderno.', pills:['Django','Laravel','Rails','Express','NestJS'], best:'Backend Python, PHP, Ruby o Node.js. Bases de datos incluidas.'},
+  {name:'Render',        color:'#46e3b7', tagline:'Alternativa a Railway más económica',     desc:'Similar a Railway pero con tier gratuito generoso. Auto-deploy desde Git, bases de datos, cron jobs y services. Buena opción para proyectos con presupuesto ajustado.', pills:['Django','Express','FastAPI','Laravel'], best:'Backend con poco presupuesto. Tier gratuito incluye bases de datos.'},
+  {name:'Fly.io',        color:'#8b5cf6', tagline:'Despliegue global cercano al usuario',   desc:'Ejecuta contenedores Docker en múltiples regiones simultáneamente. Latencia mínima para apps con usuarios en todo el mundo. Más técnico pero muy potente.', pills:['Cualquier Docker','Elixir','Go','Rails'], best:'Apps que necesitan presencia multi-región y baja latencia global.'},
+  {name:'Cloudflare Pages', color:'#f38020', tagline:'CDN + deploy estático ultrarrápido', desc:'Build y deploy de sites estáticos sobre la CDN más grande del mundo. Workers para lógica edge. Tier gratuito muy generoso con límites altos.', pills:['Astro','SvelteKit','Vue','React'], best:'Sites con tráfico alto y rendimiento crítico. El CDN es imbatible.'},
+  {name:'Supabase',      color:'#3ecf8e', tagline:'Backend-as-a-Service completo',          desc:'No es solo hosting: es PostgreSQL + Auth + Storage + Realtime + Edge Functions en un paquete. El backend de tu app sin gestionar servidores.', pills:['Next.js','Astro','Nuxt','SvelteKit'], best:'Cuando necesitas base de datos + auth + backend sin devops.'},
+  {name:'AWS / GCP / Azure', color:'#ff9900', tagline:'Cloud enterprise para escala real',  desc:'Los tres grandes clouds. Máxima flexibilidad y escala, pero complejidad alta. Necesitas conocimientos de devops o un equipo dedicado. Para proyectos enterprise o con requerimientos específicos.', pills:['Cualquier stack'], best:'Proyectos enterprise, compliance específico o escala masiva.'},
+];
+
+// ═══════════════════════════════════════
+// DATA: ROADMAP
+// ═══════════════════════════════════════
+const PHASES = [
+  {
+    num:'Fase 01', title:'Fundamentos de Decisión', status:'live', statusLabel:'En vivo',
+    why:'La base de todo: entender qué tecnología usar en cada contexto y cómo medir si lo que construyes tiene calidad. Sin esto, el VibeCoding produce cajas negras que no entiendes.',
+    connection:'Elegir Astro (Frameworks) afecta directamente las métricas de "Velocidad de entrega" y "Bundle pequeño" del Design System.',
+    items:[
+      {name:'Matriz de Frameworks', tag:'live', tagColor:'#a8f0c8', desc:'25 tecnologías, 5 categorías, criterios de decisión y guía rápida. Base para decidir qué pedirle a la IA.'},
+      {name:'Métricas de Design Systems', tag:'live', tagColor:'#a8f0c8', desc:'6 categorías de métricas para medir si lo que la IA construye es consistente, reutilizable y de calidad.'},
+    ]
+  },
+  {
+    num:'Fase 02', title:'Vocabulario y Recetas', status:'next', statusLabel:'Siguiente',
+    why:'La IA usa términos técnicos constantemente. Sin entenderlos, no puedes guiarla bien ni detectar cuando el código que genera es incorrecto. Los prompts estructurales son las "recetas" para obtener código de calidad.',
+    connection:'Entender "Hydration" (Glosario) te permite usar correctamente el prompt de Islands Architecture (VibeTips) para que Astro genere el código óptimo.',
+    items:[
+      {name:'Glosario Técnico', tag:'wip', tagColor:'var(--t1)', desc:'~25 términos que la IA usa y confunden. Con definición, ejemplo práctico y relación con los frameworks de la Fase 01.'},
+      {name:'VibeTips · Prompts', tag:'wip', tagColor:'var(--t1)', desc:'Recetas de prompts estructurales por framework y tipo de tarea. Copia, adapta y úsalos para guiar a la IA hacia código de calidad.'},
+    ]
+  },
+  {
+    num:'Fase 03', title:'Infraestructura y Deploy', status:'later', statusLabel:'Planificado',
+    why:'Saber hacer algo no sirve si no sabes dónde "vivirá". Esta fase cierra el ciclo: desde decidir el framework hasta dónde y cómo desplegarlo, con los costes reales de cada opción.',
+    connection:'"Elegí Astro → ¿Vercel o Cloudflare Pages? ¿Qué es una Edge Function?" — conecta decisiones de Frameworks con el destino final del proyecto.',
+    items:[
+      {name:'Matriz de Hosting', tag:'plan', tagColor:'var(--muted)', desc:'Vercel, Netlify, Railway, Render, Fly.io, Cloudflare. Cuándo usar cada uno, costes reales y compatibilidad con frameworks.'},
+      {name:'Guía de Dominio y DNS', tag:'plan', tagColor:'var(--muted)', desc:'Qué es un dominio, qué es DNS, cómo conectar tu dominio a Vercel/Netlify. El paso que siempre confunde a no-devs.'},
+    ]
+  },
+  {
+    num:'Fase 04', title:'Flujo de Trabajo Completo', status:'later', statusLabel:'Planificado',
+    why:'Integrar todo en un flujo de trabajo real de VibeCoding: desde la idea hasta producción, usando las herramientas de este OS como brújula en cada decisión.',
+    connection:'Un flujo que conecta todos los módulos: Idea → Glosario (entiendo los términos) → Frameworks (elijo la tecnología) → VibeTips (prompts correctos) → Hosting (dónde lo subo) → DS Metrics (mido la calidad).',
+    items:[
+      {name:'Canvas de Proyecto', tag:'plan', tagColor:'var(--muted)', desc:'Plantilla interactiva para definir un proyecto: tipo de web, interactividad, equipo, budget y tiempo → el OS recomienda el stack completo.'},
+      {name:'Checklist de Calidad', tag:'plan', tagColor:'var(--muted)', desc:'Lista de verificación antes de publicar: accesibilidad, rendimiento, consistencia de DS, seguridad básica. Adaptada a no-devs.'},
+      {name:'Diario de Aprendizaje', tag:'plan', tagColor:'var(--muted)', desc:'Sección para registrar decisiones tomadas, errores cometidos y conceptos aprendidos en cada proyecto de VibeCoding.'},
+    ]
+  },
+];
+
+// ═══════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════
+
+let currentGlosaryCat = 'all';
+
+function renderFrameworks() {
+  // CRITERIA TABLE
+  const fwOrder = [];
+  CAT_ORDER.forEach(c => FWS.filter(f=>f.cat===c).forEach(f=>fwOrder.push(f.id)));
+
+  const head = document.getElementById('fw-crit-head');
+  head.innerHTML = '<th>Criterio</th><th>Cuando esta es tu prioridad…</th>';
+  fwOrder.forEach(id => {
+    const fw = FW_MAP[id], cat = CATS[fw.cat];
+    const th = document.createElement('th');
+    th.textContent = fw.name; th.className = cat.cls;
+    head.appendChild(th);
+  });
+
+  const tbody = document.getElementById('fw-crit-body');
+  CRITERIA.forEach(row => {
+    const tr = document.createElement('tr');
+    let c = `<td>${row.crit}</td><td>${row.cond}</td>`;
+    fwOrder.forEach(id => {
+      const v = row.wins[id]||0;
+      c += v===2 ? `<td><span class="w2 s2">★</span></td>`
+         : v===1 ? `<td><span class="w2 s1">◆</span></td>`
+         :         `<td><span class="w2 s0">·</span></td>`;
+    });
+    tr.innerHTML = c; tbody.appendChild(tr);
+  });
+
+  // PROFILES
+  const wrap = document.getElementById('fw-profiles-wrap');
+  CAT_ORDER.forEach(cat => {
+    const fws = FWS.filter(f=>f.cat===cat);
+    const info = CATS[cat];
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    block.innerHTML = `<div class="cat-title" style="color:${info.color}">${info.label} <span class="cat-count">${fws.length} tecnologías</span></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'cards-grid';
+    fws.forEach(fw => {
+      const card = document.createElement('div');
+      card.className = 'fw-card';
+      card.innerHTML = `
+        <div class="fw-card-bar" style="background:${fw.color}"></div>
+        <div class="fw-name" style="color:${fw.color}">${fw.name}</div>
+        <div class="fw-tagline">${fw.tagline}</div>
+        <div class="fw-desc">${fw.desc}</div>
+        <div class="fw-uses-label">Ideal cuando…</div>
+        <ul class="fw-uses">${fw.uses.map(u=>`<li>${u}</li>`).join('')}</ul>
+      `;
+      grid.appendChild(card);
+    });
+    block.appendChild(grid);
+    wrap.appendChild(block);
+  });
+
+  // GUIDE
+  const guide = document.getElementById('fw-guide-grid');
+  GUIDE_RULES.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'guide-card';
+    card.innerHTML = `
+      <div class="guide-if"><strong>Si…</strong>${r.if_}</div>
+      <div class="guide-then">→ ${r.then}</div>
+      <div class="guide-note">${r.note}</div>
+    `;
+    guide.appendChild(card);
+  });
+}
+
+function renderGlossary() {
+  const grid = document.getElementById('glossary-grid');
+  const catColors = {rendering:'rgba(126,184,247,0.15)',arquitectura:'rgba(168,240,200,0.15)',datos:'rgba(245,169,127,0.15)',deploy:'rgba(201,167,245,0.15)',ds:'rgba(126,184,247,0.12)'};
+  const catText   = {rendering:'#90c8ff',arquitectura:'#a8f0c8',datos:'#f5a97f',deploy:'#d8a8f5',ds:'#90c8ff'};
+  const catLabels = {rendering:'Renderizado',arquitectura:'Arquitectura',datos:'Datos y estado',deploy:'Deploy',ds:'Design Systems'};
+
+  GLOSSARY.forEach(g => {
+    const item = document.createElement('div');
+    item.className = 'gterm';
+    item.dataset.cat = g.cat;
+    item.dataset.term = g.term.toLowerCase() + ' ' + g.def.toLowerCase();
+    item.innerHTML = `
+      <div>
+        <div class="gterm-name">${g.term}</div>
+        <span class="gterm-cat-tag" style="background:${catColors[g.cat]};color:${catText[g.cat]}">${catLabels[g.cat]}</span>
+      </div>
+      <div>
+        <div class="gterm-def">${g.def}</div>
+        <div class="gterm-example">${g.example}</div>
+      </div>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+function filterGlossary() {
+  const q = document.getElementById('glosario-search').value.toLowerCase();
+  document.querySelectorAll('.gterm').forEach(el => {
+    const matchSearch = !q || el.dataset.term.includes(q);
+    const matchCat = currentGlosaryCat === 'all' || el.dataset.cat === currentGlosaryCat;
+    el.classList.toggle('hidden', !matchSearch || !matchCat);
+  });
+}
+
+function filterGlossaryBycat(cat, btn) {
+  currentGlosaryCat = cat;
+  document.querySelectorAll('.gcat').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterGlossary();
+}
+
+function renderVibetips() {
+  const filters = document.getElementById('vibe-filter');
+  const grid = document.getElementById('vibe-grid');
+  const fws = [...new Set(VIBETIPS.map(v=>v.fw))];
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'vfil active'; allBtn.textContent = 'Todos';
+  allBtn.onclick = () => { document.querySelectorAll('.vfil').forEach(b=>b.classList.remove('active')); allBtn.classList.add('active'); document.querySelectorAll('.vibe-card').forEach(c=>c.classList.remove('hidden')); };
+  filters.appendChild(allBtn);
+
+  fws.forEach(fw => {
+    const tip = VIBETIPS.find(v=>v.fw===fw);
+    const btn = document.createElement('button');
+    btn.className = 'vfil'; btn.textContent = tip.fwlabel;
+    btn.style.setProperty('--hover-color', tip.fwcolor);
+    btn.onclick = function() {
+      document.querySelectorAll('.vfil').forEach(b=>b.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelectorAll('.vibe-card').forEach(c => c.classList.toggle('hidden', c.dataset.fw !== fw));
+    };
+    filters.appendChild(btn);
+  });
+
+  VIBETIPS.forEach(tip => {
+    const card = document.createElement('div');
+    card.className = 'vibe-card'; card.dataset.fw = tip.fw;
+    card.innerHTML = `
+      <div class="vibe-card-top">
+        <span class="vibe-fw-tag" style="background:${tip.fwcolor}22;color:${tip.fwcolor};border:1px solid ${tip.fwcolor}44">${tip.fwlabel}</span>
+        <span class="vibe-type-tag">${tip.type}</span>
+      </div>
+      <div class="vibe-title">${tip.title}</div>
+      <div class="vibe-desc">${tip.desc}</div>
+      <div class="vibe-prompt" id="vp-${VIBETIPS.indexOf(tip)}">${tip.prompt}<button class="copy-btn" onclick="copyPrompt(${VIBETIPS.indexOf(tip)},this)">copiar</button></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function copyPrompt(idx, btn) {
+  navigator.clipboard.writeText(VIBETIPS[idx].prompt);
+  btn.textContent = '✓ copiado'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+}
+
+function renderHosting() {
+  const grid = document.getElementById('hosting-grid');
+  HOSTING.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'hosting-card';
+    card.innerHTML = `
+      <div class="hcard-bar" style="background:${h.color}"></div>
+      <div class="hcard-name" style="color:${h.color}">${h.name}</div>
+      <div class="hcard-tagline">${h.tagline}</div>
+      <div class="hcard-desc">${h.desc}</div>
+      <div class="hcard-pills">${h.pills.map(p=>`<span class="hpill">${p}</span>`).join('')}</div>
+      <div class="hcard-best"><strong>Mejor para:</strong> ${h.best}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderRoadmap() {
+  const wrap = document.getElementById('roadmap-phases');
+  const statusMap = {live:{cls:'ps-live',label:'En vivo'},next:{cls:'ps-next',label:'Siguiente'},later:{cls:'ps-later',label:'Planificado'}};
+
+  PHASES.forEach(p => {
+    const phase = document.createElement('div');
+    phase.className = 'phase';
+    const sm = statusMap[p.status];
+    phase.innerHTML = `
+      <div class="phase-header">
+        <div class="phase-num">${p.num}</div>
+        <div class="phase-title">${p.title}</div>
+        <div class="phase-status ${sm.cls}">${sm.label}</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-why">${p.why.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')}</div>
+        <div class="phase-items">${p.items.map(i=>`
+          <div class="pitem">
+            <div class="pitem-name">${i.name} <span class="pitem-tag" style="background:${i.tagColor}22;color:${i.tagColor};border:1px solid ${i.tagColor}44">${i.tag}</span></div>
+            <div class="pitem-desc">${i.desc}</div>
+          </div>
+        `).join('')}</div>
+        <div class="phase-connection">${p.connection}</div>
+      </div>
+    `;
+    wrap.appendChild(phase);
+  });
+}
+
+// ═══════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tabitem').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showStab(id, btn, prefix) {
+  document.querySelectorAll('.'+prefix+'-sub').forEach(s=>{s.style.display='none';});
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).style.display='block';
+  btn.classList.add('active');
+}
+
+function showDsTab(id, btn) {
+  document.querySelectorAll('.ds-panel').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.ds-stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).style.display='block';
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// DATA: DESPLIEGUE
+// ═══════════════════════════════════════
+
+const DNS_RECORDS = [
+  { type:'A',      full:'Address Record',        desc:'Apunta un dominio a una dirección IPv4. Es el registro más básico — sin él tu web no carga.', example:'miweb.com → 185.42.10.22', warn:'' },
+  { type:'AAAA',   full:'IPv6 Address Record',   desc:'Como el registro A pero para IPv6. Cada vez más importante para redes modernas.', example:'miweb.com → 2001:db8::1', warn:'' },
+  { type:'CNAME',  full:'Canonical Name (Alias)', desc:'Alias de otro dominio. En lugar de apuntar a una IP, apunta a otro nombre de dominio. Útil para subdominios.', example:'www.miweb.com → miweb.com (no a una IP)', warn:'Un CNAME no puede coexistir con otros registros en el mismo nombre. No uses CNAME en el root (@).' },
+  { type:'MX',     full:'Mail Exchange',          desc:'Indica qué servidor gestiona el email de tu dominio. Tiene prioridad numérica: el número más bajo es el prioritario.', example:'miweb.com MX 10 → mail.google.com', warn:'Si tu MX apunta a Google Workspace o similar, la config de email en cPanel no funcionará — el email lo gestiona el servicio externo.' },
+  { type:'TXT',    full:'Text Record',            desc:'Texto libre. Se usa para verificaciones de dominio (Google, HubSpot), SPF (anti-spam de email) y DKIM (firma de emails).', example:'v=spf1 include:_spf.google.com ~all', warn:'' },
+  { type:'NS',     full:'Nameserver',             desc:'Define qué servidores tienen la autoridad sobre la zona DNS de tu dominio. Cambiar los NS es cambiar quién controla el DNS.', example:'ns1.verpex.com, ns2.verpex.com', warn:'Cambiar NS puede tardar hasta 48h en propagarse. Durante ese tiempo puede haber inconsistencias.' },
+  { type:'SRV',    full:'Service Record',         desc:'Especifica servicios disponibles en un dominio (puerto, protocolo, prioridad). Usado por VoIP, juegos, etc.', example:'_sip._tcp.miweb.com', warn:'' },
+  { type:'CAA',    full:'Certification Authority', desc:'Define qué autoridades de certificación (CA) pueden emitir certificados SSL para tu dominio.', example:'miweb.com CAA 0 issue "letsencrypt.org"', warn:'' },
+];
+
+const DNS_CONCEPTS = [
+  { name:'Nameserver (NS)', type:'Concepto DNS', color:'#4dd9e0', def:'El servidor que almacena y sirve la tabla de registros DNS de tu dominio. Cuando compras un dominio, puedes apuntar sus NS a los de tu hosting (Verpex, Cloudflare, etc.) para que ese servidor controle todos tus registros.', example:'Compras el dominio en Namecheap → cambias los NS a ns1.verpex.com → ahora cPanel de Verpex gestiona el DNS.', warn:'' },
+  { name:'Zona DNS', type:'Concepto DNS', color:'#4dd9e0', def:'El archivo completo de configuración de todos los registros DNS de un dominio. En cPanel puedes editarla directamente desde "Zone Editor" o "DNS Zone". Un error aquí puede tumbar tu web o email.', example:'La zona DNS de miweb.com contiene sus registros A, MX, TXT, CNAME y NS en un único archivo de configuración.', warn:'' },
+  { name:'TTL (Time To Live)', type:'Concepto DNS', color:'#4dd9e0', def:'Tiempo en segundos que los resolvers DNS cachean un registro antes de volver a consultarlo. TTL bajo (300s) = cambios rápidos pero más consultas. TTL alto (86400s = 24h) = cambios lentos pero más eficiente.', example:'Antes de migrar un servidor, baja el TTL a 300s. Así si hay problemas, la reversión se propaga en minutos.', warn:'' },
+  { name:'Propagación DNS', type:'Concepto DNS', color:'#4dd9e0', def:'El tiempo que tarda un cambio de DNS en llegar a todos los resolvers del mundo. Puede tardar desde minutos hasta 48h dependiendo del TTL anterior y los caches de los ISPs.', example:'Cambias el registro A de tu dominio. En España ya apunta al nuevo servidor pero en EEUU aún va al antiguo. Esto es propagación en curso.', warn:'' },
+];
+
+const CPANEL_CONCEPTS = [
+  { name:'Virtual Host', type:'Servidor web', color:'#c9a7f5', def:'Configuración que permite a un mismo servidor físico responder a múltiples dominios. cPanel crea automáticamente un virtual host por cada dominio/subdominio que añades, configurando desde dónde sirve los archivos (public_html) y cómo los procesa.', example:'En un servidor con cPanel puedes tener miweb.com → /home/user/public_html y tienda.miweb.com → /home/user/tienda/public_html', warn:'' },
+  { name:'public_html', type:'Estructura archivos', color:'#c9a7f5', def:'La carpeta raíz pública de tu dominio en cPanel. Todo lo que pones aquí es accesible desde el browser. Es el equivalente al /dist o /out de tu build de Astro/Next.js que subas por FTP o deploy.', example:'Subes index.html a public_html → el usuario accede a miweb.com y ve ese archivo.', warn:'Nunca pongas archivos con credenciales (.env) dentro de public_html — serían accesibles desde internet.' },
+  { name:'PHP vs HTML en servidor', type:'Procesamiento', color:'#c9a7f5', def:'cPanel sirve archivos HTML directamente (el servidor los lee y los envía). PHP se procesa primero: el servidor ejecuta el código PHP, genera HTML y lo envía. Por eso PHP puede leer bases de datos y HTML no.', example:'WordPress es PHP: el servidor ejecuta WordPress, que consulta MySQL y genera el HTML de cada página antes de enviarlo.', warn:'' },
+  { name:'phpMyAdmin', type:'Base de datos', color:'#c9a7f5', def:'Interfaz web para gestionar bases de datos MySQL/MariaDB incluida en cPanel. Permite crear bases de datos, tablas, ejecutar queries SQL, importar/exportar datos y ver la estructura sin usar línea de comandos.', example:'WordPress necesita una base de datos MySQL. En cPanel: crear DB → crear usuario → asignar permisos → conectar WordPress con las credenciales.', warn:'' },
+  { name:'JetBackup 5', type:'Backup y recuperación', color:'#c9a7f5', def:'Plugin de backup para cPanel que permite hacer y restaurar copias de seguridad completas (archivos, bases de datos, emails, configuraciones). Permite restaurar desde puntos específicos sin perder todo.', example:'Tu WordPress se rompe tras una actualización. Con JetBackup restauras el backup de ayer en 2 minutos.', warn:'' },
+  { name:'SSH (Secure Shell)', type:'Acceso y seguridad', color:'#c9a7f5', def:'Protocolo de acceso remoto seguro al servidor mediante línea de comandos. Cifrado extremo-a-extremo. Más potente que FTP: puedes ejecutar cualquier comando, instalar software, reiniciar servicios.', example:'ssh usuario@85.43.22.10 → accedes al servidor y puedes ejecutar git pull, npm install, reiniciar Nginx, etc.', warn:'Desactiva el acceso root por SSH. Usa claves SSH en lugar de contraseñas.' },
+  { name:'SSL/TLS con Let\'s Encrypt', type:'Seguridad', color:'#c9a7f5', def:'cPanel incluye AutoSSL para instalar certificados SSL gratuitos de Let\'s Encrypt automáticamente. SSL cifra la comunicación entre el browser y el servidor (el candado verde). Sin SSL, los datos viajan en texto plano.', example:'cPanel instala automáticamente un certificado para miweb.com y www.miweb.com. El browser muestra el candado.', warn:'Let\'s Encrypt caduca cada 90 días. cPanel lo renueva automáticamente, pero vigila que no falle.' },
+  { name:'Verpex', type:'Hosting', color:'#c9a7f5', def:'Hosting que habilita y gestiona cPanel para sus clientes. Con Verpex tienes acceso a un cPanel completo donde puedes crear múltiples dominios, bases de datos, emails y configurar todo el servidor desde la interfaz visual.', example:'Con tu cuenta Verpex accedes a cPanel → Domains → Add Domain → introduces tu dominio → cPanel crea la carpeta, el virtual host y la zona DNS.', warn:'' },
+];
+
+const CACHE_TYPES = [
+  { name:'Caché estática', type:'Archivos JS/CSS/imágenes', color:'#a8f0c8', desc:'El servidor guarda en memoria o disco los archivos estáticos (JS, CSS, imágenes) y los sirve sin leerlos de disco cada vez. Headers Cache-Control y ETag controlan cuánto tiempo los guarda el browser.', pros:'Trivial de implementar. Nginx/Apache lo hacen solos.', cons:'Si actualizas un archivo, el browser puede seguir usando la versión vieja hasta que expire el caché.' },
+  { name:'Caché de objeto (Redis)', type:'Datos de base de datos', color:'#7eb8f7', desc:'Redis guarda en memoria los resultados de consultas a la base de datos. Próximas peticiones idénticas se responden desde RAM sin tocar MySQL. En WordPress lo gestiona el plugin LiteSpeed Cache u Object Cache Pro.', pros:'Drástica reducción de queries a DB. Ideal para sites con mucho tráfico.', cons:'Requiere configurar Redis (host, puerto, contraseña, memoria máxima). Si el caché y la DB desincroniza hay problemas.' },
+  { name:'Caché de página completa', type:'HTML generado', color:'#f5a97f', desc:'Guarda el HTML completo de cada página en disco. La siguiente visita recibe el HTML directo sin ejecutar PHP ni consultar la BD. LiteSpeed Cache en WordPress hace esto muy bien.', pros:'Máximo rendimiento. El servidor solo lee un archivo HTML.', cons:'Si el contenido cambia (post nuevo, precio actualizado) el caché puede quedar obsoleto. Hay que configurar reglas de invalidación.' },
+  { name:'CDN (Content Delivery Network)', type:'Red distribuida global', color:'#c9a7f5', desc:'Tu web se replica en servidores de todo el mundo. El visitante recibe los datos del nodo más cercano a su ubicación. Cloudflare es el CDN más usado — también actúa como proxy de seguridad.', pros:'Latencia mínima para usuarios globales. Protección DDoS incluida en Cloudflare.', cons:'Cambios pueden tardar en propagarse (purgar caché del CDN). Más complejo de configurar correctamente.' },
+];
+
+const CACHE_CONCEPTS = [
+  { name:'Redis', type:'Motor de caché', color:'#7eb8f7', def:'Base de datos en memoria ultrarrápida usada principalmente como caché. Guarda pares clave-valor en RAM. En un servidor cPanel tienes que activar el módulo PHP de Redis, conocer host/puerto/contraseña y configurarlo en WordPress con un plugin como LiteSpeed Cache.', example:'WordPress hace 80 queries a MySQL por pageview. Con Redis Object Cache, las queries se cachean: segunda visita → 3 queries.', warn:'Redis tiene memoria máxima configurable. Si se llena, empieza a borrar datos. Configura la política de eviction correctamente (allkeys-lru).' },
+  { name:'LiteSpeed Cache (WordPress)', type:'Plugin de caché', color:'#f5a97f', def:'Plugin de WordPress que gestiona múltiples capas de caché: página completa, objeto (Redis), browser y CDN. Es el plugin de caché más potente para WordPress en servidores LiteSpeed (habitual en Verpex).', example:'En LiteSpeed Cache: activas caché de página → activas Object Cache con Redis → defines exclusiones (páginas de carrito, perfil) → defines TTL por tipo de contenido.', warn:'' },
+  { name:'Cache-Control headers', type:'Caché de browser', color:'#a8f0c8', def:'Headers HTTP que le dicen al browser (y a los proxies/CDNs) durante cuánto tiempo puede guardar en caché un recurso sin volver a pedirlo al servidor. Cache-Control: max-age=31536000 = caché 1 año.', example:'Nginx: location ~* \\.(js|css)$ { add_header Cache-Control "public, max-age=31536000, immutable"; }', warn:'' },
+];
+
+const DOCKER_CONCEPTS = [
+  { name:'Contenedor (Container)', type:'Docker fundamental', color:'#4dd9e0', def:'Unidad de software empaquetada con el código, runtime y dependencias. Aislado del sistema host pero más ligero que una VM. Cada servicio (Nginx, Express, Redis) corre en su propio contenedor.', example:'docker run -d nginx → lanza un contenedor Nginx aislado. El host no necesita tener Nginx instalado.', warn:'' },
+  { name:'Docker Compose', type:'Orquestación local', color:'#4dd9e0', def:'Herramienta para definir y arrancar múltiples contenedores con un solo archivo (docker-compose.yml). Define servicios, redes internas, volúmenes y variables de entorno. Ideal para desarrollo y proyectos pequeños.', example:'docker-compose up -d → arranca Nginx + Express + Redis todos juntos con su red interna configurada.', warn:'' },
+  { name:'Imagen (Image)', type:'Docker fundamental', color:'#4dd9e0', def:'Plantilla inmutable de la que se crean los contenedores. Se construye desde un Dockerfile. Una imagen de Node.js incluye el sistema base, Node, npm y tu código. El contenedor es una instancia en ejecución de una imagen.', example:'FROM node:20-alpine → COPY . . → RUN npm install → CMD ["node","index.js"] → este Dockerfile define la imagen.', warn:'' },
+  { name:'Red interna Docker', type:'Seguridad de red', color:'#4dd9e0', def:'Docker Compose crea una red privada entre los contenedores. Solo Nginx es accesible desde fuera. El contenedor Express solo es alcanzable desde dentro de esa red — jamás desde internet directamente.', example:'Nginx hace proxy_pass http://express:3000. "express" es el nombre del servicio — resuelve solo dentro de la red Docker.', warn:'' },
+  { name:'Nginx como Reverse Proxy', type:'Servidor web / Proxy', color:'#4dd9e0', def:'Nginx recibe todas las peticiones públicas (HTTPS). Las que son archivos estáticos (/, /assets) las sirve directamente desde disco. Las que empiezan por /api/* las reenvía (proxy_pass) al contenedor Express interno.', example:'location /api/ { proxy_pass http://express:3000; } location / { root /usr/share/nginx/html; try_files $uri $uri/ /index.html; }', warn:'' },
+  { name:'Variables de entorno (.env)', type:'Seguridad de credenciales', color:'#f5a97f', def:'Forma de pasar configuración sensible (tokens de API, contraseñas de DB) al contenedor sin hardcodearla en el código. Se definen en un archivo .env que nunca se sube a Git (.gitignore).', example:'En docker-compose.yml: environment: - HUBSPOT_API_KEY=${HUBSPOT_API_KEY}. El contenedor lo lee como process.env.HUBSPOT_API_KEY.', warn:'Nunca hagas console.log de variables de entorno en producción. Nunca las expongas en el frontend — el browser es público.' },
+  { name:'Volumen (Volume)', type:'Persistencia de datos', color:'#4dd9e0', def:'Mecanismo para persistir datos generados por un contenedor. Sin volumen, los datos desaparecen cuando el contenedor se reinicia. Las bases de datos siempre deben usar volúmenes.', example:'volumes: - ./data/mysql:/var/lib/mysql → los datos de MySQL persisten en tu host aunque el contenedor se destruya y recree.', warn:'' },
+];
+
+const SECURITY_ITEMS = [
+  { icon:'🔒', name:'SSL/TLS (HTTPS)', level:'critical', desc:'Cifra toda la comunicación entre browser y servidor. Sin SSL los datos van en texto plano — contraseñas, formularios, tokens incluidos. <strong>Let\'s Encrypt</strong> lo da gratis. cPanel lo instala con AutoSSL. Obliga siempre al redirect HTTP→HTTPS.' },
+  { icon:'🤖', name:'Bloqueo de bots IA', level:'high', desc:'Los crawlers de IA (GPTBot, ClaudeBot, Bingbot) pueden sobrecargar tu servidor haciendo miles de peticiones. <strong>Cloudflare WAF</strong> permite crear reglas para bloquearlos por User-Agent o por comportamiento anómalo. También puedes usar robots.txt aunque no todos lo respetan.' },
+  { icon:'🛡️', name:'Cloudflare WAF', level:'high', desc:'Web Application Firewall. Filtra tráfico malicioso antes de que llegue a tu servidor. Puedes definir <strong>security rules</strong>: bloquear IPs, países, User-Agents, patrones de request. Gratuito en el plan Free de Cloudflare para reglas básicas.' },
+  { icon:'🖼️', name:'Image Hammering', level:'medium', desc:'Ataque donde bots hacen miles de peticiones a tus imágenes para consumir bandwidth y sobrecargar el servidor. En Cloudflare puedes crear reglas que limiten requests por IP/tiempo o bloqueen peticiones de imágenes sin referrer válido.' },
+  { icon:'🔑', name:'SSH con claves', level:'critical', desc:'Desactiva el acceso SSH por contraseña — son vulnerables a ataques de fuerza bruta. Usa <strong>pares de clave pública/privada</strong>. La clave privada nunca sale de tu máquina. En cPanel puedes gestionar las SSH keys autorizadas.' },
+  { icon:'🌐', name:'Cloudflare como proxy', level:'high', desc:'Al poner tu dominio detrás de Cloudflare (proxy activado, icono naranja), la IP real de tu servidor queda oculta. Los atacantes solo ven IPs de Cloudflare. Esto también activa DDoS protection automática y el CDN.' },
+  { icon:'📧', name:'SPF / DKIM / DMARC', level:'medium', desc:'Registros DNS que autentican tus emails y evitan que otros envíen emails suplantando tu dominio. SPF define qué servidores pueden enviar email por ti. DKIM firma los emails. DMARC define qué hacer si fallan las verificaciones.' },
+  { icon:'💾', name:'Backups regulares', level:'critical', desc:'<strong>JetBackup 5</strong> en cPanel automatiza copias de archivos y bases de datos. La regla 3-2-1: 3 copias, en 2 medios distintos, 1 fuera del servidor. Prueba la restauración periódicamente — un backup no verificado no es un backup.' },
+];
+
+const INTEGRATION_CONCEPTS = [
+  { name:'HubSpot Private App (API Token)', type:'CRM Integration', color:'#f5a97f', def:'La forma correcta de autenticarte con la API de HubSpot desde tu backend. Creas una Private App en HubSpot, defines los scopes (permisos) que necesitas, y obtienes un token. Este token va en el header de cada request: Authorization: Bearer TOKEN.', example:'En Express: axios.post("https://api.hubapi.com/crm/v3/objects/contacts", payload, { headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` } })', warn:'El token de HubSpot nunca va en el frontend. Si alguien lo extrae puede crear/borrar contactos en tu CRM.' },
+  { name:'Flujo de formulario seguro', type:'Patrón arquitectura', color:'#f5a97f', def:'Browser → POST /api/contact (tu servidor) → validación + anti-spam → POST HubSpot API. El browser nunca habla directamente con HubSpot. Tu Express valida los datos, aplica rate limiting y gestiona errores antes de reenviar a HubSpot.', example:'El formulario hace fetch("/api/contact", { method: "POST", body: JSON.stringify({name, email, message}) }). Nginx lo redirige a Express. Express valida y llama a HubSpot.', warn:'' },
+  { name:'Variables de entorno en producción', type:'Seguridad', color:'#f5a97f', def:'En producción no hay archivo .env en disco — las variables se inyectan directamente en el entorno del proceso. En Railway/Render/Fly.io hay un panel de "Environment Variables". En Docker Compose en tu servidor las defines en el .env (que está en .gitignore).', example:'process.env.HUBSPOT_TOKEN en Express lee la variable de entorno. En Railway la defines en Settings → Variables.', warn:'' },
+  { name:'Rate Limiting en Express', type:'Anti-abuso', color:'#4dd9e0', def:'Limitar cuántas peticiones puede hacer una misma IP en un período de tiempo. Previene que un bot envíe 1000 formularios. Librería express-rate-limit: máximo N requests por IP en M minutos.', example:'rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }) → máximo 5 envíos de formulario por IP cada 15 minutos.', warn:'' },
+  { name:'CORS (Cross-Origin Resource Sharing)', type:'Seguridad web', color:'#4dd9e0', def:'Mecanismo que controla qué dominios pueden hacer peticiones a tu API. Sin CORS configurado, un JS de otra web podría llamar a tu /api/contact. En Express: cors({ origin: "https://miweb.com" }) → solo tu dominio puede usar la API.', example:'El frontend en miweb.com hace fetch("/api/contact"). Como es mismo origen (Nginx redirige internamente) no hay problema de CORS.', warn:'' },
+  { name:'Logs y monitorización', type:'Operaciones', color:'#a8f0c8', def:'En producción necesitas saber qué está pasando. Nginx tiene access.log y error.log. Express puede usar Morgan para logs de requests. En cPanel tienes métricas de tráfico y puedes ver los logs de Apache/Nginx desde el panel.', example:'tail -f /var/log/nginx/error.log → en tiempo real ves errores de Nginx. En Express: morgan("combined") → loguea cada request con IP, status, tiempo.', warn:'' },
+];
+
+// ═══════════════════════════════════════
+// RENDER: DESPLIEGUE
+// ═══════════════════════════════════════
+
+function renderDespliegue() {
+  // DNS records table
+  const tableWrap = document.getElementById('dns-records-table-wrap');
+  const t = document.createElement('div');
+  t.className = 'dns-table-wrap';
+  t.innerHTML = `<table class="dns-table">
+    <thead><tr><th>Tipo</th><th>Nombre completo</th><th>Para qué sirve</th><th>Ejemplo</th><th>Precaución</th></tr></thead>
+    <tbody>${DNS_RECORDS.map(r=>`<tr>
+      <td>${r.type}</td><td>${r.full}</td><td>${r.desc}</td>
+      <td style="font-family:var(--mono);font-size:0.58rem;color:var(--t7)">${r.example}</td>
+      <td style="font-size:0.6rem;color:${r.warn?'#f5a97f':'var(--border2)'}">${r.warn||'—'}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+  tableWrap.appendChild(t);
+
+  // DNS concept cards
+  renderDepCards('dns-concepts-grid', DNS_CONCEPTS);
+  renderDepCards('cpanel-grid', CPANEL_CONCEPTS);
+
+  // Cache compare
+  const cacheGrid = document.getElementById('cache-compare-grid');
+  CACHE_TYPES.forEach(c => {
+    const col = document.createElement('div');
+    col.className = 'cache-col';
+    col.innerHTML = `
+      <div class="cache-col-name" style="color:${c.color}">${c.name}</div>
+      <div class="cache-col-type">${c.type}</div>
+      <div class="cache-col-desc">${c.desc}</div>
+      <div class="cache-pros">✓ ${c.pros}</div>
+      <div class="cache-cons">✗ ${c.cons}</div>
+    `;
+    cacheGrid.appendChild(col);
+  });
+  renderDepCards('cache-concepts-grid', CACHE_CONCEPTS);
+
+  // Docker
+  renderDepCards('docker-grid', DOCKER_CONCEPTS);
+
+  // Security
+  const secGrid = document.getElementById('security-grid');
+  SECURITY_ITEMS.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'sec-card';
+    const lvlCls = {critical:'sl-critical',high:'sl-high',medium:'sl-medium'}[s.level];
+    const lvlLabel = {critical:'Crítico',high:'Alto',medium:'Medio'}[s.level];
+    card.innerHTML = `
+      <div class="sec-card-head">
+        <span class="sec-icon">${s.icon}</span>
+        <span class="sec-name">${s.name}</span>
+        <span class="sec-level ${lvlCls}">${lvlLabel}</span>
+      </div>
+      <div class="sec-desc">${s.desc}</div>
+    `;
+    secGrid.appendChild(card);
+  });
+
+  // Integrations
+  renderDepCards('integrations-grid', INTEGRATION_CONCEPTS);
+}
+
+function renderDepCards(containerId, items) {
+  const grid = document.getElementById(containerId);
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'dep-card';
+    card.innerHTML = `
+      <div class="dep-card-accent" style="background:${item.color}"></div>
+      <div class="dep-card-name" style="color:${item.color}">${item.name}</div>
+      <div class="dep-card-type">${item.type}</div>
+      <div class="dep-card-def">${item.def}</div>
+      ${item.example ? `<div class="dep-card-example">${item.example}</div>` : ''}
+      ${item.warn ? `<div class="dep-card-warn">${item.warn}</div>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function showDepTab(id, btn) {
+  document.querySelectorAll('.dep-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.dep-stab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// DATA: DOCKER CURSO
+// ═══════════════════════════════════════
+
+const DK_COLOR = 'var(--t8)';
+
+const DK_FUNDAMENTOS = [
+  { name:'Contenedor', cat:'Concepto base', color:'#3b6fd4', def:'Proceso aislado que corre sobre el kernel del host compartido. Tiene su propio sistema de archivos, red y espacio de procesos, pero no virtualiza hardware. Arranca en milisegundos y usa mucha menos RAM que una VM.', cmd:'docker run hello-world', tip:'Un contenedor SÍ comparte el kernel del host. Una VM NO — virtualiza hardware completo. Por eso los contenedores son tan más ligeros.' },
+  { name:'Imagen', cat:'Concepto base', color:'#3b6fd4', def:'Plantilla inmutable de solo lectura que define el sistema de archivos y la configuración de un contenedor. Se construye en capas. El contenedor es una instancia en ejecución de una imagen. Las imágenes se almacenan en registros (Docker Hub, GHCR, etc.).', cmd:'docker pull nginx:alpine', tip:'Las imágenes son inmutables. Cuando un contenedor escribe datos, lo hace en una capa extra de escritura por encima de la imagen.' },
+  { name:'Docker Engine', cat:'Arquitectura', color:'#5b8fd4', def:'El daemon dockerd que gestiona contenedores, imágenes, redes y volúmenes. El cliente docker se comunica con él a través de una API REST (normalmente vía socket UNIX /var/run/docker.sock).', cmd:'systemctl status docker', tip:'El socket /var/run/docker.sock es la puerta trasera al host. Montar este socket en un contenedor le da acceso total al host — nunca lo hagas en producción con contenedores no confiables.' },
+  { name:'Docker Hub', cat:'Registro', color:'#5b8fd4', def:'El registro de imágenes oficial de Docker. Contiene millones de imágenes públicas: ubuntu, nginx, node, postgres, redis, etc. También puedes crear imágenes privadas. Alternativas: GHCR (GitHub), ECR (AWS), GCR (Google).', cmd:'docker search nginx\ndocker pull nginx:1.25-alpine', tip:'Siempre especifica la versión de la imagen (tag). Usar :latest puede romperte el deploy cuando publican una nueva versión incompatible.' },
+  { name:'Capa (Layer)', cat:'Sistema de archivos', color:'#3b6fd4', def:'Cada instrucción de un Dockerfile crea una capa inmutable. Docker cachea cada capa — si no ha cambiado, la reutiliza en el siguiente build. El orden importa: pon las capas que cambian menos arriba (FROM, RUN apt) y las que cambian más abajo (COPY código).', cmd:'docker history mi-imagen:latest', tip:'Si cambias el package.json, Docker invalida la caché a partir de ese COPY y reconstruye todo lo que viene después. Copia el package.json antes que el resto del código para aprovechar la caché de dependencias.' },
+  { name:'VM vs Contenedor', cat:'Comparación', color:'#5b8fd4', def:'VM: virtualiza hardware completo, necesita SO invitado propio (GBs), arranca en minutos, aislamiento total. Contenedor: comparte kernel del host, solo empaqueta la app y sus dependencias (MBs), arranca en segundos, aislamiento a nivel de proceso.', cmd:'docker stats  # vs htop en una VM', tip:'En producción moderna, muchas veces se combinan: VMs para aislamiento de infraestructura, contenedores dentro de las VMs para aislamiento de apps.' },
+  { name:'Instalación Docker', cat:'Setup', color:'#5b8fd4', def:'Linux: instalar docker-ce vía repositorio oficial. No uses el docker.io del repositorio del sistema operativo — suele estar desactualizado. macOS/Windows: Docker Desktop incluye VM ligera + GUI. En servidor: añadir tu usuario al grupo docker para no usar sudo.', cmd:'curl -fsSL https://get.docker.com | sh\nusermod -aG docker $USER', tip:'En producción en Linux, nunca uses Docker Desktop — usa docker-ce directamente. Docker Desktop está diseñado para desarrollo local.' },
+  { name:'Modo detached (-d)', cat:'Ejecución', color:'#3b6fd4', def:'Por defecto docker run bloquea el terminal. Con -d el contenedor corre en background. Usa docker logs para ver su salida, docker attach para conectarte, docker exec para ejecutar comandos dentro.', cmd:'docker run -d --name mi-nginx nginx\ndocker logs mi-nginx\ndocker exec -it mi-nginx bash', tip:'-it en docker exec: -i mantiene stdin abierto, -t asigna un pseudo-terminal. Necesitas ambos para tener una shell interactiva.' },
+];
+
+const DK_CHEATSHEET = [
+  { section: 'CONTENEDORES' },
+  { cmd:'docker run [opts] IMAGEN [cmd]',  desc:'Crear y arrancar contenedor',         note:'--name, -d, -p, -v, -e, --rm, --network' },
+  { cmd:'docker run -it IMAGEN bash',      desc:'Contenedor interactivo con shell',     note:'-i stdin, -t pseudo-tty' },
+  { cmd:'docker start / stop / restart',   desc:'Arrancar / parar / reiniciar',         note:'Usa el nombre o ID del contenedor' },
+  { cmd:'docker ps',                       desc:'Listar contenedores en ejecución',     note:'-a para ver todos, incluidos parados' },
+  { cmd:'docker rm [-f] CONTENEDOR',       desc:'Eliminar contenedor',                  note:'-f para forzar si está corriendo' },
+  { cmd:'docker logs [-f] CONTENEDOR',     desc:'Ver logs del contenedor',              note:'-f para seguir en tiempo real' },
+  { cmd:'docker exec -it CONT cmd',        desc:'Ejecutar comando en contenedor vivo',  note:'exec -it CONT bash para entrar' },
+  { cmd:'docker inspect CONTENEDOR',       desc:'Info detallada en JSON',               note:'IPs, volúmenes, variables de entorno…' },
+  { cmd:'docker stats',                    desc:'Monitor de CPU/RAM en tiempo real',    note:'Similar a htop para contenedores' },
+  { cmd:'docker top CONTENEDOR',           desc:'Procesos dentro del contenedor',       note:'' },
+  { cmd:'docker cp CONT:/ruta ./local',    desc:'Copiar archivos host ↔ contenedor',   note:'Funciona en ambas direcciones' },
+  { cmd:'docker commit CONT nueva-imagen', desc:'Crear imagen desde contenedor',        note:'Útil para debug, no para producción' },
+  { section: 'IMÁGENES' },
+  { cmd:'docker images',                   desc:'Listar imágenes locales',              note:'-a incluye imágenes intermedias' },
+  { cmd:'docker pull IMAGEN[:TAG]',        desc:'Descargar imagen del registro',        note:'Por defecto tag = latest' },
+  { cmd:'docker push USUARIO/IMAGEN',      desc:'Subir imagen al registro',             note:'Necesitas docker login primero' },
+  { cmd:'docker build -t nombre:tag .',    desc:'Construir imagen desde Dockerfile',    note:'. = contexto de build (directorio actual)' },
+  { cmd:'docker rmi IMAGEN',               desc:'Eliminar imagen',                      note:'-f para forzar. Libera espacio en disco' },
+  { cmd:'docker tag ORIG USER/NUEVO:TAG',  desc:'Renombrar/etiquetar imagen',           note:'No duplica datos, es un alias' },
+  { cmd:'docker history IMAGEN',           desc:'Ver capas de una imagen',              note:'Muestra tamaño y comando de cada capa' },
+  { cmd:'docker save -o file.tar IMAGEN',  desc:'Exportar imagen a .tar',               note:'Para transferir sin registro' },
+  { cmd:'docker load -i file.tar',         desc:'Importar imagen desde .tar',           note:'' },
+  { section: 'REDES' },
+  { cmd:'docker network ls',               desc:'Listar redes',                         note:'bridge, host, none por defecto' },
+  { cmd:'docker network create NOMBRE',    desc:'Crear red bridge personalizada',       note:'--driver bridge|host|overlay|macvlan' },
+  { cmd:'docker network connect RED CONT', desc:'Conectar contenedor a red',            note:'Un contenedor puede estar en varias redes' },
+  { cmd:'docker network inspect RED',      desc:'Detalles de la red',                   note:'Muestra contenedores conectados y sus IPs' },
+  { section: 'VOLÚMENES' },
+  { cmd:'docker volume ls',                desc:'Listar volúmenes',                     note:'' },
+  { cmd:'docker volume create NOMBRE',     desc:'Crear volumen',                        note:'Gestionado por Docker en /var/lib/docker/volumes' },
+  { cmd:'docker volume inspect NOMBRE',    desc:'Ver detalles del volumen',             note:'Mountpoint en el host' },
+  { cmd:'docker volume rm NOMBRE',         desc:'Eliminar volumen',                     note:'El contenedor debe estar parado' },
+  { section: 'SISTEMA Y LIMPIEZA' },
+  { cmd:'docker system prune',             desc:'Limpiar recursos no usados',           note:'-a elimina también imágenes sin usar' },
+  { cmd:'docker system df',                desc:'Espacio usado por Docker',             note:'Imágenes, contenedores, volúmenes' },
+  { cmd:'docker info',                     desc:'Info del daemon Docker',               note:'Versión, storage driver, memoria…' },
+  { section: 'DOCKER COMPOSE' },
+  { cmd:'docker compose up -d',            desc:'Levantar stack en background',         note:'-d detached, --build para rebuild' },
+  { cmd:'docker compose down',             desc:'Parar y eliminar contenedores',        note:'-v también elimina volúmenes' },
+  { cmd:'docker compose ps',               desc:'Estado de los servicios',              note:'' },
+  { cmd:'docker compose logs -f [SVC]',    desc:'Logs del stack o servicio',            note:'-f sigue en tiempo real' },
+  { cmd:'docker compose exec SVC cmd',     desc:'Ejecutar comando en servicio',         note:'docker compose exec web bash' },
+  { cmd:'docker compose build [SVC]',      desc:'Construir imágenes del Compose',       note:'Solo las que tienen build: en el yml' },
+  { cmd:'docker compose pull',             desc:'Actualizar imágenes del stack',        note:'Descarga versiones nuevas del registro' },
+  { cmd:'docker compose scale SVC=N',      desc:'Escalar servicio a N réplicas',        note:'Requiere no tener puerto fijo asignado' },
+  { cmd:'docker compose config',           desc:'Validar y ver compose.yml resuelto',   note:'Útil para debug de variables de entorno' },
+];
+
+const DK_DOCKERFILE = [
+  { instr:'FROM',       code:'node:20-alpine',              desc:'Imagen base. Siempre la primera instrucción. alpine = imagen minimal (5MB). Especifica versión exacta, nunca latest.' },
+  { instr:'WORKDIR',    code:'/app',                        desc:'Directorio de trabajo dentro del contenedor. Todas las instrucciones siguientes se ejecutan desde aquí. Crea la carpeta si no existe.' },
+  { instr:'COPY',       code:'package*.json ./',            desc:'Copia archivos del host al contenedor. Primero copia package.json solo (para cachear npm install) y luego el resto del código.' },
+  { instr:'RUN',        code:'npm ci --only=production',    desc:'Ejecuta comando durante el build. Cada RUN crea una nueva capa. Encadena comandos con && para reducir capas.' },
+  { instr:'COPY',       code:'. .',                         desc:'Copia el resto del código fuente. Va después de RUN npm install para aprovechar la caché de dependencias.' },
+  { instr:'ENV',        code:'NODE_ENV=production',         desc:'Variables de entorno disponibles en build y runtime. Para secretos usa ARG (solo build) o variables inyectadas en runtime.' },
+  { instr:'EXPOSE',     code:'3000',                        desc:'Documenta el puerto que usa el contenedor. No abre el puerto realmente — eso lo hace -p en docker run o ports: en Compose.' },
+  { instr:'USER',       code:'node',                        desc:'Ejecuta el proceso como usuario no-root. Buena práctica de seguridad. Las imágenes node incluyen el usuario "node".' },
+  { instr:'HEALTHCHECK',code:'--interval=30s CMD curl -f http://localhost:3000/health', desc:'Docker verifica periódicamente si el contenedor está sano. Compose puede reiniciar contenedores unhealthy.' },
+  { instr:'CMD',        code:'["node", "index.js"]',        desc:'Comando por defecto al arrancar el contenedor. Formato JSON (exec form) preferido — no usa shell, recibe señales correctamente.' },
+  { instr:'ENTRYPOINT', code:'["docker-entrypoint.sh"]',    desc:'Script que siempre se ejecuta. CMD se pasa como argumentos a ENTRYPOINT. Útil para init scripts.' },
+  { instr:'ARG',        code:'VERSION=1.0',                 desc:'Variable solo disponible durante el build. Se pasa con --build-arg. Nunca para secretos — son visibles en docker history.' },
+  { instr:'LABEL',      code:'maintainer="yo@miweb.com"',   desc:'Metadatos de la imagen. Útil para documentación y filtrado.' },
+  { instr:'VOLUME',     code:'["/data"]',                   desc:'Declara un punto de montaje. Docker crea un volumen anónimo si no se especifica uno explícito.' },
+];
+
+const DK_IMG_CARDS = [
+  { name:'Multi-stage build', cat:'Optimización', color:'#3b6fd4', def:'Usar múltiples FROM en un Dockerfile para separar el entorno de build del de producción. La imagen final solo contiene lo necesario para ejecutar, no las herramientas de compilación.', cmd:'FROM node:20 AS builder\nRUN npm run build\n\nFROM nginx:alpine\nCOPY --from=builder /app/dist /usr/share/nginx/html', tip:'Una imagen React con multi-stage pesa ~25MB. Sin multi-stage, 800MB. La diferencia está en no incluir node_modules ni devDependencies en la imagen final.' },
+  { name:'Docker Hub Registry', cat:'Distribución', color:'#3b6fd4', def:'Para publicar tu imagen: hacer login, etiquetar la imagen con tu usuario/repositorio y hacer push. Para registros privados (GHCR, ECR) el proceso es similar pero con credenciales distintas.', cmd:'docker login\ndocker tag mi-app:latest usuario/mi-app:1.0\ndocker push usuario/mi-app:1.0', tip:'' },
+  { name:'.dockerignore', cat:'Optimización', color:'#5b8fd4', def:'Como .gitignore pero para el contexto de build. Excluye archivos que no necesita el contenedor: node_modules, .git, .env, logs. Reduce el tamaño del contexto y acelera el build.', cmd:'node_modules\n.git\n.env\n*.log\ndist', tip:'El contexto de build se envía entero al daemon. Sin .dockerignore, enviar node_modules puede tardar minutos y añadir GB innecesarios.' },
+  { name:'Caché de capas', cat:'Performance', color:'#3b6fd4', def:'Docker cachea cada capa del Dockerfile. Si una capa cambia, invalida todas las siguientes. Estrategia: ordena las instrucciones de menos a más cambiante. Dependencias primero, código después.', cmd:'# MAL: invalida caché de deps en cada cambio de código\nCOPY . .\nRUN npm install\n\n# BIEN: deps cacheadas independientemente\nCOPY package*.json ./\nRUN npm install\nCOPY . .', tip:'' },
+];
+
+const DK_NETWORKS = [
+  { name:'bridge', type:'Red por defecto', color:'#3b6fd4', desc:'Red virtual privada en el host. Los contenedores pueden comunicarse por IP o nombre (en redes bridge personalizadas). Los puertos se publican explícitamente con -p.', cmd:'docker network create mi-red\ndocker run --network mi-red ...' },
+  { name:'host', type:'Sin aislamiento de red', color:'#5b8fd4', desc:'El contenedor usa directamente la red del host. No hay NAT ni traducción de puertos. Solo disponible en Linux. Máxima performance de red pero sin aislamiento.', cmd:'docker run --network host nginx' },
+  { name:'none', type:'Sin red', color:'#5b8fd4', desc:'El contenedor no tiene ninguna interfaz de red excepto loopback. Máximo aislamiento. Para contenedores batch que no necesitan red.', cmd:'docker run --network none mi-batch' },
+  { name:'overlay', type:'Multi-host (Swarm)', color:'#3b6fd4', desc:'Red que abarca múltiples hosts Docker. Solo disponible en Swarm. Los contenedores en distintas máquinas se ven como si estuvieran en la misma red.', cmd:'docker network create --driver overlay mi-overlay' },
+  { name:'macvlan', type:'IP real en LAN', color:'#5b8fd4', desc:'Asigna una IP real de tu LAN al contenedor. Útil para servicios legacy que necesitan estar visibles en la red local como si fueran un dispositivo físico.', cmd:'docker network create --driver macvlan ...' },
+];
+
+const DK_VOLUMES = [
+  { name:'Volumen gestionado', sub:'docker volume', color:'#a8f0c8', desc:'Docker gestiona el almacenamiento en /var/lib/docker/volumes. Independiente de la estructura del host. Portátil entre hosts. El modo recomendado para datos de producción.', when:'Bases de datos, datos persistentes de apps, backups.' },
+  { name:'Bind mount', sub:'ruta del host', color:'#7eb8f7', desc:'Monta una carpeta específica del host en el contenedor. El contenedor ve y modifica los archivos del host directamente. Ideal para desarrollo: editas en el host y el contenedor lo recoge.', when:'Desarrollo local, archivos de config, logs accesibles desde el host.' },
+  { name:'tmpfs mount', sub:'solo en memoria', color:'#f5a97f', desc:'Almacenamiento temporal en RAM. Rapidísimo pero volátil — desaparece al parar el contenedor. Caso de uso del curso: acelerar juegos de prueba con dumps de SQL.', when:'Datos temporales, caches de build, datos sensibles que no deben tocar disco.' },
+];
+
+const DK_NET_CONCEPTS = [
+  { name:'DNS interno de Docker', cat:'Red', color:'#3b6fd4', def:'En redes bridge personalizadas, Docker incluye un servidor DNS interno. Los contenedores se pueden referir entre sí por nombre de servicio (no por IP). En Docker Compose esto es automático: el servicio "db" es accesible como hostname "db".', cmd:'# En Compose, postgres accesible como "db"\nservices:\n  web:\n    environment:\n      DB_HOST: db', tip:'' },
+  { name:'Publicar puertos (-p)', cat:'Red', color:'#3b6fd4', def:'Mapea un puerto del host a un puerto del contenedor. El tráfico que llega al puerto del host se reenvía al contenedor. Formato: HOST_PORT:CONTAINER_PORT. Sin -p, el contenedor está aislado de la red externa.', cmd:'docker run -p 8080:80 nginx\n# localhost:8080 → contenedor:80', tip:'Para bind solo en localhost (no exponer al exterior): -p 127.0.0.1:8080:80. En producción, expón solo lo que necesites.' },
+  { name:'Proxy inverso con Traefik', cat:'Avanzado', color:'#5b8fd4', def:'Alternativa a Nginx como reverse proxy para contenedores. Traefik se integra con Docker y descubre automáticamente los servicios vía labels en el Compose. Gestiona certificados SSL automáticamente con Let\'s Encrypt.', cmd:'labels:\n  - "traefik.enable=true"\n  - "traefik.http.routers.web.rule=Host(`miweb.com`)"', tip:'Para stacks en VPS con múltiples servicios, Traefik + Docker Compose es mucho más fácil de mantener que configurar Nginx manualmente para cada servicio.' },
+  { name:'HAProxy balanceo de carga', cat:'Avanzado', color:'#5b8fd4', def:'Proxy TCP/HTTP de alto rendimiento. El curso lo usa para distribuir tráfico entre múltiples réplicas del mismo contenedor. Junto con docker compose scale, puedes escalar horizontalmente un servicio.', cmd:'docker compose up --scale web=3 -d', tip:'' },
+];
+
+const DK_COMPOSE_ANATOMY = [
+  { key:'services:', fields:[
+    { k:'image:', d:'Imagen del registro a usar. Si se especifica build: se construye localmente.' },
+    { k:'build:', d:'Ruta al Dockerfile para construir la imagen. Alternativa a image:.' },
+    { k:'container_name:', d:'Nombre fijo para el contenedor. Sin esto, Compose genera uno automático.' },
+    { k:'ports:', d:'Mapeo de puertos HOST:CONTENEDOR. Solo exponer los necesarios externamente.' },
+    { k:'environment:', d:'Variables de entorno. Pueden venir de un archivo .env con env_file:.' },
+    { k:'volumes:', d:'Montajes: volumen gestionado, bind mount o tmpfs.' },
+    { k:'depends_on:', d:'Orden de arranque. Con condition: service_healthy para esperar health check.' },
+    { k:'restart:', d:'Política: no | always | on-failure | unless-stopped. En producción: unless-stopped.' },
+    { k:'networks:', d:'Redes a las que conectar el servicio. Por defecto Compose crea una red para el proyecto.' },
+    { k:'healthcheck:', d:'Comando que Compose ejecuta para verificar si el servicio está sano.' },
+    { k:'labels:', d:'Metadatos. Traefik y otras herramientas los usan para configuración automática.' },
+    { k:'deploy:', d:'Config de despliegue (réplicas, recursos). Relevante en Swarm mode.' },
+  ]},
+  { key:'volumes:', fields:[
+    { k:'nombre-volumen:', d:'Declara un volumen gestionado. Los servicios lo referencian por este nombre.' },
+    { k:'external: true', d:'Usa un volumen ya existente, no creado por Compose.' },
+  ]},
+  { key:'networks:', fields:[
+    { k:'nombre-red:', d:'Declara una red. Por defecto bridge. Los servicios la referencian por nombre.' },
+    { k:'external: true', d:'Usa una red existente, creada fuera de este Compose.' },
+  ]},
+];
+
+const DK_COMPOSE_CARDS = [
+  { name:'Variables con .env', cat:'Configuración', color:'#3b6fd4', def:'Docker Compose lee automáticamente el archivo .env del mismo directorio. Las variables se usan en el compose.yml con sintaxis ${VARIABLE}. El .env nunca va a Git — usa env.example como plantilla documentada.', cmd:'# .env\nPOSTGRES_PASSWORD=secreto123\n\n# compose.yml\nenvironment:\n  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}', tip:'' },
+  { name:'depends_on + healthcheck', cat:'Orden de arranque', color:'#3b6fd4', def:'depends_on garantiza que un servicio arranque antes que otro, pero no espera a que esté listo (conexión a DB, etc.). Combinar con condition: service_healthy y un healthcheck: sí espera a que el servicio esté operativo.', cmd:'depends_on:\n  db:\n    condition: service_healthy\nhealthcheck:\n  test: ["CMD", "pg_isready"]\n  interval: 10s', tip:'Sin healthcheck, tu app puede intentar conectar a la DB antes de que Postgres haya terminado de arrancar. Esto causa errores de "connection refused" intermitentes.' },
+  { name:'Profiles', cat:'Entornos', color:'#5b8fd4', def:'Los profiles permiten activar servicios opcionales. Por ejemplo, tener un servicio de debug o un adminer solo cuando lo necesitas, sin que arranque en producción.', cmd:'services:\n  adminer:\n    image: adminer\n    profiles: ["debug"]\n\n# Activar:\ndocker compose --profile debug up', tip:'' },
+  { name:'Override files', cat:'Entornos', color:'#5b8fd4', def:'Docker Compose fusiona automáticamente docker-compose.yml con docker-compose.override.yml. Útil para tener configuración base + overrides por entorno (dev, prod). Puedes especificar archivos con -f.', cmd:'docker compose -f compose.yml -f compose.prod.yml up -d', tip:'' },
+];
+
+const DK_TOOLS = [
+  { name:'Portainer CE', kind:'Panel web', color:'#3b6fd4', desc:'Interfaz web completa para gestionar Docker. Visualiza contenedores, imágenes, redes, volúmenes y stacks Compose. Permite gestionar múltiples hosts Docker remotos. Se despliega él mismo como contenedor.', cmd:'docker run -d -p 9000:9000 --name portainer -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce' },
+  { name:'LazyDocker', kind:'TUI (terminal)', color:'#5b8fd4', desc:'Interfaz Docker en terminal. Sin instalar nada extra — muestra contenedores, logs, stats y permite acciones con teclado. Alternativa rápida a Portainer para quien prefiere la terminal.', cmd:'lazydocker' },
+  { name:'VS Code Dev Containers', kind:'IDE integration', color:'#3b6fd4', desc:'Extensión de VS Code que abre tu proyecto directamente dentro de un contenedor Docker. El entorno de desarrollo está definido en .devcontainer/devcontainer.json. Elimina el "funciona en mi máquina".', cmd:'# .devcontainer/devcontainer.json\n{ "image": "node:20", "extensions": [...] }' },
+  { name:'cTop', kind:'Monitor terminal', color:'#5b8fd4', desc:'Monitor de recursos de contenedores en tiempo real similar a htop. Muestra CPU, RAM, red y disco por contenedor. Útil para identificar cuellos de botella sin salir de la terminal.', cmd:'docker run --rm -ti -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop' },
+  { name:'Glances', kind:'Monitor sistema', color:'#3b6fd4', desc:'Monitor de sistema completo con integración Docker. Muestra métricas del host Y de los contenedores en una sola vista. Tiene modo web accesible desde el browser.', cmd:'docker run -d -p 61208:61208 -v /var/run/docker.sock:/var/run/docker.sock nicolargo/glances' },
+  { name:'Watchtower', kind:'Auto-update', color:'#5b8fd4', desc:'Monitoriza los contenedores y automáticamente actualiza las imágenes cuando hay nuevas versiones disponibles. Útil para mantener servicios actualizados sin intervención manual.', cmd:'docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower' },
+];
+
+const DK_K8S_CONCEPTS = [
+  { name:'¿Cuándo usar K8s vs Compose?', cat:'Decisión', color:'#3b6fd4', def:'Docker Compose: un solo host, desarrollo, proyectos pequeños/medianos, simplicidad. Kubernetes: múltiples hosts, alta disponibilidad, auto-scaling automático, rolling updates sin downtime, gran escala. La mayoría de proyectos empiezan con Compose y escalan a K8s cuando lo necesitan.', cmd:'', tip:'Un proyecto con < 10 servicios en un VPS no necesita K8s. La complejidad operativa de K8s se justifica cuando Compose no puede gestionar la escala o la disponibilidad requerida.' },
+  { name:'Clúster K8s', cat:'Arquitectura', color:'#5b8fd4', def:'Conjunto de nodos (máquinas) donde K8s ejecuta los contenedores. Un nodo master (control plane) gestiona el estado deseado. Los nodos worker ejecutan los Pods. Herramientas locales: minikube, kind, k3s para aprender sin un cloud.', cmd:'minikube start\nkubectl cluster-info', tip:'' },
+  { name:'kubectl', cat:'CLI', color:'#3b6fd4', def:'La herramienta de línea de comandos para interactuar con K8s. Equivale al docker CLI pero para el clúster. Casi todo se puede hacer declarativamente con archivos YAML aplicados con kubectl apply.', cmd:'kubectl get pods\nkubectl apply -f deployment.yaml\nkubectl describe pod mi-pod\nkubectl logs mi-pod', tip:'' },
+];
+
+const DK_K8S_OBJECTS = [
+  { name:'Pod', layer:'Unidad mínima', color:'#3b6fd4', desc:'Uno o más contenedores que comparten red y almacenamiento. La unidad mínima de K8s. No se gestionan directamente — se crean a través de Deployments.' },
+  { name:'Deployment', layer:'Gestión de Pods', color:'#3b6fd4', desc:'Define el estado deseado: cuántas réplicas del Pod, qué imagen usar. K8s mantiene ese estado y hace rolling updates y rollbacks.' },
+  { name:'Service', layer:'Red interna', color:'#5b8fd4', desc:'Expone un conjunto de Pods con una IP/DNS estable. Los Pods pueden cambiar de IP — el Service los abstrae. Tipos: ClusterIP (interno), NodePort, LoadBalancer.' },
+  { name:'Ingress', layer:'Entrada externa', color:'#5b8fd4', desc:'Equivalente a Nginx/Traefik en Compose. Gestiona el acceso HTTP/HTTPS externo, enrutamiento por host/path y terminación SSL.' },
+  { name:'ConfigMap', layer:'Configuración', color:'#3b6fd4', desc:'Almacena configuración no sensible (como variables de entorno o archivos de config) separada de la imagen del contenedor.' },
+  { name:'Secret', layer:'Secretos', color:'#5b8fd4', desc:'Como ConfigMap pero para datos sensibles (contraseñas, tokens). Codificado en base64. En producción se integra con gestores de secretos externos.' },
+  { name:'PersistentVolume', layer:'Almacenamiento', color:'#3b6fd4', desc:'Equivalente a los volúmenes de Docker pero con ciclo de vida independiente del Pod y del Deployment. El PVC (Claim) es la solicitud de almacenamiento.' },
+  { name:'Namespace', layer:'Aislamiento lógico', color:'#5b8fd4', desc:'Separa recursos dentro del mismo clúster. Útil para separar entornos (dev, staging, prod) o equipos en el mismo K8s.' },
+];
+
+const DK_CASES = [
+  { ud:'UD03', title:'Práctica de comandos en contenedor Docker',    stack:['docker run','docker exec','docker logs','Comandos básicos'] },
+  { ud:'UD03', title:'LAMP + WordPress en contenedor',               stack:['Apache','MySQL','PHP','WordPress','Contenedor único'] },
+  { ud:'UD03', title:'Interfaz gráfica con NoVNC',                   stack:['VNC','NoVNC','Browser UI','Contenedor con GUI'] },
+  { ud:'UD04', title:'Imagen Ubuntu personalizada con nano',         stack:['Dockerfile','FROM ubuntu','RUN apt','Build'] },
+  { ud:'UD04', title:'App Node.js en imagen Docker',                 stack:['Dockerfile','Node.js','Multi-stage','Docker Hub'] },
+  { ud:'UD04', title:'Apache + PHP desde Alpine',                    stack:['Alpine','Apache2','PHP','Imagen ligera'] },
+  { ud:'UD05', title:'WordPress + MariaDB con redes Docker',         stack:['bridge network','Volúmenes','MariaDB','WordPress'] },
+  { ud:'UD05', title:'Balanceo de carga con HAProxy',                stack:['HAProxy','bridge network','Múltiples réplicas','Round-robin'] },
+  { ud:'UD05', title:'Juegos de prueba acelerados con tmpfs',        stack:['tmpfs','RAM mount','SQL dumps','Performance'] },
+  { ud:'UD05', title:'Grafana + Prometheus monitorización',          stack:['Grafana','Prometheus','Métricas','Dashboard'] },
+  { ud:'UD05', title:'Proxy inverso con Traefik en VPS',             stack:['Traefik','Let\'s Encrypt','Labels','Múltiples servicios'] },
+  { ud:'UD06', title:'WordPress con Docker Compose',                 stack:['compose.yml','WordPress','MySQL','Volúmenes','depends_on'] },
+  { ud:'UD06', title:'Django con Docker Compose',                    stack:['Django','PostgreSQL','Compose','Migrate','Gunicorn'] },
+  { ud:'UD06', title:'Nginx + balanceo escalado con Compose',        stack:['Nginx proxy','Apache','compose scale','Load balancing'] },
+  { ud:'UD06', title:'Whisper AI + Web Whisper',                     stack:['OpenAI Whisper','IA local','GPU/CPU','Web UI'] },
+  { ud:'UD06', title:'Bot Telegram con Whisper AI',                  stack:['Telegram Bot API','Whisper','Audio→texto','Python'] },
+  { ud:'UD06', title:'Stable Diffusion con Compose',                 stack:['Stable Diffusion','GPU','IA generativa','Web UI'] },
+  { ud:'UD06', title:'Odoo ERP con Docker Compose',                  stack:['Odoo','PostgreSQL','ERP','Compose'] },
+  { ud:'UD06', title:'DeepSeek R1 (Ollama) + Open WebUI',            stack:['Ollama','DeepSeek R1','LLM local','Open WebUI'] },
+  { ud:'UD07', title:'VS Code en contenedor remoto',                 stack:['Dev Containers','devcontainer.json','VS Code','Remote'] },
+  { ud:'UD07', title:'Portainer CE panel de gestión',                stack:['Portainer','Panel web','Gestión visual','Multi-host'] },
+  { ud:'UD07', title:'LazyDocker interfaz terminal',                 stack:['LazyDocker','TUI','Terminal','Monitor'] },
+  { ud:'UD07', title:'cTop y Glances monitores',                     stack:['cTop','Glances','CPU/RAM','Métricas tiempo real'] },
+  { ud:'UD08', title:'App Flask con Kubernetes',                     stack:['Flask','kubectl','Deployment','Service','Ingress'] },
+  { ud:'UD08', title:'WordPress con Kubernetes',                     stack:['K8s','PersistentVolume','ConfigMap','Secret','Ingress'] },
+];
+
+// ═══════════════════════════════════════
+// RENDER: DOCKER
+// ═══════════════════════════════════════
+
+function renderDockerCurso() {
+  // Fundamentos
+  const fundGrid = document.getElementById('dk-fund-cards');
+  DK_FUNDAMENTOS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'dk-card';
+    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
+      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+      <div class="dk-card-cat">${c.cat}</div>
+      <div class="dk-card-def">${c.def}</div>
+      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+    fundGrid.appendChild(card);
+  });
+
+  // CheatSheet
+  const table = document.getElementById('dk-cheat-table');
+  table.innerHTML = '<thead><tr><th>Comando</th><th>Qué hace</th><th>Opciones / notas</th></tr></thead>';
+  const tbody = document.createElement('tbody');
+  DK_CHEATSHEET.forEach(row => {
+    const tr = document.createElement('tr');
+    if (row.section) {
+      tr.className = 'section-row';
+      tr.innerHTML = `<td colspan="3">${row.section}</td>`;
+    } else {
+      tr.innerHTML = `<td>${row.cmd}</td><td>${row.desc}</td><td>${row.note}</td>`;
+    }
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+
+  // Dockerfile
+  const dfWrap = document.getElementById('dk-dockerfile-lines');
+  DK_DOCKERFILE.forEach(l => {
+    const div = document.createElement('div');
+    div.className = 'df-line';
+    div.innerHTML = `<span class="df-instr">${l.instr}</span><span class="df-code">${l.code}</span><span class="df-desc">${l.desc}</span>`;
+    dfWrap.appendChild(div);
+  });
+  const imgGrid = document.getElementById('dk-img-cards');
+  DK_IMG_CARDS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'dk-card';
+    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
+      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+      <div class="dk-card-cat">${c.cat}</div>
+      <div class="dk-card-def">${c.def}</div>
+      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+    imgGrid.appendChild(card);
+  });
+
+  // Networks
+  const netGrid = document.getElementById('dk-net-grid');
+  DK_NETWORKS.forEach(n => {
+    const card = document.createElement('div');
+    card.className = 'net-card';
+    card.innerHTML = `<div class="net-name" style="color:${n.color}">${n.name}</div>
+      <div class="net-type">${n.type}</div>
+      <div class="net-desc">${n.desc}</div>
+      <div class="net-cmd">${n.cmd}</div>`;
+    netGrid.appendChild(card);
+  });
+  // Volumes
+  const volGrid = document.getElementById('dk-vol-grid');
+  DK_VOLUMES.forEach(v => {
+    const col = document.createElement('div');
+    col.className = 'vol-col';
+    col.innerHTML = `<div class="vol-name" style="color:${v.color}">${v.name}</div>
+      <div class="vol-sub">${v.sub}</div>
+      <div class="vol-desc">${v.desc}</div>
+      <div class="vol-when">${v.when}</div>`;
+    volGrid.appendChild(col);
+  });
+  // Net concepts
+  const netConc = document.getElementById('dk-net-concepts');
+  DK_NET_CONCEPTS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'dk-card';
+    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
+      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+      <div class="dk-card-cat">${c.cat}</div>
+      <div class="dk-card-def">${c.def}</div>
+      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+    netConc.appendChild(card);
+  });
+
+  // Compose anatomy
+  const composeWrap = document.getElementById('dk-compose-anatomy');
+  DK_COMPOSE_ANATOMY.forEach(section => {
+    const sec = document.createElement('div');
+    sec.className = 'compose-section';
+    sec.innerHTML = `<div class="compose-key">${section.key}</div>
+      <div class="compose-fields">${section.fields.map(f =>
+        `<div class="compose-field">
+          <div class="compose-field-key">${f.k}</div>
+          <div class="compose-field-desc">${f.d}</div>
+        </div>`).join('')}</div>`;
+    composeWrap.appendChild(sec);
+  });
+  // Compose cards
+  const compGrid = document.getElementById('dk-compose-cards');
+  DK_COMPOSE_CARDS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'dk-card';
+    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
+      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+      <div class="dk-card-cat">${c.cat}</div>
+      <div class="dk-card-def">${c.def}</div>
+      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+    compGrid.appendChild(card);
+  });
+
+  // Tools
+  const toolGrid = document.getElementById('dk-tools-grid');
+  DK_TOOLS.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'tool-card';
+    card.innerHTML = `<div class="tool-name" style="color:${t.color}">${t.name}</div>
+      <div class="tool-kind">${t.kind}</div>
+      <div class="tool-desc">${t.desc}</div>
+      <div class="tool-cmd dk-card-cmd">${t.cmd}</div>`;
+    toolGrid.appendChild(card);
+  });
+
+  // K8s concepts
+  const k8sConc = document.getElementById('dk-k8s-concepts');
+  DK_K8S_CONCEPTS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'dk-card';
+    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
+      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+      <div class="dk-card-cat">${c.cat}</div>
+      <div class="dk-card-def">${c.def}</div>
+      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+    k8sConc.appendChild(card);
+  });
+  const k8sObj = document.getElementById('dk-k8s-objects');
+  DK_K8S_OBJECTS.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'k8s-card';
+    card.innerHTML = `<div class="k8s-name" style="color:${o.color}">${o.name}</div>
+      <div class="k8s-layer">${o.layer}</div>
+      <div class="k8s-desc">${o.desc}</div>`;
+    k8sObj.appendChild(card);
+  });
+
+  // Cases
+  const casesGrid = document.getElementById('dk-cases-grid');
+  DK_CASES.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'case-card';
+    card.innerHTML = `<div class="case-ud">${c.ud}</div>
+      <div class="case-title">${c.title}</div>
+      <div class="case-stack">${c.stack.map(s=>`<span class="case-pill">${s}</span>`).join('')}</div>`;
+    casesGrid.appendChild(card);
+  });
+}
+
+function showDkTab(id, btn) {
+  document.querySelectorAll('.dk-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.dk-stab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// DATA: DS TOOLS
+// ═══════════════════════════════════════
+
+// Tool shape: { id, name, url, type, cat, desc, emoji }
+// Storage key: 'dst_tools_v1'  (localStorage for persistence)
+
+const DST_DEFAULT_CATS = [
+  { id:'color',        label:'Color',               emoji:'🎨' },
+  { id:'tipografia',   label:'Tipografía',           emoji:'🔤' },
+  { id:'espaciado',    label:'Espaciado y Layout',   emoji:'📐' },
+  { id:'tokens',       label:'Tokens y Variables',   emoji:'🪙' },
+  { id:'accesibilidad',label:'Accesibilidad',        emoji:'♿' },
+  { id:'iconos',       label:'Iconos',               emoji:'🔷' },
+  { id:'componentes',  label:'Componentes',          emoji:'🧩' },
+  { id:'documentacion',label:'Documentación',        emoji:'📚' },
+  { id:'inspeccion',   label:'Inspección CSS',       emoji:'🔍' },
+  { id:'colaboracion', label:'Colaboración',         emoji:'🤝' },
+  { id:'otros',        label:'Otros',                emoji:'⚡' },
+];
+
+const DST_SEED_TOOLS = [
+  {
+    id: 'csspeeper',
+    name: 'CSS Peeper',
+    url: 'https://csspeeper.com',
+    type: 'Extensión',
+    cat: 'inspeccion',
+    emoji: '🔍',
+    desc: 'Extensión de Chrome usada por +500k diseñadores y devs. Inspecciona los estilos CSS de cualquier web con un clic: colores, tipografías, espaciados, assets. Exporta paletas completas sin abrir el inspector del browser.',
+  },
+  {
+    id: 'cssstats',
+    name: 'CSS Stats',
+    url: 'https://cssstats.com',
+    type: 'Web App',
+    cat: 'inspeccion',
+    emoji: '📊',
+    desc: 'Analiza el CSS de cualquier URL y devuelve estadísticas detalladas: número de colores únicos, fuentes, selectores, especificidad, tamaño total. Ideal para auditar la consistencia visual de un proyecto antes de crear un Design System.',
+  },
+  {
+    id: 'color-extractly',
+    name: 'Color Extractly · Design Token Studio',
+    url: 'https://www.figma.com/community/plugin/1352239985929481996/color-extractly-design-token-studio',
+    type: 'Plugin Figma',
+    cat: 'color',
+    emoji: '🎨',
+    desc: 'Plugin de Figma para extraer colores de cualquier diseño y exportarlos directamente como Design Tokens. Compatible con Token Studio. Acelera enormemente la creación de la paleta de color del sistema desde archivos Figma existentes.',
+  },
+];
+
+// ═══════════════════════════════════════
+// DS TOOLS STATE
+// ═══════════════════════════════════════
+
+function dstLoad() {
+  try {
+    const raw = localStorage.getItem('dst_tools_v1');
+    return raw ? JSON.parse(raw) : [...DST_SEED_TOOLS];
+  } catch(e) { return [...DST_SEED_TOOLS]; }
+}
+
+function dstSave(tools) {
+  try { localStorage.setItem('dst_tools_v1', JSON.stringify(tools)); } catch(e) {}
+}
+
+let DST_TOOLS = dstLoad();
+let DST_ACTIVE_CAT = 'color';
+
+// ═══════════════════════════════════════
+// DS TOOLS RENDER
+// ═══════════════════════════════════════
+
+function renderDsTools() {
+  // Populate category select in form
+  const catSelect = document.getElementById('dst-inp-cat');
+  catSelect.innerHTML = DST_DEFAULT_CATS.map(c =>
+    `<option value="${c.id}">${c.emoji} ${c.label}</option>`
+  ).join('');
+
+  dstRenderAll();
+}
+
+function dstRenderAll() {
+  const tabsWrap = document.getElementById('dst-cat-tabs');
+  const panelsWrap = document.getElementById('dst-panels-wrap');
+
+  tabsWrap.innerHTML = '';
+  panelsWrap.innerHTML = '';
+
+  DST_DEFAULT_CATS.forEach(cat => {
+    const tools = DST_TOOLS.filter(t => t.cat === cat.id);
+
+    // Tab button
+    const btn = document.createElement('button');
+    btn.className = 'dst-ctab' + (cat.id === DST_ACTIVE_CAT ? ' active' : '');
+    btn.innerHTML = `${cat.emoji} ${cat.label} <span class="cat-count-badge">${tools.length}</span>`;
+    btn.onclick = () => { DST_ACTIVE_CAT = cat.id; dstRenderAll(); };
+    tabsWrap.appendChild(btn);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'dst-cat-panel' + (cat.id === DST_ACTIVE_CAT ? ' active' : '');
+    panel.id = 'dst-panel-' + cat.id;
+
+    if (tools.length === 0) {
+      panel.innerHTML = `<div class="dst-empty">Sin herramientas en esta categoría todavía.<br>Añade la primera con el formulario de arriba.</div>`;
+    } else {
+      const grid = document.createElement('div');
+      grid.className = 'dst-grid';
+      tools.forEach(tool => {
+        const card = document.createElement('div');
+        card.className = 'dst-card';
+        card.innerHTML = `
+          <div class="dst-card-top">
+            <div class="dst-card-icon" style="background:rgba(192,132,252,0.08)">${tool.emoji || '🔧'}</div>
+            <div class="dst-card-meta">
+              <div class="dst-card-name">${tool.name}</div>
+              <div class="dst-card-type">${tool.type}</div>
+            </div>
+          </div>
+          <div class="dst-card-desc">${tool.desc}</div>
+          <div class="dst-card-footer">
+            <span class="dst-card-tag">${DST_DEFAULT_CATS.find(c=>c.id===tool.cat)?.label || tool.cat}</span>
+            <a class="dst-card-link" href="${tool.url}" target="_blank" rel="noopener">↗ abrir</a>
+            <button class="dst-card-delete" onclick="dstDeleteTool('${tool.id}')" title="Eliminar">✕</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      panel.appendChild(grid);
+    }
+
+    panelsWrap.appendChild(panel);
+  });
+}
+
+function dstAddTool() {
+  const name  = document.getElementById('dst-inp-name').value.trim();
+  const url   = document.getElementById('dst-inp-url').value.trim();
+  const type  = document.getElementById('dst-inp-type').value;
+  const cat   = document.getElementById('dst-inp-cat').value;
+  const desc  = document.getElementById('dst-inp-desc').value.trim();
+  const emoji = document.getElementById('dst-inp-emoji').value.trim() || '🔧';
+
+  if (!name || !url) {
+    document.getElementById('dst-inp-name').style.borderColor = '#f09090';
+    document.getElementById('dst-inp-url').style.borderColor  = !url ? '#f09090' : '';
+    setTimeout(() => {
+      document.getElementById('dst-inp-name').style.borderColor = '';
+      document.getElementById('dst-inp-url').style.borderColor  = '';
+    }, 1500);
+    return;
+  }
+
+  const tool = {
+    id:    'tool_' + Date.now(),
+    name, url, type, cat, desc, emoji,
+  };
+
+  DST_TOOLS.push(tool);
+  dstSave(DST_TOOLS);
+
+  // Clear form
+  ['dst-inp-name','dst-inp-url','dst-inp-desc','dst-inp-emoji'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+
+  DST_ACTIVE_CAT = cat;
+  dstRenderAll();
+}
+
+function dstDeleteTool(id) {
+  DST_TOOLS = DST_TOOLS.filter(t => t.id !== id);
+  dstSave(DST_TOOLS);
+  dstRenderAll();
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+renderFrameworks();
+renderGlossary();
+renderVibetips();
+renderHosting();
+renderDespliegue();
+renderDockerCurso();
+renderDsTools();
+renderRoadmap();
+</script>
+</body>
+</html>
