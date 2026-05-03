@@ -123,7 +123,7 @@
   <div class="panel-header">
     <div>
       <div class="panel-title" style="color:var(--td)">Diseño</div>
-      <div class="panel-desc">Design Systems · Herramientas de UI · Accesibilidad</div>
+      <div class="panel-desc">Design Systems · Herramientas de UI · Gestión de color · Accesibilidad</div>
     </div>
   </div>
 
@@ -140,6 +140,9 @@
       </button>
       <button class="diseno-navitem" data-dsec="ds-tools-sec" onclick="showDisenoSection('ds-tools-sec',this)">
         <span class="navitem-icon">🧰</span> DS Herramientas
+      </button>
+      <button class="diseno-navitem" data-dsec="color-management" onclick="showDisenoSection('color-management',this)">
+        <span class="navitem-icon">🌈</span> Gestión de color
       </button>
       <button class="diseno-navitem" data-dsec="accesibilidad" onclick="showDisenoSection('accesibilidad',this)">
         <span class="navitem-icon">♿</span> Accesibilidad
@@ -260,6 +263,7 @@
           <div class="diseno-section-title">Herramientas de Design Systems &amp; UI</div>
           <div class="diseno-section-desc">Glosario personal · Añade nuevas herramientas con un clic</div>
         </div>
+
         <div class="dst-add-bar">
           <label>NOMBRE</label>
           <input id="dst-inp-name" placeholder="ej: ColorBox by Lyft" />
@@ -283,6 +287,22 @@
         <div class="dst-cat-tabs" id="dst-cat-tabs"></div>
         <div id="dst-panels-wrap"></div>
       </div><!-- /ds-tools-sec -->
+
+      <!-- ── GESTIÓN DE COLOR ── -->
+      <div class="diseno-section" id="diseno-color-management">
+        <div class="diseno-section-header">
+          <div class="diseno-section-title">Color Tips &amp; Gestión de Color</div>
+          <div class="diseno-section-desc">Base teórica y práctica para trabajar color con criterio en producto digital: modos de color, rampas, contraste y tokenización</div>
+        </div>
+
+        <div class="dst-color-hub">
+          <div class="dst-color-hub-top">
+            <div class="dst-color-hub-title">Fundamentos aplicables a producto real</div>
+            <div class="dst-color-hub-desc">Esta sección es viva: iremos añadiendo buenas prácticas, criterios de decisión y ejemplos para diseño y desarrollo.</div>
+          </div>
+          <div class="dst-color-grid" id="dst-color-grid"></div>
+        </div>
+      </div><!-- /color-management -->
 
       <!-- ── ACCESIBILIDAD ── -->
       <div class="diseno-section" id="diseno-accesibilidad">

@@ -106,6 +106,7 @@ const GLOSSARY = [
   {term:'Component Library',cat:'ds',           def:'Colección de componentes UI reutilizables (botones, inputs, modales) con su código y documentación. Es la implementación en código del Design System.', example:'shadcn/ui es una component library: instalas el paquete y tienes Button, Dialog, Input listos para usar con tokens ya configurados.'},
   {term:'Headless Component',cat:'ds',          def:'Componente que provee la lógica y accesibilidad (ARIA, keyboard nav, estados) pero sin estilos visuales. Tú añades el CSS. Máxima flexibilidad visual manteniendo la funcionalidad.', example:'Radix UI provee un Headless Dialog: gestiona el foco, el escape, el overlay y el ARIA, pero tú le pones los estilos que quieras.'},
   {term:'Storybook',       cat:'ds',            def:'Herramienta para desarrollar y documentar componentes UI de forma aislada. Cada componente tiene sus "stories" que muestran todos sus estados posibles. Es la UI del Design System.', example:'En Storybook puedes ver tu Button en estado default, hover, disabled, loading y con icono, todo sin abrir la app real.'},
+  {term:'OKLCH',           cat:'ds',            def:'Modelo de color perceptual: L (lightness), C (chroma) y H (hue). En muchos flujos de diseño el chroma se gestiona como porcentaje relativo para mantener una intensidad coherente entre tonos y estados.', example:'En una rampa: mismo hue, L de 95 a 25 y C ajustado por porcentaje según cada paso para conservar contraste visual.'},
 ];
 
 // ═══════════════════════════════════════
@@ -559,6 +560,13 @@ const DSG_TERMS = [
     related: ['Design Token', 'Multidimensional', 'Theming'],
   },
   {
+    term: 'OKLCH Chroma (%)', en: 'OKLCH Chroma Percentage', cat: 'tokens',
+    def: 'En flujos basados en OKLCH, el canal C (chroma) puede expresarse y gestionarse como proporción o porcentaje relativo respecto al máximo útil del tono, no como valor absoluto fijo. Esto ayuda a construir rampas más uniformes perceptualmente y evita saltos bruscos de saturación entre pasos.',
+    features: ['C controla intensidad/saturación percibida', 'Gestionarlo por porcentaje mantiene coherencia entre pasos 50–950', 'Facilita adaptación a light/dark sin recalcular todo', 'Mejora decisiones de contraste para accesibilidad', 'Evita oversaturation en tonos medios y oscuros'],
+    example: 'Mismo hue (H=260): paso 100 con C al 12%, paso 500 al 36%, paso 900 al 18% (porcentaje relativo), ajustando L para lograr contraste AA/AAA según el uso.',
+    related: ['OKLCH', 'Color Scale', 'Design Token', 'Theming', 'Accesibilidad'],
+  },
+  {
     term: 'Typographic Scale', en: 'Typographic Scale', cat: 'tokens',
     def: 'Sistema de tamaños, pesos y espacios de línea para tipografía consistente. Basado en ratios o pasos discretos (xs, sm, base, lg, xl, 2xl...). Define no solo tamaño sino también line-height, letter-spacing y peso para cada nivel.',
     features: ['Ratios consistentes (1.25x, 1.5x, etc.)', 'Categorías semánticas (xs, sm, base, lg, xl)', 'Múltiples pesos por tamaño si aplica', 'Line-height y letter-spacing integrados', 'Compatible con responsive (cambios por breakpoint)'],
@@ -641,6 +649,76 @@ const DSG_TERMS = [
     features: ['Sub-sets: Logged Out, Logged In', 'Variables para visibility, button labels, menu items', 'Iconografía diferente por estado (user icon vs profile badge)', 'Facilita auth flow design', 'Testing de conditional rendering en Figma', 'Navega diferente según estado'],
     example: 'Variable: Auth/Logged Out/menu-items = [Home, About, Log in, Sign up] · Auth/Logged In/menu-items = [Home, About, Courses, Profile (AP), Logout]. UI cambia automáticamente al switchear.',
     related: ['Theming', 'Multidimensional', 'Conditional Component Patterns'],
+  },
+  {
+    term: 'Extended Collections', en: 'Extended Collections', cat: 'figma',
+    def: 'Patrón avanzado de organización de variables en Figma Enterprise donde una colección base (core) puede extenderse por colecciones derivadas que solo sobrescriben (override) los valores necesarios. Evita duplicar todo el sistema por cada marca y mejora mantenibilidad multimarca.',
+    features: ['Herencia de variables core', 'Overrides mínimos por marca o contexto', 'Menos duplicación de tokens', 'Escalado más limpio cuando crecen marcas/modos', 'Reduce listas gigantes de variables'],
+    example: 'Core/color.text.primary = #111; Brand B solo sobrescribe color.accent.* y hereda el resto del core sin copiar toda la colección.',
+    related: ['Brands collection', 'Multibrand', 'Design Token', 'Theming'],
+  },
+  {
+    term: 'Slots', en: 'Slots / Space Property', cat: 'figma',
+    def: 'Mecanismo para reservar un hueco configurable dentro de un componente y permitir insertar instancias distintas sin crear una variante por cada combinación posible. Es clave para organismos complejos (cards, modals, headers) sin explosión de variantes.',
+    features: ['Composición flexible en Figma', 'Menos variantes difíciles de mantener', 'Mayor reutilización de componentes base', 'Modela contenido dinámico en diseño'],
+    example: 'Un componente Card define un slot de media: hoy insertas icono, mañana avatar o ilustración, sin crear Card-icon, Card-avatar, Card-illustration.',
+    related: ['Composition', 'Compound Component', 'Component API'],
+  },
+  {
+    term: 'APCA', en: 'Advanced Perceptual Contrast Algorithm', cat: 'tokens',
+    def: 'Modelo de contraste perceptual que estima mejor la legibilidad real en diferentes fondos, tamaños y pesos, especialmente útil en dark mode. No reemplaza automáticamente el cumplimiento legal WCAG vigente, pero aporta una señal práctica de calidad visual más realista en interfaces modernas.',
+    features: ['Sensibilidad a polaridad (texto claro sobre oscuro vs oscuro sobre claro)', 'Más útil en fondos oscuros complejos', 'Complementa métricas WCAG 2.x', 'Ayuda a priorizar legibilidad efectiva'],
+    example: 'Un par de colores puede pasar WCAG AA y aun así sentirse débil en dark mode; APCA detecta ese problema perceptual y sugiere ajuste de L/C.',
+    related: ['OKLCH Chroma (%)', 'Theming', 'Color Scale', 'Accesibilidad'],
+  },
+  {
+    term: 'Token Pipeline', en: 'Design Token Pipeline', cat: 'proceso',
+    def: 'Flujo automatizado que conecta diseño y código: definición de tokens, versionado, transformación por plataforma y publicación de artefactos listos para consumo. Es la base operativa para escalar un Design System multimarca sin depender de copias manuales.',
+    features: ['Fuente de verdad única', 'Push/Pull entre diseño y repositorio', 'Build reproducible por entorno', 'Publicación versionada de tokens', 'Reduce drift entre Figma y código'],
+    example: 'Figma/Tokens Studio -> GitHub (JSON) -> Style Dictionary -> CSS variables + iOS + Android -> release del paquete de tokens.',
+    related: ['Design Token', 'Style Dictionary', 'Tokens Studio', 'Theming'],
+  },
+  {
+    term: 'Style Dictionary', en: 'Style Dictionary', cat: 'proceso',
+    def: 'Herramienta de transformación de design tokens que convierte un formato fuente (JSON) en salidas específicas para cada plataforma. Permite centralizar naming, escalas y formatos de salida para web, iOS, Android o sistemas propietarios.',
+    features: ['Transformaciones por plataforma', 'Build configurable por tema/marca', 'Output en múltiples formatos', 'Automatizable en CI/CD'],
+    example: 'Con un solo comando generas tokens CSS, Android XML e iOS Swift a partir de la misma fuente de datos.',
+    related: ['Token Pipeline', 'Design Token', 'Theming'],
+  },
+  {
+    term: 'Web Components en DS', en: 'Web Components for Design Systems', cat: 'componentes',
+    def: 'Estrategia para construir componentes encapsulados y agnósticos de framework, reutilizables en ecosistemas React, Vue, Angular o vanilla. Muy útil en organizaciones multimarca y multi-stack donde mantener librerías separadas por framework sería costoso.',
+    features: ['Interoperabilidad entre frameworks', 'Encapsulación por Shadow DOM (según estrategia)', 'Contrato estable de API por atributos/eventos', 'Ideal para plataformas heterogéneas'],
+    example: 'Un mismo <x-button> puede consumirse en React y Angular sin reescribir lógica base de accesibilidad y comportamiento.',
+    related: ['Headless', 'Component API', 'Multibrand'],
+  },
+  {
+    term: 'Snowflakes', en: 'Snowflake Components', cat: 'gobernanza',
+    def: 'Componentes o variaciones que solo necesita una marca o contexto muy específico. No son un fallo por sí mismos: el problema aparece cuando entran sin control al core del sistema y erosionan su coherencia.',
+    features: ['Excepciones legítimas en multimarca', 'Deben vivir fuera del core por defecto', 'Necesitan revisión periódica', 'Riesgo de deuda si se multiplican'],
+    example: 'Un widget promocional exclusivo para Brand C se mantiene en capa de marca, no en el paquete central de componentes.',
+    related: ['Multibrand', 'Component Maturity', 'Gobernanza'],
+  },
+  {
+    term: 'Federated Governance', en: 'Federated Governance Model', cat: 'gobernanza',
+    def: 'Modelo de gobernanza donde existe un equipo core que define estándares globales y equipos de producto/marca que contribuyen con necesidades locales. Equilibra consistencia y velocidad, evitando tanto el caos distribuido como el cuello de botella central.',
+    features: ['Core team con decisiones globales', 'Contribución distribuida por dominios', 'Reglas claras de aceptación al core', 'Backlog compartido y priorización transparente'],
+    example: 'El core define tokens y componentes base; Brand squads proponen extensiones vía RFC y solo las generalizables se promueven al sistema central.',
+    related: ['Snowflakes', 'Design System (DS)', 'Component Maturity'],
+  },
+  {
+    term: 'DS Maturity Horizon', en: 'Design System Maturity Horizon', cat: 'proceso',
+    def: 'Marco temporal para entender que un Design System multimarca no madura en semanas. Normalmente requiere 18-24 meses para estabilizar lenguaje, componentes, pipeline técnico y adopción real en producto y desarrollo.',
+    features: ['Expectativas realistas con negocio', 'Plan por fases (fundación, adopción, escalado, optimización)', 'Métricas progresivas según etapa', 'Evita abandono prematuro'],
+    example: 'Fase 1: core tokens y base components; fase 2: adopción y docs; fase 3: multimarca/automatización; fase 4: optimización y métricas de ROI.',
+    related: ['Token Pipeline', 'Federated Governance', 'Design System (DS)'],
+  },
+  {
+    term: 'Tipografía semántica multimarca', en: 'Multibrand Semantic Typography', cat: 'tokens',
+    def: 'Estrategia tipográfica donde los tokens se nombran por función (title-1, body-2, label-sm) en vez de por tamaño absoluto. Cada marca asigna su familia, peso y ajustes ópticos a esos roles, preservando consistencia funcional aunque cambien las fuentes.',
+    features: ['Roles tipográficos estables entre marcas', 'Mapeo por marca sin romper componentes', 'Mejor compatibilidad con fuentes heterogéneas', 'Facilita theming y accesibilidad'],
+    example: 'title-1 en Brand A usa 700/44px y en Brand B usa 600/42px; ambos mantienen la misma jerarquía en UI.',
+    related: ['Typographic Scale', 'Multibrand', 'Theming'],
   },
 ];
 
@@ -1362,6 +1440,146 @@ const DST_SEED_TOOLS = [
     emoji: '🪙',
     desc: 'Sistema nativo de variables en Figma (sin plugins). Soporta colores, números, strings, booleanos. Vinculación bidireccional con componentes. Modos para themes (light/dark, brand A/B). Sintaxis export-to-code con APIs oficiales. El futuro del token management en Figma.',
   },
+  {
+    id: 'style-dictionary',
+    name: 'Style Dictionary',
+    url: 'https://amzn.github.io/style-dictionary',
+    type: 'CLI',
+    cat: 'tokens',
+    emoji: '🧰',
+    desc: 'Herramienta open source de Amazon para transformar Design Tokens en artefactos por plataforma (CSS, iOS, Android, etc.). Pieza central para pipelines de tokenización multimarca y publicación automatizada.',
+  },
+  {
+    id: 'shoelace',
+    name: 'Shoelace (Web Components)',
+    url: 'https://shoelace.style',
+    type: 'Component Library Open Source',
+    cat: 'componentes',
+    emoji: '🧩',
+    desc: 'Biblioteca de componentes basada en Web Components, agnóstica de framework. Muy útil para equipos multi-stack que necesitan una base común de componentes reutilizables en React, Vue, Angular o vanilla.',
+  },
+  {
+    id: 'open-props',
+    name: 'Open Props',
+    url: 'https://open-props.style',
+    type: 'Librería',
+    cat: 'tokens',
+    emoji: '🪙',
+    desc: 'Colección de variables CSS predefinidas para color, tipografía, spacing y motion. Útil como referencia de naming y escalas al bootstrapear un sistema de tokens antes de personalizarlo.',
+  },
+];
+
+const DST_COLOR_TIPS = [
+  {
+    kicker: 'Fundamentos',
+    title: 'OKLCH en práctica: qué significa cada canal',
+    text: 'OKLCH describe el color de forma perceptual: L (lightness) controla claridad, C (chroma) controla intensidad y H (hue) define el tono. La ventaja frente a HSL es que los cambios son más uniformes para el ojo humano, especialmente cuando construyes escalas para UI.',
+    points: [
+      'L te ayuda a ordenar jerarquía visual y contraste entre superficies.',
+      'C regula saturación útil sin romper legibilidad de texto/iconos.',
+      'H mantiene coherencia de familia cromática en toda la rampa.',
+    ],
+  },
+  {
+    kicker: 'Rampas',
+    title: 'Chroma en porcentaje relativo: por qué importa',
+    text: 'En flujos de OKLCH, muchas veces conviene tratar C como una proporción o porcentaje relativo por escalón, no como un valor absoluto fijo. Esto evita que tonos medios queden demasiado saturados o que los oscuros se ensucien, y produce rampas más estables visualmente.',
+    points: [
+      'Ejemplo típico: en 100 y 900 usas menos porcentaje de C que en 400-600.',
+      'El mismo porcentaje no siempre vale para todos los hue; ajusta por familia.',
+      'Después de generar la rampa, valida contraste real AA/AAA en contexto.',
+    ],
+  },
+  {
+    kicker: 'Modos de color',
+    title: 'sRGB, Display P3, Lab/LCH y OKLab/OKLCH',
+    text: 'No todos los modos de color sirven para lo mismo. sRGB es el estándar web más seguro en compatibilidad; Display P3 ofrece gamut más amplio en pantallas modernas; Lab/LCH y OKLab/OKLCH son excelentes para calcular y diseñar rampas perceptuales, aunque el output final suele mapearse a sRGB/P3 según soporte.',
+    points: [
+      'sRGB: máxima compatibilidad cross-device.',
+      'Display P3: colores más vivos en dispositivos compatibles.',
+      'OKLCH: ideal para diseñar tokens de color consistentes.',
+    ],
+  },
+  {
+    kicker: 'Tematización',
+    title: 'Light, Dark y High Contrast no son invertir colores',
+    text: 'Cada modo necesita intención semántica. Light mode suele priorizar superficie clara y acentos contenidos; dark mode requiere elevar contraste local en texto y componentes interactivos; high contrast prioriza legibilidad extrema, bordes claros y reducción de ambiguedad cromática.',
+    points: [
+      'Define tokens semánticos por rol: surface, text, border, accent, danger.',
+      'No reutilices exactamente la misma rampa en dark sin recalibrar L y C.',
+      'Considera forced-colors y preferencias del sistema cuando aplique.',
+    ],
+  },
+  {
+    kicker: 'Accesibilidad',
+    title: 'Contraste: medir por uso real, no por intuición',
+    text: 'La relación de contraste depende del par final (foreground/background) y del tamaño/peso tipográfico. Una paleta bonita puede fallar si no se prueba en estados reales (hover, disabled, badges, overlays). Usa contraste como criterio de diseño desde el inicio, no como chequeo final.',
+    points: [
+      'Texto normal: apunta como base a nivel AA.',
+      'UI crítica y contenido clave: considera umbrales más exigentes.',
+      'Valida también componentes sobre fondos tintados y gradientes.',
+    ],
+  },
+  {
+    kicker: 'Operativa DS',
+    title: 'Pipeline recomendado para gestión de color',
+    text: 'Un flujo robusto suele ser: 1) definir intentos semánticos, 2) construir rampas en OKLCH, 3) validar contraste por casos de uso, 4) exportar tokens a Figma y código, 5) monitorizar regresiones visuales. Así el color deja de ser artesanal y pasa a ser un sistema mantenible.',
+    points: [
+      'Trabaja con nomenclatura semántica (color.text.primary) y no por hex directo.',
+      'Documenta decisiones: por qué ese C%, por qué ese umbral de contraste.',
+      'Versiona cambios de tokens igual que versionas componentes.',
+    ],
+  },
+  {
+    kicker: 'Contraste avanzado',
+    title: 'APCA vs WCAG: cómo usar ambos sin contradicciones',
+    text: 'Para cumplimiento formal, WCAG 2.x sigue siendo la referencia principal. Para calidad perceptual real, especialmente en dark mode, APCA ayuda a detectar pares que pasan AA pero se sienten pobres al leer. La práctica recomendable es combinarlos: cumplimiento con WCAG + validación perceptual con APCA en casos críticos de UI.',
+    points: [
+      'WCAG te da umbrales legales y comparables.',
+      'APCA aporta sensibilidad a polaridad, peso y contexto visual.',
+      'Si hay conflicto, prioriza legibilidad real y documenta la decisión.',
+    ],
+  },
+  {
+    kicker: 'Dark mode',
+    title: 'Regla práctica de croma en oscuro (10-20%)',
+    text: 'En superficies oscuras, colores muy saturados vibran más y fatigan antes. Como punto de partida, suele funcionar reducir chroma entre 10% y 20% respecto a la versión light, ajustando después por hue y caso de uso. No es una fórmula universal, pero sí una heurística útil para iterar rápido sin perder consistencia.',
+    points: [
+      'Reduce más en acentos de uso frecuente y texto coloreado.',
+      'Revisa estados hover/focus: suelen necesitar menos croma del esperado.',
+      'Valida en dispositivos reales con brillo alto y bajo.',
+    ],
+  },
+  {
+    kicker: 'Figma strategy',
+    title: 'Colecciones, modos y herencia sin caos',
+    text: 'La organización de variables impacta rendimiento y mantenimiento. Conviene separar por dominios (color, typo, spacing) y evitar colecciones monolíticas. En escenarios enterprise, usa colecciones extendidas para heredar core y sobrescribir solo diferencias de marca o tema.',
+    points: [
+      'Core estable + overrides mínimos por marca/contexto.',
+      'Evita listas infinitas con naming ambiguo.',
+      'Alinea estructura de Figma con estructura de tokens en código.',
+    ],
+  },
+  {
+    kicker: 'Tipografía',
+    title: 'Semántica tipográfica para marcas con fuentes distintas',
+    text: 'En multimarca, lo robusto es definir roles tipográficos (title-1, body-1, caption) y no tamaños fijos por nombre de estilo. Así cada marca mapea su familia, peso y microajustes ópticos manteniendo jerarquía y comportamiento coherente en producto.',
+    points: [
+      'Los componentes consumen roles, no familias concretas.',
+      'Evitas romper layouts al cambiar de marca o idioma.',
+      'Facilita accesibilidad y mantenimiento de largo plazo.',
+    ],
+  },
+  {
+    kicker: 'Gobernanza',
+    title: 'Snowflakes con control: excepción sin contaminar el core',
+    text: 'Las excepciones por marca son inevitables. La clave no es prohibirlas, sino gobernarlas: definir dónde viven, cuándo caducan y cómo se evalúa si deben subir al core. Sin este marco, el sistema se fragmenta y pierde su ventaja de escala.',
+    points: [
+      'Por defecto, snowflakes fuera del paquete central.',
+      'Revisión trimestral para eliminar o promover patrones repetidos.',
+      'Criterio de promoción: reutilización comprobada en más de un contexto.',
+    ],
+  },
 ];
 
 // ═══════════════════════════════════════
@@ -1389,6 +1607,19 @@ let DST_ACTIVE_CAT = 'color';
 function renderDsTools() {
   // Populate category select in form
   const catSelect = document.getElementById('dst-inp-cat');
+  const colorGrid = document.getElementById('dst-color-grid');
+
+  if (colorGrid) {
+    colorGrid.innerHTML = DST_COLOR_TIPS.map(t => `
+      <article class="dst-color-card">
+        <div class="dst-color-kicker">${t.kicker}</div>
+        <div class="dst-color-title">${t.title}</div>
+        <div class="dst-color-text">${t.text}</div>
+        <ul class="dst-color-points">${t.points.map(p => `<li>${p}</li>`).join('')}</ul>
+      </article>
+    `).join('');
+  }
+
   catSelect.innerHTML = DST_DEFAULT_CATS.map(c =>
     `<option value="${c.id}">${c.emoji} ${c.label}</option>`
   ).join('');
