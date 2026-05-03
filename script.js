@@ -318,7 +318,7 @@ function renderVibetips() {
     filters.appendChild(btn);
   });
 
-  VIBETIPS.forEach(tip => {
+  VIBETIPS.forEach((tip, i) => {
     const card = document.createElement('div');
     card.className = 'vibe-card'; card.dataset.fw = tip.fw;
     card.innerHTML = `
@@ -328,7 +328,7 @@ function renderVibetips() {
       </div>
       <div class="vibe-title">${tip.title}</div>
       <div class="vibe-desc">${tip.desc}</div>
-      <div class="vibe-prompt" id="vp-${VIBETIPS.indexOf(tip)}">${tip.prompt}<button class="copy-btn" onclick="copyPrompt(${VIBETIPS.indexOf(tip)},this)">copiar</button></div>
+      <div class="vibe-prompt" id="vp-${i}">${tip.prompt}<button class="copy-btn" onclick="copyPrompt(${i},this)">copiar</button></div>
     `;
     grid.appendChild(card);
   });
@@ -403,12 +403,15 @@ function showStab(id, btn, prefix) {
   btn.classList.add('active');
 }
 
-function showDsTab(id, btn) {
-  document.querySelectorAll('.ds-panel').forEach(p=>p.style.display='none');
-  document.querySelectorAll('.ds-stab').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).style.display='block';
+// Generic panel+tab switcher
+function _sp(panelSel, btnSel, id, btn) {
+  document.querySelectorAll(panelSel).forEach(p => p.classList.remove('active'));
+  document.querySelectorAll(btnSel).forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
   btn.classList.add('active');
 }
+
+function showDsTab(id, btn)  { _sp('.ds-panel',      '.ds-stab',  id, btn); }
 
 function showDisenoSection(id, btn) {
   document.querySelectorAll('.diseno-section').forEach(s => s.classList.remove('active'));
@@ -418,12 +421,7 @@ function showDisenoSection(id, btn) {
   if (id === 'ds-glosario') renderDsGlosario();
 }
 
-function showA11yTab(id, btn) {
-  document.querySelectorAll('.a11y-tabpanel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.a11y-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
+function showA11yTab(id, btn) { _sp('.a11y-tabpanel', '.a11y-tab', id, btn); }
 
 // ═══════════════════════════════════════
 // DATA: DS GLOSARIO
@@ -891,12 +889,7 @@ function renderDepCards(containerId, items) {
   });
 }
 
-function showDepTab(id, btn) {
-  document.querySelectorAll('.dep-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.dep-stab').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
+function showDepTab(id, btn) { _sp('.dep-panel', '.dep-stab', id, btn); }
 
 // ═══════════════════════════════════════
 // DATA: DOCKER CURSO
@@ -1100,20 +1093,21 @@ const DK_CASES = [
 // RENDER: DOCKER
 // ═══════════════════════════════════════
 
+// Shared dk-card template + append helper
+const dkCard = c => `<div class="dk-card-bar" style="background:${c.color}"></div>
+  <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
+  <div class="dk-card-cat">${c.cat}</div>
+  <div class="dk-card-def">${c.def}</div>
+  ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
+  ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
+
+function appendDkCards(gridId, items) {
+  const g = document.getElementById(gridId);
+  items.forEach(c => { const el = document.createElement('div'); el.className = 'dk-card'; el.innerHTML = dkCard(c); g.appendChild(el); });
+}
+
 function renderDockerCurso() {
-  // Fundamentos
-  const fundGrid = document.getElementById('dk-fund-cards');
-  DK_FUNDAMENTOS.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'dk-card';
-    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
-      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
-      <div class="dk-card-cat">${c.cat}</div>
-      <div class="dk-card-def">${c.def}</div>
-      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
-      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
-    fundGrid.appendChild(card);
-  });
+  appendDkCards('dk-fund-cards', DK_FUNDAMENTOS);
 
   // CheatSheet
   const table = document.getElementById('dk-cheat-table');
@@ -1139,18 +1133,7 @@ function renderDockerCurso() {
     div.innerHTML = `<span class="df-instr">${l.instr}</span><span class="df-code">${l.code}</span><span class="df-desc">${l.desc}</span>`;
     dfWrap.appendChild(div);
   });
-  const imgGrid = document.getElementById('dk-img-cards');
-  DK_IMG_CARDS.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'dk-card';
-    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
-      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
-      <div class="dk-card-cat">${c.cat}</div>
-      <div class="dk-card-def">${c.def}</div>
-      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
-      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
-    imgGrid.appendChild(card);
-  });
+  appendDkCards('dk-img-cards', DK_IMG_CARDS);
 
   // Networks
   const netGrid = document.getElementById('dk-net-grid');
@@ -1175,18 +1158,7 @@ function renderDockerCurso() {
     volGrid.appendChild(col);
   });
   // Net concepts
-  const netConc = document.getElementById('dk-net-concepts');
-  DK_NET_CONCEPTS.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'dk-card';
-    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
-      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
-      <div class="dk-card-cat">${c.cat}</div>
-      <div class="dk-card-def">${c.def}</div>
-      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
-      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
-    netConc.appendChild(card);
-  });
+  appendDkCards('dk-net-concepts', DK_NET_CONCEPTS);
 
   // Compose anatomy
   const composeWrap = document.getElementById('dk-compose-anatomy');
@@ -1202,18 +1174,7 @@ function renderDockerCurso() {
     composeWrap.appendChild(sec);
   });
   // Compose cards
-  const compGrid = document.getElementById('dk-compose-cards');
-  DK_COMPOSE_CARDS.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'dk-card';
-    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
-      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
-      <div class="dk-card-cat">${c.cat}</div>
-      <div class="dk-card-def">${c.def}</div>
-      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
-      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
-    compGrid.appendChild(card);
-  });
+  appendDkCards('dk-compose-cards', DK_COMPOSE_CARDS);
 
   // Tools
   const toolGrid = document.getElementById('dk-tools-grid');
@@ -1228,18 +1189,7 @@ function renderDockerCurso() {
   });
 
   // K8s concepts
-  const k8sConc = document.getElementById('dk-k8s-concepts');
-  DK_K8S_CONCEPTS.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'dk-card';
-    card.innerHTML = `<div class="dk-card-bar" style="background:${c.color}"></div>
-      <div class="dk-card-name" style="color:${c.color}">${c.name}</div>
-      <div class="dk-card-cat">${c.cat}</div>
-      <div class="dk-card-def">${c.def}</div>
-      ${c.cmd ? `<div class="dk-card-cmd">${c.cmd}</div>` : ''}
-      ${c.tip ? `<div class="dk-card-tip">${c.tip}</div>` : ''}`;
-    k8sConc.appendChild(card);
-  });
+  appendDkCards('dk-k8s-concepts', DK_K8S_CONCEPTS);
   const k8sObj = document.getElementById('dk-k8s-objects');
   DK_K8S_OBJECTS.forEach(o => {
     const card = document.createElement('div');
@@ -1262,12 +1212,7 @@ function renderDockerCurso() {
   });
 }
 
-function showDkTab(id, btn) {
-  document.querySelectorAll('.dk-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.dk-stab').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
+function showDkTab(id, btn) { _sp('.dk-panel', '.dk-stab', id, btn); }
 
 // ═══════════════════════════════════════
 // DATA: DS TOOLS
@@ -1317,6 +1262,24 @@ const DST_SEED_TOOLS = [
     cat: 'color',
     emoji: '🎨',
     desc: 'Plugin de Figma para extraer colores de cualquier diseño y exportarlos directamente como Design Tokens. Compatible con Token Studio. Acelera enormemente la creación de la paleta de color del sistema desde archivos Figma existentes.',
+  },
+  {
+    id: 'figma-color-ramp-generator',
+    name: 'Color Ramp Generator',
+    url: 'https://www.figma.com/community/search?resource_type=plugins&query=Color%20Ramp%20Generator',
+    type: 'Plugin Figma',
+    cat: 'color',
+    emoji: '🌈',
+    desc: 'Plugin de Figma para generar rampas de color (50-900) de forma consistente y validar contraste básico para decisiones de accesibilidad en UI.',
+  },
+  {
+    id: 'ok-color',
+    name: 'OK Color',
+    url: 'https://www.figma.com/community/search?resource_type=plugins&query=OK%20Color',
+    type: 'Plugin Figma',
+    cat: 'color',
+    emoji: '🎯',
+    desc: 'Plugin de Figma para trabajar color en espacios perceptuales tipo OKLCH y construir paletas/rampas más uniformes con mejor control de contraste y accesibilidad.',
   },
   {
     id: 'storybook',
