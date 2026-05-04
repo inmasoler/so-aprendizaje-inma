@@ -44,7 +44,7 @@ body {
   color: var(--text);
   font-family: var(--sans);
   min-height: 100vh;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.6;
 }
 
@@ -312,11 +312,11 @@ th {
 th:first-child { text-align:left; min-width:185px; }
 th:nth-child(2){ text-align:left; min-width:210px; color:var(--faint); }
 
-th.c-fe   { color:#a03020; }
-th.c-meta { color:#1a5a90; }
-th.c-be   { color:#1a7040; }
-th.c-cms  { color:#6030a0; }
-th.c-nc   { color:#a04810; }
+th.c-fe   { color:#a03020; background:rgba(160,48,32,0.12); }
+th.c-meta { color:#1a5a90; background:rgba(26,90,144,0.12); }
+th.c-be   { color:#1a7040; background:rgba(26,112,64,0.12); }
+th.c-cms  { color:#6030a0; background:rgba(96,48,160,0.12); }
+th.c-nc   { color:#a04810; background:rgba(160,72,16,0.12); }
 
 td {
   padding:0.65rem 0.6rem;
