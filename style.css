@@ -380,6 +380,8 @@ tbody tr:last-child td { border-bottom: none; }
 ═══════════════════════════════════════════ */
 .ds-subtabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
 .ds-stab { --tc: var(--t2); border-radius:20px; }
+.ds-panel { display:none; }
+.ds-panel.active { display:block; }
 
 /* shared base for all panel sub-tab pills */
 .ds-stab, .dep-stab, .dk-stab {

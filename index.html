@@ -185,7 +185,7 @@
   </div>
 
   <!-- DS: EFICIENCIA -->
-  <div class="ds-panel" id="ds-eficiencia" style="display:none">
+  <div class="ds-panel" id="ds-eficiencia">
     <div class="ds-note"><strong>La eficiencia tiene dos caras:</strong> la del equipo que hace el DS, y la de los equipos que lo consumen.</div>
     <div class="ds-grid">
       <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Velocidad de entrega</div></div><ul class="ds-list"><li><span>Time to market</span> — antes vs después del DS</li><li><span>Tiempo de diseño de pantalla</span> estándar (benchmarking con/sin DS)</li><li><span>Tiempo de desarrollo</span> de un componente nuevo vs reusar uno</li><li><span>Tiempo de handoff</span> diseño → desarrollo (¿mejora con la doc del DS?)</li><li><span>Ciclos de revisión</span> — cuántas iteraciones necesita un diseño hasta aprobarse</li><li><span>Lead time</span> de un componente nuevo desde petición hasta publicación</li></ul></div>
@@ -196,7 +196,7 @@
   </div>
 
   <!-- DS: CALIDAD -->
-  <div class="ds-panel" id="ds-calidad" style="display:none">
+  <div class="ds-panel" id="ds-calidad">
     <div class="ds-note"><strong>La consistencia es medible.</strong> No hay que quedarse en la percepción subjetiva.</div>
     <div class="ds-grid">
       <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Consistencia visual</div></div><ul class="ds-list"><li><span>Redundancia CSS</span> — duplicados de colores, tipografías, espaciados</li><li><span>Estilos custom</span> fuera del DS en archivos de diseño</li><li><span>Variaciones no documentadas</span> de componentes en producción</li><li><span>Divergencia visual</span> entre productos del mismo ecosistema</li><li><span>Parity diseño-código</span> — % de componentes de Figma con equivalente exacto en código</li></ul></div>
@@ -207,7 +207,7 @@
   </div>
 
   <!-- DS: EQUIPO -->
-  <div class="ds-panel" id="ds-equipo" style="display:none">
+  <div class="ds-panel" id="ds-equipo">
     <div class="ds-note"><strong>Las métricas de equipo son las más ignoradas y las más importantes.</strong> Un DS que nadie quiere usar no vale nada.</div>
     <div class="ds-grid">
       <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">Satisfacción y motivación</div></div><ul class="ds-list"><li><span>Satisfacción laboral</span> — encuestas periódicas sobre cómo se siente el equipo</li><li><span>Aumento de creatividad percibida</span> — ¿el DS libera tiempo para innovar?</li><li><span>Rotación del equipo</span> de diseño como señal de motivación</li><li><span>Compromiso</span> — participación voluntaria en mejoras del DS</li><li><span>Autonomía percibida</span> — ¿sienten que el DS los limita o los empodera?</li><li><span>Framework AMP</span> — autonomía, maestría y propósito (Daniel Pink)</li></ul></div>
@@ -218,7 +218,7 @@
   </div>
 
   <!-- DS: NEGOCIO -->
-  <div class="ds-panel" id="ds-negocio" style="display:none">
+  <div class="ds-panel" id="ds-negocio">
     <div class="ds-note"><strong>Conectar el DS con métricas de negocio es lo que le da peso frente a stakeholders.</strong></div>
     <div class="ds-grid">
       <div class="ds-card"><div class="ds-card-head"><div class="ds-card-dot" style="background:var(--ds-blue)"></div><div class="ds-card-title">ROI y valor económico</div></div><ul class="ds-list"><li><span>Coste de mantener el DS</span> vs coste de no tenerlo (inconsistencias, bugs, duplicación)</li><li><span>Horas de diseño/dev ahorradas</span> × coste hora → valor en €</li><li><span>Reducción de bugs en prod</span> y su coste de resolución</li><li><span>Velocidad de lanzamiento</span> de nuevas features — ¿el DS acelera?</li><li><span>Coste de onboarding</span> antes vs después del DS</li></ul></div>
@@ -229,7 +229,7 @@
   </div>
 
   <!-- DS: TAMAÑO -->
-  <div class="ds-panel" id="ds-tamano" style="display:none">
+  <div class="ds-panel" id="ds-tamano">
     <div class="ds-note"><strong>El tamaño del equipo cambia qué medir, cómo medirlo y qué hacer con los datos.</strong></div>
     <div class="ds-team-grid">
       <div class="ds-team-card"><div class="ds-team-label l-large">Equipos grandes (10+ diseñadores)</div><ul class="ds-list"><li><span>Adopción por equipo/squad</span> — identifica quién no usa y por qué</li><li><span>Gobernanza formal</span> — métricas de contribuciones, PRs, aprobaciones</li><li><span>Cobertura en código</span> con herramientas automáticas (react-scanner, Omlet)</li><li><span>Versión adoptada</span> por repositorio — evitar fragmentación de versiones</li><li><span>Dashboards en tiempo real</span> de uso de componentes</li><li><span>SUS score</span> del DS como producto interno formal</li><li><span>NPS interno</span> con encuestas periódicas estructuradas</li><li><span>Embajadores por equipo</span> como multiplicadores de adopción</li><li><span>ROI documentado</span> para justificar inversión ejecutiva</li><li><span>OKRs formales</span> del equipo del DS alineados con la empresa</li></ul></div>
@@ -821,6 +821,7 @@
 
   <div class="git-subtabs">
     <button class="git-stab active" onclick="showGitTab('git-fundamentos',this)">Fundamentos</button>
+    <button class="git-stab" onclick="showGitTab('git-guia-completa',this)">Guía completa</button>
     <button class="git-stab" onclick="showGitTab('git-conventional',this)">Conventional Commits</button>
     <button class="git-stab" onclick="showGitTab('git-flow',this)">Flujo Git &amp; Rebase</button>
   </div>
@@ -848,6 +849,50 @@
           <li>CHANGELOG: cambios visibles para usuarios/equipo.</li>
         </ul>
       </div>
+    </div>
+  </div>
+
+  <div class="git-panel" id="git-guia-completa">
+    <div class="git-note"><strong>Guía completa de comandos Git:</strong> acciones clave, comando recomendado y para qué sirve cada uno en el flujo diario.</div>
+    <div class="git-table-wrap">
+      <table class="git-table">
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Comando</th>
+            <th>Explicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Configurar usuario</td><td><code>git config --global user.name "Nombre"</code></td><td>Define quién realiza los cambios.</td></tr>
+          <tr><td>Inicializar</td><td><code>git init</code></td><td>Crea un repositorio local nuevo.</td></tr>
+          <tr><td>Clonar</td><td><code>git clone [URL]</code></td><td>Descarga un proyecto remoto a tu PC.</td></tr>
+          <tr><td>Estado actual</td><td><code>git status</code></td><td>Muestra qué archivos has modificado.</td></tr>
+          <tr><td>Preparar cambios</td><td><code>git add [archivo]</code></td><td>Añade archivos al área de staging.</td></tr>
+          <tr><td>Guardar cambios</td><td><code>git commit -m "mensaje"</code></td><td>Crea una foto o versión del proyecto.</td></tr>
+          <tr><td>Ver cambios</td><td><code>git diff</code></td><td>Muestra las líneas exactas que modificaste.</td></tr>
+          <tr><td>Crear nueva rama</td><td><code>git switch -c [nombre]</code></td><td>Crea y te posiciona en una nueva rama.</td></tr>
+          <tr><td>Cambiar de rama</td><td><code>git switch [nombre]</code></td><td>Cambia a una rama existente.</td></tr>
+          <tr><td>Salto rápido</td><td><code>git switch -</code></td><td>Vuelve a la rama donde estabas antes.</td></tr>
+          <tr><td>Fusionar ramas</td><td><code>git merge [rama]</code></td><td>Une el trabajo de una rama a la actual.</td></tr>
+          <tr><td>Historial</td><td><code>git log --oneline</code></td><td>Muestra los commits realizados.</td></tr>
+          <tr><td>Subir cambios</td><td><code>git push -u origin [rama]</code></td><td>Sube tus commits a GitHub.</td></tr>
+          <tr><td>Descargar cambios</td><td><code>git pull</code></td><td>Trae y une el trabajo del servidor.</td></tr>
+          <tr><td>Deshacer cambios</td><td><code>git restore [archivo]</code></td><td>Descarta cambios locales no deseados.</td></tr>
+          <tr><td>Guardar temporal</td><td><code>git stash</code></td><td>Esconde cambios actuales para trabajar en otra cosa.</td></tr>
+          <tr><td>Recuperar guardado</td><td><code>git stash pop</code></td><td>Aplica los cambios que tenías escondidos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="git-card" style="margin-top:0.9rem">
+      <div class="git-card-title">Consejo para tu flujo</div>
+      <div class="git-note" style="margin:0.55rem 0 0 0">Si alguna vez sientes que Git se ha vuelto muy complejo, vuelve a este flujo seguro:</div>
+      <pre class="git-code">git pull
+git switch -c tu-rama
+git add .
+git commit -m "..."
+git push</pre>
     </div>
   </div>
 
