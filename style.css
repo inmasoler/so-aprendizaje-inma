@@ -23,6 +23,7 @@
   --t9: #7c20c0;   /* DS Tools     */
   --td:   #3730a3;   /* Diseño hub   */
   --tgit: #0c7a68;   /* Git & Docs   */
+  --tastro: #c94800; /* Watan · Astro */
 
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Syne', sans-serif;
@@ -384,22 +385,22 @@ tbody tr:last-child td { border-bottom: none; }
 .ds-panel.active { display:block; }
 
 /* shared base for all panel sub-tab pills */
-.ds-stab, .dep-stab, .dk-stab {
+.ds-stab, .dep-stab, .dk-stab, .wa-stab {
   padding:0.35rem 0.9rem; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.06em;
   border:1px solid var(--border2); background:var(--bg3); color:var(--muted);
   cursor:pointer; transition:all 0.15s;
 }
-.ds-stab:hover, .dep-stab:hover, .dk-stab:hover { border-color:var(--tc); color:var(--tc); }
-.ds-stab.active, .dep-stab.active, .dk-stab.active { background:var(--tc); color:var(--bg); border-color:var(--tc); font-weight:500; }
+.ds-stab:hover, .dep-stab:hover, .dk-stab:hover, .wa-stab:hover { border-color:var(--tc); color:var(--tc); }
+.ds-stab.active, .dep-stab.active, .dk-stab.active, .wa-stab.active { background:var(--tc); color:var(--bg); border-color:var(--tc); font-weight:500; }
 
 /* shared note boxes */
-.ds-note, .dep-note, .dk-note {
+.ds-note, .dep-note, .dk-note, .wa-note {
   background:var(--bg3); border:1px solid var(--border);
   padding:0.75rem 1rem; font-size:0.68rem; color:var(--muted);
   margin-bottom:1.25rem; line-height:1.6; border-radius:0 2px 2px 0;
 }
 .ds-note  { border-left:3px solid var(--t2); }
-.ds-note strong, .dep-note strong, .dk-note strong { color:var(--text); }
+.ds-note strong, .dep-note strong, .dk-note strong, .wa-note strong { color:var(--text); }
 
 .ds-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:0.75rem; margin-bottom:1rem; }
 
@@ -1517,3 +1518,83 @@ pre.aria-code {
 .git-step div { font-size:0.62rem; line-height:1.55; color:var(--muted); }
 .git-step strong { color:var(--text); }
 
+
+/* ══════════════════════════════════════════
+   WATAN · ASTRO
+══════════════════════════════════════════ */
+.wa-subtabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.wa-stab { --tc: var(--tastro); border-radius:1px; }
+.wa-note { border-left:3px solid var(--tastro); }
+.wa-panel { display:none; }
+.wa-panel.active { display:block; animation:fadeUp 0.2s ease; }
+
+.wa-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1px; background:var(--border); border:1px solid var(--border2); margin-bottom:1.5rem;
+}
+.wa-card { background:var(--bg2); padding:1.1rem; position:relative; transition:background 0.15s; }
+.wa-card:hover { background:var(--bg3); }
+.wa-card-bar { position:absolute; top:0; left:0; width:2px; height:100%; background:var(--tastro); }
+.wa-card-num { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--tastro); margin-bottom:0.2rem; font-weight:600; }
+.wa-card-title { font-size:0.82rem; font-weight:700; margin-bottom:0.15rem; color:var(--text); }
+.wa-card-path { font-family:var(--mono); font-size:0.52rem; color:var(--muted); margin-bottom:0.5rem;
+  background:var(--bg3); padding:0.15rem 0.4rem; display:inline-block; border-radius:2px; }
+.wa-card-def { font-size:0.63rem; color:var(--muted); line-height:1.55; margin-bottom:0.55rem; }
+.wa-card-code { font-family:var(--mono); font-size:0.56rem; color:var(--tastro); padding:0.4rem 0.6rem;
+  background:rgba(201,72,0,0.05); border-left:2px solid rgba(201,72,0,0.25); line-height:1.6;
+  white-space:pre; overflow-x:auto; }
+
+.wa-section-label {
+  font-family:var(--mono); font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--tastro); font-weight:700; padding:0.4rem 0; margin:1.2rem 0 0.6rem;
+  border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.5rem;
+}
+.wa-section-label::after { content:''; flex:1; }
+
+.wa-flow-block {
+  font-family:var(--mono); font-size:0.6rem; line-height:1.8; padding:1rem 1.2rem;
+  background:var(--bg2); border:1px solid var(--border2); border-left:3px solid var(--tastro);
+  white-space:pre; overflow-x:auto; margin-bottom:1.2rem; color:var(--text);
+}
+
+.wa-table { width:100%; border-collapse:collapse; font-size:0.63rem; margin-bottom:1.5rem; }
+.wa-table th { background:var(--bg3); color:var(--text); font-weight:700; padding:0.5rem 0.75rem;
+  border:1px solid var(--border); text-align:left; font-family:var(--mono); font-size:0.58rem;
+  letter-spacing:0.04em; }
+.wa-table td { padding:0.45rem 0.75rem; border:1px solid var(--border); color:var(--muted);
+  vertical-align:top; line-height:1.5; }
+.wa-table td:first-child { font-family:var(--mono); color:var(--tastro); font-weight:600;
+  white-space:nowrap; font-size:0.58rem; }
+.wa-table tr:hover td { background:var(--bg3); }
+
+.wa-hook-card { background:var(--bg2); border:1px solid var(--border2); margin-bottom:0.8rem;
+  border-left:3px solid var(--tastro); }
+.wa-hook-head { padding:0.7rem 0.9rem 0.5rem; }
+.wa-hook-name { font-family:var(--mono); font-size:0.75rem; font-weight:700; color:var(--tastro); }
+.wa-hook-when { font-size:0.62rem; color:var(--muted); margin-top:0.1rem; }
+.wa-hook-code { font-family:var(--mono); font-size:0.57rem; padding:0.6rem 0.9rem;
+  background:var(--bg3); color:var(--text); line-height:1.65; white-space:pre; overflow-x:auto;
+  border-top:1px solid var(--border); }
+
+.wa-jsx-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border);
+  border:1px solid var(--border2); margin-bottom:1.2rem; font-family:var(--mono); font-size:0.6rem;
+}
+.wa-jsx-col { background:var(--bg2); padding:0.7rem 0.9rem; }
+.wa-jsx-col-title { font-weight:700; color:var(--text); margin-bottom:0.5rem; font-size:0.62rem; }
+.wa-jsx-row { display:flex; gap:0.5rem; padding:0.2rem 0; border-bottom:1px solid var(--border3,var(--border)); }
+.wa-jsx-row:last-child { border-bottom:none; }
+.wa-jsx-bad { color:#b91c1c; flex:1; }
+.wa-jsx-good { color:#15803d; flex:1; }
+
+.wa-card-why {
+  font-size:0.61rem; color:var(--text); line-height:1.5; margin:0.4rem 0 0.5rem;
+  padding:0.35rem 0.55rem; background:rgba(201,72,0,0.05);
+  border-left:2px solid rgba(201,72,0,0.22);
+}
+.wa-card-when {
+  margin-top:0.55rem; padding-top:0.4rem; border-top:1px solid var(--border);
+  font-family:var(--mono); font-size:0.51rem; color:var(--faint); line-height:1.5;
+}
+.wa-card-when::before { content:'▸ cuándo: '; color:var(--tastro); font-weight:600; }

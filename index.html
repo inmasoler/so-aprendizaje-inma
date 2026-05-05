@@ -16,8 +16,8 @@
   <div class="topbar-divider"></div>
   <div class="topbar-subtitle">Tu base de conocimiento: frameworks, diseño y ecosistema web · v0.6</div>
   <div class="topbar-badges">
-    <div class="topbar-badge">9 módulos</div>
-    <div class="topbar-badge">5 activos · 3 en plan</div>
+    <div class="topbar-badge">10 módulos</div>
+    <div class="topbar-badge">6 activos · 3 en plan</div>
   </div>
 </header>
 
@@ -66,6 +66,11 @@
   <button class="tabitem" data-tab="git" onclick="switchTab('git',this)">
     <span class="tab-dot" style="background:var(--tgit)"></span>
     Git &amp; Docs
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="watan" onclick="switchTab('watan',this)">
+    <span class="tab-dot" style="background:var(--tastro)"></span>
+    Astro
     <span class="tab-status status-live">live</span>
   </button>
 </nav>
@@ -956,6 +961,541 @@ git push --force-with-lease</pre>
     </div>
   </div>
 </div>
+
+
+<!-- ══════════════════════════════════════════
+     PANEL · WATAN · ASTRO
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-watan">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--tastro)">Astro · Arquitectura & Islands</div>
+      <div class="panel-desc">Cómo funciona Astro · 15 capas · React Islands · basado en el proyecto real Watan</div>
+    </div>
+  </div>
+
+  <div class="wa-subtabs">
+    <button class="wa-stab active" onclick="showWatanTab('wa-flujo',this)">Flujo completo</button>
+    <button class="wa-stab" onclick="showWatanTab('wa-capas',this)">Las 15 capas</button>
+    <button class="wa-stab" onclick="showWatanTab('wa-react',this)">React · Islands</button>
+  </div>
+
+  <!-- ══ FLUJO COMPLETO ══ -->
+  <div class="wa-panel active" id="wa-flujo">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,72,0,0.07);border:1px solid rgba(201,72,0,0.2);border-radius:3px;padding:0.3rem 0.7rem;font-family:var(--mono);font-size:0.55rem;color:var(--tastro);margin-bottom:1rem;letter-spacing:0.04em;">
+      Ejemplos basados en el proyecto real · <strong>watan-astro</strong> · los conceptos son genéricos de Astro
+    </div>
+    <div class="wa-note"><strong>El flujo de datos va siempre en una dirección:</strong> los ficheros <code>.md</code> son la fuente de verdad, los schemas los validan, y los templates los renderizan. Nunca al revés.</div>
+
+    <pre class="wa-flow-block">Usuario visita /es/vacation-rental
+        ↓
+pages/es/vacation-rental.astro          ← define la URL, pasa locale="es"
+        ↓
+templates/VacationRentalPage.astro      ← maquetación completa, carga datos
+        ↓ getEntry('vacationRentalPages', 'es/vacation-rental')
+        ↓ Astro valida con vacationRentalSchema ← schemas/vacation-rental.schema.ts
+        ↓ datos vienen de ← content/es/vacation-rental.md
+        ↓
+Monta HTML con components/ dentro de layouts/BaseLayout.astro
+        ↓
+Genera HTML estático (+ islands React donde hay interactividad)</pre>
+
+    <div class="wa-section-label">Los tres pilares</div>
+    <div class="wa-grid">
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Pilar 1</div>
+        <div class="wa-card-title">Contenido · los .md</div>
+        <div class="wa-card-path">src/content/es/ · en/ · ar/</div>
+        <div class="wa-card-def">La fuente de verdad del sitio. Todo texto visible —títulos, estadísticas, listas, testimonios— vive aquí en YAML estructurado, separado completamente del código.</div>
+        <div class="wa-card-why">Sin esta separación, los textos estarían dentro del HTML del template. Cambiar "75% de ocupación" requeriría abrir código y hacer un deploy. Con .md, lo edita cualquier persona que sepa escribir — sin abrir el editor, sin tocar TypeScript.</div>
+        <pre class="wa-card-code">---
+meta:
+  title: 'Gestión de Alquiler Vacacional'
+hero:
+  heading: 'Máxima rentabilidad'
+stats:
+  - num: '75%'
+    label: 'ocupación media anual'
+---</pre>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Pilar 2</div>
+        <div class="wa-card-title">Validación · los schemas Zod</div>
+        <div class="wa-card-path">src/schemas/</div>
+        <div class="wa-card-def">El contrato entre el .md y el template. Define exactamente qué campos existen, de qué tipo son, y si son obligatorios u opcionales. Astro valida en build —nunca en producción.</div>
+        <div class="wa-card-why">Sin schema, escribir "ttle" en vez de "title" en el .md generaría silenciosamente una página rota que llegaría a los usuarios. <code>z.strictObject</code> lo detecta en tu terminal. También evita el caso inverso: si el template espera <code>d.hero.heading</code> y ese campo no existe en el schema, TypeScript te avisa antes de compilar.</div>
+        <pre class="wa-card-code">export const vacationRentalSchema = z.strictObject({
+  meta: metaSchema,          // obligatorio — falta → error en build
+  hero: heroSchema,          // obligatorio
+  stats: z.array(
+    z.strictObject({
+      num: z.string(),
+      label: z.string(),
+    })
+  ).optional(),              // puede no existir en el .md
+});</pre>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Pilar 3</div>
+        <div class="wa-card-title">Renderizado · templates + pages</div>
+        <div class="wa-card-path">src/templates/ · src/pages/</div>
+        <div class="wa-card-def">Los templates transforman datos en HTML: cargan el .md correcto según el locale, validan que exista, y componen los componentes visuales. Las pages son solo el mapeado URL → template.</div>
+        <div class="wa-card-why">Sin templates, tendrías 3 copias idénticas de toda la maquetación (una por idioma). Si cambias la sección hero, la cambias en 3 sitios a la vez, y puedes desincronizarlos. El template rompe ese patrón: hay exactamente un sitio donde vive el layout de cada página.</div>
+        <pre class="wa-card-code">// pages/es/vacation-rental.astro — solo 3 líneas
+import VacationRentalPage from '../../templates/...';
+&lt;VacationRentalPage locale="es" /&gt;
+
+// template — carga el .md del idioma correcto
+const page = await getEntry('vacationRentalPages', `${locale}/vacation-rental`);
+const d = page.data;  // TypeScript ya sabe el tipo exacto de d</pre>
+      </div>
+    </div>
+
+    <div class="wa-section-label">Por qué esta separación</div>
+    <table class="wa-table">
+      <thead><tr><th>Separación</th><th>Beneficio</th></tr></thead>
+      <tbody>
+        <tr><td>Contenido en .md</td><td>No-desarrolladores pueden editar textos sin tocar código</td></tr>
+        <tr><td>Schemas en .ts</td><td>Errores detectados antes de publicar, no en producción</td></tr>
+        <tr><td>Templates separados de pages</td><td>Un template sirve para 3 idiomas — no se duplica código</td></tr>
+        <tr><td>Islands solo donde hay interactividad</td><td>La web es rápida porque manda poco JavaScript</td></tr>
+        <tr><td>Schemas shared</td><td><code>metaSchema</code> y <code>heroSchema</code> definidos una vez, usados en todos los schemas</td></tr>
+      </tbody>
+    </table>
+
+    <div class="wa-section-label">Reglas YAML que más usarás</div>
+    <div class="wa-note">YAML solo acepta espacios, no tabs. Los strings con <code>:</code> o <code>#</code> necesitan comillas simples.</div>
+    <pre class="wa-flow-block">titulo: 'Mi título'          # string — con comillas si tiene : o #
+precio: 42                   # número — sin comillas
+visible: true                # booleano
+
+hero:                        # objeto — campos indentados 2 espacios
+  heading: 'Hola'
+  sub: 'Descripción'
+
+amenidades:                  # array de strings
+  - 'Wifi'
+  - 'Parking'
+
+stats:                       # array de objetos — guión en primer campo de cada item
+  - num: '75%'
+    label: 'ocupación media'
+  - num: '4.8★'
+    label: 'valoración'</pre>
+  </div>
+
+  <!-- ══ LAS 15 CAPAS ══ -->
+  <div class="wa-panel" id="wa-capas">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,72,0,0.07);border:1px solid rgba(201,72,0,0.2);border-radius:3px;padding:0.3rem 0.7rem;font-family:var(--mono);font-size:0.55rem;color:var(--tastro);margin-bottom:1rem;letter-spacing:0.04em;">
+      Ejemplos basados en el proyecto real · <strong>watan-astro</strong> · los conceptos son genéricos de Astro
+    </div>
+    <div class="wa-note"><strong>15 capas, 3 grupos.</strong> Datos (qué hay), Renderizado (cómo se muestra), Soporte (cómo funciona todo junto).</div>
+
+    <div class="wa-section-label">Grupo A · Datos — dónde vive la información</div>
+    <div class="wa-grid">
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 1 · Contenido</div>
+        <div class="wa-card-title">Ficheros .md</div>
+        <div class="wa-card-path">src/content/es/ · en/ · ar/</div>
+        <div class="wa-card-def">Puro contenido en YAML (frontmatter). Un .md por página por idioma. Sin HTML ni lógica — solo datos estructurados.</div>
+        <div class="wa-card-why">Existe para que cambiar un texto no requiera tocar código. El .md es lo único que cambia entre la versión española e inglesa de la misma página — el template es idéntico.</div>
+        <pre class="wa-card-code">src/content/
+  es/vacation-rental.md   ← textos en español
+  en/vacation-rental.md   ← textos en inglés
+  ar/vacation-rental.md   ← textos en árabe</pre>
+        <div class="wa-card-when">Cuando cambias un texto, añades una estadística, actualizas un testimonio o añades un caso de éxito.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 2 · Validación</div>
+        <div class="wa-card-title">Schemas .schema.ts</div>
+        <div class="wa-card-path">src/schemas/</div>
+        <div class="wa-card-def">Contratos Zod. Cada campo del .md tiene su pareja aquí con su tipo y si es obligatorio. <code>z.strictObject</code> rechaza también los campos que no están definidos.</div>
+        <div class="wa-card-why">Existe porque los .md los edita gente que no es developer. Sin schema, un error tipográfico en el frontmatter llegaría a producción sin que nadie lo detecte. El schema lo atrapa en build, antes de publicar nada.</div>
+        <pre class="wa-card-code">z.string()              // obligatorio — falta → error
+z.string().optional()   // puede no estar en el .md
+z.string().default('x') // si falta, usa 'x'
+z.array(z.strictObject({ num: z.string() }))
+z.coerce.number()       // convierte '42' → 42</pre>
+        <div class="wa-card-when">Cuando añades un campo nuevo al .md (primero schema, luego frontmatter), o cuando eliminas uno que ya no necesitas.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 3 · Registro</div>
+        <div class="wa-card-title">content.config.ts</div>
+        <div class="wa-card-path">src/content.config.ts</div>
+        <div class="wa-card-def">El índice central de todo el contenido. Le dice a Astro: "busca estos ficheros con este patrón, valídalos con este schema, y llama a esta colección con este nombre".</div>
+        <div class="wa-card-why">Existe para que <code>getEntry('vacationRentalPages', ...)</code> funcione desde cualquier template. Sin este registro, Astro no sabe qué ficheros existen ni cómo tratarlos. El patrón <code>**/vacation-rental.md</code> recoge los tres idiomas con una sola línea.</div>
+        <pre class="wa-card-code">const vacationRentalPages = defineCollection({
+  loader: glob({ pattern: '**/vacation-rental.md', base }),
+  schema: vacationRentalSchema,  // ← valida con Zod
+});
+export const collections = { vacationRentalPages };</pre>
+        <div class="wa-card-when">Solo cuando creas un tipo de página completamente nuevo (nuevo .md con estructura propia).</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 4 · Traducciones UI</div>
+        <div class="wa-card-title">i18n/</div>
+        <div class="wa-card-path">src/i18n/</div>
+        <div class="wa-card-def">Textos de interfaz que son iguales en todas las páginas: items del nav, labels de botones, textos del footer. No pertenecen a ninguna página concreta.</div>
+        <div class="wa-card-why">Existe para separar dos tipos de texto: el <em>contenido</em> (varía por página, va en .md) y la <em>interfaz</em> (igual en todas las páginas, va aquí). Sin esta capa, habría que poner "Ver más" en el frontmatter de cada .md de cada idioma — duplicación masiva.</div>
+        <pre class="wa-card-code">export const nav = {
+  vacation: { en: 'Vacation Rental', es: 'Alquiler vacacional', ar: '...' },
+};
+// La función t() devuelve el texto del locale activo:
+const label = t(nav.vacation, locale); // → 'Alquiler vacacional'</pre>
+        <div class="wa-card-when">Cuando añades un texto de interfaz nuevo (un botón, un label) o corriges una traducción fija.</div>
+      </div>
+    </div>
+
+    <div class="wa-section-label">Grupo B · Renderizado — cómo los datos se convierten en HTML</div>
+    <div class="wa-grid">
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 5 · Maquetación</div>
+        <div class="wa-card-title">Templates .astro</div>
+        <div class="wa-card-path">src/templates/</div>
+        <div class="wa-card-def">El cerebro de cada página. Carga los datos del .md con <code>getEntry()</code>, los recibe ya validados y tipados por el schema, y compone los componentes visuales en el orden correcto.</div>
+        <div class="wa-card-why">Existe para que la maquetación viva en un solo sitio. Sin templates, la página de alquiler vacacional existiría 3 veces (es/en/ar) con código idéntico. Si cambias el orden de dos secciones, lo cambias en los 3 ficheros, y puedes cometer un error en uno de ellos.</div>
+        <pre class="wa-card-code">const page = await getEntry('vacationRentalPages', `${locale}/vacation-rental`);
+if (!page) throw new Error(`Entry no encontrada: ${locale}`);
+const d = page.data; // TypeScript conoce el tipo exacto gracias al schema
+
+// Renderizado condicional: solo si el campo existe en el .md
+{d.stats &amp;&amp; &lt;StatsBar stats={d.stats} /&gt;}</pre>
+        <div class="wa-card-when">Cuando cambias el layout de una página, añades una nueva sección, o reordenas componentes.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 6 · URLs</div>
+        <div class="wa-card-title">Pages .astro</div>
+        <div class="wa-card-path">src/pages/</div>
+        <div class="wa-card-def">Cada fichero en <code>src/pages/</code> es una URL del sitio. La ruta del fichero es la URL: <code>pages/es/contacto.astro</code> → <code>/es/contacto</code>. Solo 3 líneas de código — delegan todo al template.</div>
+        <div class="wa-card-why">Existe para separar "qué URL existe" de "cómo se ve esa URL". El template no sabe ni le importa en qué URL vive — es reutilizable. La page es el pegamento mínimo entre una URL y su template.</div>
+        <pre class="wa-card-code">// pages/es/vacation-rental.astro
+import VacationRentalPage from '../../templates/VacationRentalPage.astro';
+&lt;VacationRentalPage locale="es" /&gt;
+
+// pages/en/vacation-rental.astro — idéntico salvo el locale
+&lt;VacationRentalPage locale="en" /&gt;</pre>
+        <div class="wa-card-when">Solo cuando creas una URL nueva. Crea siempre los 3 ficheros (es/en/ar) con el mismo template, locale diferente.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 7 · Componentes</div>
+        <div class="wa-card-title">Components .astro</div>
+        <div class="wa-card-path">src/components/</div>
+        <div class="wa-card-def">Los "ladrillos" del HTML. Cada componente hace una cosa concreta y recibe sus datos como props. No tienen JavaScript — generan HTML estático. <code>&lt;slot /&gt;</code> permite pasar contenido HTML arbitrario dentro.</div>
+        <div class="wa-card-why">Existe para no repetir el mismo bloque HTML en varios templates. <code>HeroSection</code> se usa en 5 páginas distintas — si cambias el layout del hero, lo cambias en un fichero y todas las páginas se actualizan.</div>
+        <pre class="wa-card-code">// Definición del componente
+interface Props { heading: string; sub?: string; }
+const { heading, sub } = Astro.props;
+
+// Uso desde el template (pasa datos del .md directamente)
+&lt;HeroSection heading={d.hero.heading} sub={d.hero.sub} /&gt;</pre>
+        <div class="wa-card-when">Cuando creates un bloque visual nuevo que se usará en más de un sitio, o cuando modificas el diseño de un bloque existente.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 8 · Esqueleto</div>
+        <div class="wa-card-title">Layout BaseLayout.astro</div>
+        <div class="wa-card-path">src/layouts/</div>
+        <div class="wa-card-def">La envoltura que comparten todas las páginas: el <code>&lt;html&gt;</code>, el <code>&lt;head&gt;</code> con metatags SEO, el Nav y el Footer. El contenido específico de cada template entra por <code>&lt;slot /&gt;</code>.</div>
+        <div class="wa-card-why">Existe para que el <code>&lt;head&gt;</code>, el Nav y el Footer estén definidos exactamente en un sitio. Sin layout, cada template tendría que repetir todo el esqueleto HTML — y si añades una etiqueta meta, la tienes que añadir en 10 templates a la vez.</div>
+        <pre class="wa-card-code">&lt;BaseLayout title={d.meta.title} locale={locale}&gt;
+  &lt;!-- todo lo que va aquí → entra en &lt;slot /&gt; del layout --&gt;
+  &lt;HeroSection heading={d.hero.heading} /&gt;
+  &lt;StatsBar stats={d.stats} /&gt;
+&lt;/BaseLayout&gt;</pre>
+        <div class="wa-card-when">Rara vez. Solo si cambias el nav, el footer, los metatags globales, o añades un script/font que necesita toda la web.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 9 · Islands</div>
+        <div class="wa-card-title">Islands .tsx</div>
+        <div class="wa-card-path">src/islands/</div>
+        <div class="wa-card-def">Componentes React para partes interactivas: acordeones, sliders, carruseles, mapas. Solo estos ficheros cargan JavaScript en el browser. El resto del sitio es HTML puro.</div>
+        <div class="wa-card-why">Astro genera HTML estático por defecto (0 KB de JS). Las islands son las "islas de interactividad" dentro de ese océano estático. Si meteras todo en React, el browser descargaría cientos de KB de JS para una web mayoritariamente de contenido. Con islands, solo los trozos que necesitan interactividad tienen JS.</div>
+        <pre class="wa-card-code">&lt;FAQAccordionList items={d.faq.items} client:visible /&gt;
+// client:load    → JS carga al cargar la página
+// client:visible → JS carga cuando entra en pantalla ← más eficiente
+// client:idle    → JS carga cuando el browser está libre</pre>
+        <div class="wa-card-when">Cuando necesitas que algo reaccione a clicks, inputs o gestos del usuario. Si no cambia al interactuar, usa un componente .astro normal.</div>
+      </div>
+    </div>
+
+    <div class="wa-section-label">Grupo C · Soporte — infraestructura que hace funcionar el resto</div>
+    <div class="wa-grid">
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 10 · Config Astro</div>
+        <div class="wa-card-title">astro.config.ts</div>
+        <div class="wa-card-path">raíz/</div>
+        <div class="wa-card-def">El cerebro de Astro. Define los idiomas del sitio, activa las integrations (React, sitemap), y configura Vite y Tailwind. Sin este fichero, los .tsx no funcionarían y el i18n no existiría.</div>
+        <div class="wa-card-why">Existe porque Astro por defecto no sabe que el proyecto tiene múltiples idiomas, ni que quieres usar React en los islands, ni que usas Tailwind. Cada capacidad extra necesita estar declarada aquí. Si añades una integration y no la registras, simplemente no funciona.</div>
+        <pre class="wa-card-code">i18n: {
+  defaultLocale: 'en',
+  locales: ['en', 'es', 'ar'],
+  routing: { prefixDefaultLocale: true }, // /en/... no se omite
+},
+integrations: [react(), sitemap()],       // activa soporte .tsx
+vite: { plugins: [tailwindcss()] }</pre>
+        <div class="wa-card-when">Cuando añades un idioma nuevo, integras una librería nueva (React, Partytown, etc.), o cambias la URL base del sitio.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 11 · Estilos</div>
+        <div class="wa-card-title">Tailwind CSS v4 + Design Tokens</div>
+        <div class="wa-card-path">src/styles/global.css</div>
+        <div class="wa-card-def">Dos capas de variables CSS: <em>primitivos</em> (qué color es: <code>navy-400</code>) y <em>semánticos</em> (para qué sirve: <code>surface</code>, <code>action</code>). Los componentes usan siempre semánticos.</div>
+        <div class="wa-card-why">La capa semántica existe para que cambiar la paleta de color sea editar un fichero, no buscar y reemplazar en 50 componentes. Si mañana <code>--color-action</code> pasa de verde a azul, cambias una línea en global.css y toda la web se actualiza. Si hubieras usado el primitivo directamente (<code>#a8c065</code>), tendrías que encontrar y cambiar cada instancia.</div>
+        <pre class="wa-card-code">--color-surface: white;        // semántico ← usa esto en componentes
+--color-action: #a8c065;       // semántico ← usa esto en componentes
+--color-navy-400: #161f40;     // primitivo ← solo para definir semánticos
+
+// En HTML (Tailwind v4):
+&lt;p class="text-text bg-surface"&gt;  ← correcto
+&lt;p class="text-navy-400"&gt;         ← evitar</pre>
+        <div class="wa-card-when">Cuando añades un token de color nuevo, creas una clase de utilidad global, o ajustas la paleta del sitio.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 12 · Datos estáticos</div>
+        <div class="wa-card-title">src/data/</div>
+        <div class="wa-card-path">src/data/</div>
+        <div class="wa-card-def">Datos estructurados que no encajan en el frontmatter de un .md. Typically: galerías de imágenes con decenas de entradas, listas de configuración, mapeos. TypeScript puro, con tipado completo.</div>
+        <div class="wa-card-why">Existe porque no todo dato pertenece al .md. Una galería de 30 fotos con rutas "before/after" haría el frontmatter ilegible y frágil. <code>src/data/</code> es para datos que son TypeScript, no YAML — puedes exportar funciones, hacer lógica, y los tipos son exactos sin schema.</div>
+        <pre class="wa-card-code">// Record&lt;string, T[]&gt; = objeto con claves string y valores T[]
+export const successCaseGalleries: Record&lt;string, GalleryItem[]&gt; = {
+  'numancia-sagunto': [
+    { before: 'antes/01-bano.jpeg', after: 'despues/01-bano.jpeg' },
+    { before: 'antes/02-salon.jpeg', after: 'despues/02-salon.jpeg' },
+  ],
+};</pre>
+        <div class="wa-card-when">Cuando tienes datos demasiado grandes o complejos para el frontmatter, o cuando los datos son compartidos entre páginas y no pertenecen a ninguna en particular.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 13 · Utils</div>
+        <div class="wa-card-title">src/utils/</div>
+        <div class="wa-card-path">src/utils/</div>
+        <div class="wa-card-def">Funciones de utilidad reutilizables. No son datos, no son componentes — son lógica pura que se repite en varios sitios. <code>image-resolver.ts</code> y <code>success-cases.ts</code> son los dos utils principales.</div>
+        <div class="wa-card-why"><code>resolveProjectImage</code> existe porque Astro no puede optimizar una imagen si le pasas el path como string. Necesita un objeto <code>ImageMetadata</code> que solo obtiene cargando el fichero en build time con <code>import.meta.glob</code>. Sin este resolvedor, las imágenes no se redimensionarían ni se convertirían a WebP.</div>
+        <pre class="wa-card-code">// import.meta.glob precarga TODAS las imágenes en build time
+const imageModules = import.meta.glob('/src/assets/**/*.{jpg,png}', { eager: true });
+
+// Convierte un path string del .md → ImageMetadata que Astro puede optimizar
+export function resolveProjectImage(path?: string): ImageMetadata | null {
+  if (!path) return null;
+  return imageModules[`/src/assets/projects/${path}`]?.default ?? null;
+}</pre>
+        <div class="wa-card-when">Cuando tienes lógica que se usa en más de un template o componente. Si solo la usa un sitio, déjala ahí — no abstraigas prematuramente.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 14 · Rutas dinámicas</div>
+        <div class="wa-card-title">[id].astro + getStaticPaths</div>
+        <div class="wa-card-path">src/pages/es/vacation-rental/[id].astro</div>
+        <div class="wa-card-def">Para URLs que dependen de datos: <code>/es/vacation-rental/airbnb-valencia</code>. El nombre <code>[id]</code> indica que ese segmento es variable. <code>getStaticPaths()</code> dice a Astro qué valores concretos puede tomar.</div>
+        <div class="wa-card-why">Sin rutas dinámicas, tendrías que crear un fichero <code>airbnb-valencia.astro</code>, <code>numancia-sagunto.astro</code>, etc. por cada apartamento — y si añades un caso nuevo al .md, tendrías que crear el fichero a mano. Con <code>[id].astro</code> y <code>getStaticPaths()</code>, Astro genera todas las páginas automáticamente leyendo el .md en build time.</div>
+        <pre class="wa-card-code">export async function getStaticPaths() {
+  const page = await getEntry('vacationRentalPages', 'es/vacation-rental');
+  return (page?.data.cases ?? []).map((item) => ({
+    params: { id: item.id },    // → /es/vacation-rental/airbnb-valencia
+    props:  { caseItem: item }, // → disponible en Astro.props
+  }));
+}
+const { caseItem } = Astro.props; // TypeScript lo tipea correctamente</pre>
+        <div class="wa-card-when">Cuando las URLs se generan a partir de datos (casos, productos, artículos) y no quieres crear un fichero por cada uno.</div>
+      </div>
+      <div class="wa-card">
+        <div class="wa-card-bar"></div>
+        <div class="wa-card-num">Capa 15 · API</div>
+        <div class="wa-card-title">Endpoints de servidor</div>
+        <div class="wa-card-path">src/pages/api/</div>
+        <div class="wa-card-def">Funciones que responden a peticiones HTTP (POST, GET...). El formulario de contacto envía datos a <code>/api/send-email</code>, que los valida y los reenvía por SMTP. Las credenciales viven en <code>.env</code>, nunca en el código.</div>
+        <div class="wa-card-why">Existe porque enviar un email desde el browser expondría las credenciales SMTP a cualquiera que inspeccione el código fuente. El endpoint corre en el servidor: recibe los datos del formulario, valida que sean correctos, y usa las variables de entorno para enviar el email sin que el browser las vea jamás.</div>
+        <pre class="wa-card-code">export const POST: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  if (!body.name?.trim()) // ?. = optional chaining: no falla si name es null
+    return new Response(JSON.stringify({ error: 'Name required' }), { status: 400 });
+
+  const smtpPass = import.meta.env.SMTP_PASS; // ← del .env, nunca en git
+  await transporter.sendMail({ ... });
+  return new Response(JSON.stringify({ success: true }), { status: 200 });
+};</pre>
+        <div class="wa-card-when">Cuando necesitas lógica de servidor: enviar emails, procesar pagos, llamar a una API con credenciales privadas, o guardar datos.</div>
+      </div>
+    </div>
+
+    <div class="wa-section-label">Resumen de tipos de fichero</div>
+    <table class="wa-table">
+      <thead><tr><th>Extensión</th><th>Dónde vive</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>.md</td><td>src/content/</td><td>Contenido: textos, datos en YAML frontmatter</td></tr>
+        <tr><td>.schema.ts</td><td>src/schemas/</td><td>Validar la forma de los datos con Zod</td></tr>
+        <tr><td>content.config.ts</td><td>src/</td><td>Registrar colecciones para Astro</td></tr>
+        <tr><td>.astro (layout)</td><td>src/layouts/</td><td>Esqueleto HTML de todas las páginas</td></tr>
+        <tr><td>.astro (template)</td><td>src/templates/</td><td>Maquetación completa de una página</td></tr>
+        <tr><td>.astro (page)</td><td>src/pages/</td><td>Define la URL, delega al template</td></tr>
+        <tr><td>.astro (component)</td><td>src/components/</td><td>Bloque reutilizable de UI estático</td></tr>
+        <tr><td>.tsx (island)</td><td>src/islands/</td><td>Componente React con interactividad</td></tr>
+        <tr><td>.ts (i18n)</td><td>src/i18n/</td><td>Traducciones de textos de interfaz fijos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ REACT · ISLANDS ══ -->
+  <div class="wa-panel" id="wa-react">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(201,72,0,0.07);border:1px solid rgba(201,72,0,0.2);border-radius:3px;padding:0.3rem 0.7rem;font-family:var(--mono);font-size:0.55rem;color:var(--tastro);margin-bottom:1rem;letter-spacing:0.04em;">
+      Ejemplos basados en el proyecto real · <strong>watan-astro</strong> · los conceptos son genéricos de Astro
+    </div>
+    <div class="wa-note"><strong>React solo vive en <code>src/islands/*.tsx</code></strong> — los componentes que necesitan responder a acciones del usuario. Todo lo demás es Astro puro (HTML estático, sin React).</div>
+
+    <div class="wa-section-label">JSX vs HTML — diferencias</div>
+    <div class="wa-jsx-grid">
+      <div class="wa-jsx-col">
+        <div class="wa-jsx-col-title">HTML normal</div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">class="tarjeta"</span><span class="wa-jsx-good">className="tarjeta"</span></div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">for="campo"</span><span class="wa-jsx-good">htmlFor="campo"</span></div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">&lt;br&gt;</span><span class="wa-jsx-good">&lt;br /&gt;</span></div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">&lt;!-- comentario --&gt;</span><span class="wa-jsx-good">{/* comentario */}</span></div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">onclick="fn()"</span><span class="wa-jsx-good">onClick={fn}</span></div>
+        <div class="wa-jsx-row"><span class="wa-jsx-bad">style="color: red"</span><span class="wa-jsx-good">style={{ color: 'red' }}</span></div>
+      </div>
+      <div class="wa-jsx-col">
+        <div class="wa-jsx-col-title">Expresiones en JSX</div>
+        <div class="wa-jsx-row"><span style="color:var(--muted);flex:1">{variable}</span><span style="flex:2;font-size:0.58rem;color:var(--text)">inserta el valor</span></div>
+        <div class="wa-jsx-row"><span style="color:var(--muted);flex:1">{cond &amp;&amp; &lt;X /&gt;}</span><span style="flex:2;font-size:0.58rem;color:var(--text)">renderiza X solo si cond es truthy</span></div>
+        <div class="wa-jsx-row"><span style="color:var(--muted);flex:1">{a ? &lt;X/&gt; : &lt;Y/&gt;}</span><span style="flex:2;font-size:0.58rem;color:var(--text)">ternario (uno u otro)</span></div>
+        <div class="wa-jsx-row"><span style="color:var(--muted);flex:1">{arr.map(...)}</span><span style="flex:2;font-size:0.58rem;color:var(--text)">itera y renderiza lista</span></div>
+      </div>
+    </div>
+
+    <div class="wa-section-label">Hooks — cuándo usar cada uno</div>
+
+    <div class="wa-hook-card">
+      <div class="wa-hook-head">
+        <div class="wa-hook-name">useState</div>
+        <div class="wa-hook-when">Cuando necesitas datos que cambian y que React redibuje al cambiar. Siempre usa el setter, nunca modifiques la variable directamente.</div>
+      </div>
+      <pre class="wa-hook-code">const [expanded, setExpanded] = useState&lt;Record&lt;number, boolean&gt;&gt;({});
+//     ↑ valor actual  ↑ setter para cambiarlo  ↑ valor inicial
+
+// Al hacer click en el FAQ número i — forma de función para estado que depende de estado anterior
+onClick={() => setExpanded(prev => ({ ...prev, [i]: !prev[i] }))}
+//                                    ↑ spread: copia todos los demás, cambia solo [i]
+
+// MAL — React no redibuja
+expanded[i] = true;
+// BIEN — React redibuja
+setExpanded(prev => ({ ...prev, [i]: true }));</pre>
+    </div>
+
+    <div class="wa-hook-card">
+      <div class="wa-hook-head">
+        <div class="wa-hook-name">useRef</div>
+        <div class="wa-hook-when">Cuando necesitas acceso directo a un elemento del DOM (medir su altura, hacer .focus(), etc.) sin que el componente se redibuje.</div>
+      </div>
+      <pre class="wa-hook-code">// Un ref por cada respuesta de FAQ — para animar la altura
+const answerRefs = useRef&lt;(HTMLDivElement | null)[]&gt;([]);
+
+// Se conecta al elemento real del DOM
+&lt;div ref={(el) =&gt; { answerRefs.current[i] = el; }}&gt;
+
+// Luego en useLayoutEffect se mide y anima:
+const el = answerRefs.current[i];
+el.style.maxHeight = expanded[i] ? `${el.scrollHeight}px` : '0';
+//                                   ↑ scrollHeight = altura real aunque esté oculto</pre>
+    </div>
+
+    <div class="wa-hook-card">
+      <div class="wa-hook-head">
+        <div class="wa-hook-name">useLayoutEffect</div>
+        <div class="wa-hook-when">Como useEffect pero <strong>síncrono</strong> — corre antes de que el navegador pinte. Úsalo cuando necesitas medir o modificar el DOM sin que el usuario vea un parpadeo.</div>
+      </div>
+      <pre class="wa-hook-code">useLayoutEffect(() => {
+  items.forEach((_, i) => {
+    const el = answerRefs.current[i];
+    if (!el) return;
+    // Cambia maxHeight ANTES de que el navegador pinte → sin parpadeo
+    el.style.maxHeight = expanded[i] ? `${el.scrollHeight}px` : '0';
+  });
+}, [expanded, items]);  // ← array de dependencias: re-ejecuta cuando cambian</pre>
+    </div>
+
+    <div class="wa-hook-card">
+      <div class="wa-hook-head">
+        <div class="wa-hook-name">useEffect</div>
+        <div class="wa-hook-when">Efectos <strong>después</strong> del paint: fetch de datos, suscripciones a eventos, inicializar librerías externas (como Leaflet) que necesitan el DOM real.</div>
+      </div>
+      <pre class="wa-hook-code">useEffect(() => {
+  // Aquí el DOM ya existe — Leaflet puede inicializarse
+  const map = L.map(mapRef.current).setView([39.47, -0.37], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  // Función de limpieza — corre al desmontar el componente
+  return () => { map.remove(); };
+}, []);  // [] vacío → solo corre una vez al montar</pre>
+    </div>
+
+    <div class="wa-hook-card">
+      <div class="wa-hook-head">
+        <div class="wa-hook-name">useId</div>
+        <div class="wa-hook-when">Genera un ID único y estable por instancia. Necesario para atributos <code>aria-controls</code> / <code>id</code> de accesibilidad — evita colisiones si hay dos FAQs en la misma página.</div>
+      </div>
+      <pre class="wa-hook-code">const uid = useId().replace(/:/g, '');  // uid → 'r0' (único por instancia)
+
+&lt;button aria-controls={`${uid}-answer-${i}`} aria-expanded={expanded[i] ? 'true' : 'false'}&gt;
+  {item.q}
+&lt;/button&gt;
+&lt;div id={`${uid}-answer-${i}`}&gt;{item.a}&lt;/div&gt;</pre>
+    </div>
+
+    <div class="wa-section-label">Cuándo usar isla vs componente .astro</div>
+    <table class="wa-table">
+      <thead><tr><th>¿Qué necesitas?</th><th>Usa</th></tr></thead>
+      <tbody>
+        <tr><td>Reaccionar a clicks, inputs, cambios del usuario</td><td>Island .tsx con useState / useRef</td></tr>
+        <tr><td>Medir el DOM y animar antes de que el usuario lo vea</td><td>Island .tsx con useLayoutEffect + useRef</td></tr>
+        <tr><td>Inicializar una librería externa (Leaflet, charts)</td><td>Island .tsx con useEffect</td></tr>
+        <tr><td>HTML que no cambia — texto, imagen, layout</td><td>Componente .astro (sin JS)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="wa-section-label">Islands de este proyecto</div>
+    <table class="wa-table">
+      <thead><tr><th>Fichero</th><th>Hook principal</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>FAQAccordionList.tsx</td><td>useState + useLayoutEffect + useRef + useId</td><td>Acordeón de preguntas con animación de altura</td></tr>
+        <tr><td>BeforeAfterSlider.tsx</td><td>useState + useRef</td><td>Slider de comparación antes/después</td></tr>
+        <tr><td>SuccessCaseCarousel.tsx</td><td>useState</td><td>Carrusel de casos de éxito con filtros</td></tr>
+        <tr><td>ProgressStepper.tsx</td><td>useState</td><td>Stepper de pasos con navegación</td></tr>
+        <tr><td>ZoneMapIsland.tsx</td><td>useEffect + useRef</td><td>Mapa interactivo con Leaflet — init tras render</td></tr>
+      </tbody>
+    </table>
+
+    <div class="wa-section-label">Manejadores de eventos — patrón importante</div>
+    <div class="wa-note"><strong>Diferencia clave:</strong> <code>onClick={fn}</code> pasa la función; <code>onClick={fn()}</code> la ejecuta ahora (en el render). Siempre usa arrow function: <code>onClick={() =&gt; setCuenta(n + 1)}</code></div>
+    <pre class="wa-flow-block">// Click
+&lt;button onClick={() =&gt; setCuenta(cuenta + 1)}&gt;Click&lt;/button&gt;
+
+// Input — e.target.value es el texto que escribió el usuario
+&lt;input onChange={(e) =&gt; setTexto(e.target.value)} /&gt;
+
+// Submit — evitar recarga de página
+&lt;form onSubmit={(e) =&gt; { e.preventDefault(); enviarFormulario(); }}&gt;
+
+// Hover
+&lt;div onMouseEnter={() =&gt; setHovered(true)} onMouseLeave={() =&gt; setHovered(false)}&gt;</pre>
+  </div>
+
+</div><!-- /panel-watan -->
 
 </main>
 </div><!-- /shell -->
