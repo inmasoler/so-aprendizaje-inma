@@ -16,8 +16,8 @@
   <div class="topbar-divider"></div>
   <div class="topbar-subtitle">Tu base de conocimiento: frameworks, diseño y ecosistema web · v0.6</div>
   <div class="topbar-badges">
-    <div class="topbar-badge">10 módulos</div>
-    <div class="topbar-badge">6 activos · 3 en plan</div>
+    <div class="topbar-badge">11 módulos</div>
+    <div class="topbar-badge">7 activos · 3 en plan</div>
   </div>
 </header>
 
@@ -71,6 +71,11 @@
   <button class="tabitem" data-tab="watan" onclick="switchTab('watan',this)">
     <span class="tab-dot" style="background:var(--tastro)"></span>
     Astro
+    <span class="tab-status status-live">live</span>
+  </button>
+  <button class="tabitem" data-tab="react" onclick="switchTab('react',this)">
+    <span class="tab-dot" style="background:var(--treact)"></span>
+    React
     <span class="tab-status status-live">live</span>
   </button>
 </nav>
@@ -1496,6 +1501,805 @@ el.style.maxHeight = expanded[i] ? `${el.scrollHeight}px` : '0';
   </div>
 
 </div><!-- /panel-watan -->
+
+
+<!-- ══════════════════════════════════════════
+     PANEL · REACT
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-react">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" style="color:var(--treact)">React · Guía de aprendizaje</div>
+      <div class="panel-desc">Fundamentos · Estado & eventos · Gestión del estado · Hooks · Pensar en React · Basado en react.dev/learn</div>
+    </div>
+  </div>
+
+  <div class="rt-subtabs">
+    <button class="rt-stab active" onclick="showReactTab('rt-fundamentos',this)">Fundamentos</button>
+    <button class="rt-stab" onclick="showReactTab('rt-estado',this)">Estado & Eventos</button>
+    <button class="rt-stab" onclick="showReactTab('rt-estado-avanzado',this)">Gestión del estado</button>
+    <button class="rt-stab" onclick="showReactTab('rt-hooks',this)">Hooks & Efectos</button>
+    <button class="rt-stab" onclick="showReactTab('rt-pensar',this)">Pensar en React</button>
+  </div>
+
+  <!-- ══ FUNDAMENTOS ══ -->
+  <div class="rt-panel active" id="rt-fundamentos">
+    <div class="rt-note"><strong>La UI en React es un árbol de componentes.</strong> Cada componente es una función JS que devuelve JSX. Los datos fluyen de padre a hijo mediante props. Nada más — el resto es consecuencia de este modelo.</div>
+
+    <div class="rt-section-label">Componentes</div>
+    <div class="rt-grid">
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Concepto base</div>
+        <div class="rt-card-title">¿Qué es un componente?</div>
+        <div class="rt-card-def">Una función JavaScript que empieza en <strong>PascalCase</strong> y devuelve JSX. React la convierte en un elemento de la UI reutilizable, anidable y que puede recibir datos.</div>
+        <div class="rt-card-why">La mayúscula no es convención — es obligatoria. React usa eso para distinguir componentes (<code>&lt;Boton&gt;</code>) de tags HTML nativos (<code>&lt;button&gt;</code>). Un componente en minúscula se trata como HTML y no funciona.</div>
+        <pre class="rt-card-code">// Componente correcto — PascalCase, devuelve JSX
+export default function Tarjeta() {
+  return &lt;div className="tarjeta"&gt;Hola&lt;/div&gt;;
+}
+
+// Reutilizable: úsalo tantas veces como quieras
+&lt;Tarjeta /&gt;
+&lt;Tarjeta /&gt;
+&lt;Tarjeta /&gt;</pre>
+        <div class="rt-card-tip">Un componente solo puede devolver UN elemento raíz. Si necesitas devolver varios, envuélvelos en <code>&lt;&gt;...&lt;/&gt;</code> (Fragment) — no añade nodos al DOM.</div>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">JSX</div>
+        <div class="rt-card-title">JSX no es HTML</div>
+        <div class="rt-card-def">JSX parece HTML pero es JavaScript disfrazado. El compilador lo transforma en <code>React.createElement()</code>. Por eso sigue las reglas de JS, no de HTML.</div>
+        <div class="rt-card-why">Dado que JSX es JS, las palabras reservadas de JS (<code>class</code>, <code>for</code>) están prohibidas como atributos — de ahí <code>className</code> y <code>htmlFor</code>. Todos los tags deben cerrarse porque JS no tiene HTML implícito.</div>
+        <pre class="rt-card-code">// HTML              → JSX
+class="btn"          → className="btn"
+for="campo"          → htmlFor="campo"
+&lt;br&gt;                 → &lt;br /&gt;
+&lt;img src="x.png"&gt;   → &lt;img src="x.png" /&gt;
+&lt;!-- comentario --&gt; → {/* comentario */}
+onclick="fn()"       → onClick={fn}
+style="color:red"    → style={{ color: 'red' }}
+
+// Expresiones JS dentro de JSX — con llaves {}
+&lt;h1&gt;{titulo}&lt;/h1&gt;
+&lt;img src={usuario.foto} alt={usuario.nombre} /&gt;
+&lt;div className={activo ? 'btn-on' : 'btn-off'}&gt;</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Props</div>
+        <div class="rt-card-title">Props — datos de padre a hijo</div>
+        <div class="rt-card-def">Las props son los "argumentos" de un componente. Fluyen siempre de padre a hijo (<strong>unidireccional</strong>). Dentro del componente son de solo lectura — nunca se modifican.</div>
+        <div class="rt-card-why">Las props hacen los componentes reutilizables con datos diferentes. Sin props, <code>&lt;Tarjeta&gt;</code> siempre mostraría lo mismo. Con props, <code>&lt;Tarjeta titulo="Airbnb" precio="500€" /&gt;</code> lo hace configurable. Cualquier intento de modificar una prop dentro del componente es un bug.</div>
+        <pre class="rt-card-code">// Definición — desestructuración + tipos + valor por defecto
+function Tarjeta({ titulo, precio = 'Consultar', destacada = false }: {
+  titulo: string;
+  precio?: string;
+  destacada?: boolean;
+}) {
+  return &lt;div className={destacada ? 'card card--top' : 'card'}&gt;
+    &lt;h3&gt;{titulo}&lt;/h3&gt;
+    &lt;p&gt;{precio}&lt;/p&gt;
+  &lt;/div&gt;;
+}
+
+// Uso desde el padre
+&lt;Tarjeta titulo="Airbnb Valencia" precio="500€" destacada /&gt;</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Props especiales</div>
+        <div class="rt-card-title">La prop children</div>
+        <div class="rt-card-def"><code>children</code> es la prop especial que recibe el contenido HTML que el padre pone entre las etiquetas del componente. Sirve para componentes "contenedor" que no saben qué tendrán dentro.</div>
+        <pre class="rt-card-code">// Componente contenedor genérico
+function Panel({ titulo, children }: {
+  titulo: string;
+  children: React.ReactNode;
+}) {
+  return (
+    &lt;div className="panel"&gt;
+      &lt;h2&gt;{titulo}&lt;/h2&gt;
+      &lt;div className="panel-body"&gt;
+        {children}  {/* ← aquí entra lo que el padre ponga */}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Uso — lo que está entre las etiquetas va a children
+&lt;Panel titulo="Resultados"&gt;
+  &lt;p&gt;3 apartamentos encontrados&lt;/p&gt;
+  &lt;ListaApartamentos /&gt;
+&lt;/Panel&gt;</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Pureza</div>
+        <div class="rt-card-title">Componente puro</div>
+        <div class="rt-card-def">Con las mismas props, siempre devuelve el mismo JSX. No modifica nada fuera de la función durante el render (sin efectos secundarios).</div>
+        <div class="rt-card-why">React puede re-renderizar un componente cuando quiera y tantas veces como quiera. Si el render tiene efectos secundarios (modificar variables externas, llamar APIs, leer la hora), el resultado será impredecible. En Strict Mode, React renderiza dos veces a propósito para detectar impurezas.</div>
+        <pre class="rt-card-code">// MAL — efecto secundario en render
+let visitas = 0;
+function Impuro() {
+  visitas++;          // ← modifica algo externo durante render
+  return &lt;p&gt;Visitas: {visitas}&lt;/p&gt;;
+}
+
+// BIEN — solo depende de sus props
+function Puro({ nombre }: { nombre: string }) {
+  const saludo = `Hola, ${nombre}`;   // ← calculado a partir de props
+  return &lt;p&gt;{saludo}&lt;/p&gt;;           // mismas props → mismo JSX
+}</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Renderizado condicional</div>
+        <div class="rt-card-title">Mostrar u ocultar elementos</div>
+        <div class="rt-card-def">En JSX no hay <code>if</code> directo — pero hay tres patrones equivalentes. Cada uno tiene su caso de uso.</div>
+        <pre class="rt-card-code">// 1. && — cuando solo hay un caso (mostrar o nada)
+{tieneFotos &amp;&amp; &lt;Galeria fotos={fotos} /&gt;}
+
+// ⚠ cuidado con 0: {count &amp;&amp; &lt;X /&gt;} pinta "0" si count=0
+// Solución: {count &gt; 0 &amp;&amp; &lt;X /&gt;}
+
+// 2. Ternario — cuando hay dos casos (esto o aquello)
+{cargando ? &lt;Spinner /&gt; : &lt;Contenido /&gt;}
+&lt;button className={activo ? 'btn-on' : 'btn-off'}&gt;
+
+// 3. Variable precomputada — condición compleja
+let contenido;
+if (cargando) contenido = &lt;Spinner /&gt;;
+else if (error) contenido = &lt;Error msg={error} /&gt;;
+else contenido = &lt;Contenido datos={datos} /&gt;;
+return &lt;div&gt;{contenido}&lt;/div&gt;;</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Listas</div>
+        <div class="rt-card-title">Renderizar arrays con .map()</div>
+        <div class="rt-card-def">Para renderizar una lista de elementos, transforma el array en JSX con <code>.map()</code>. Cada elemento necesita una prop <code>key</code> única y estable.</div>
+        <div class="rt-card-why"><code>key</code> permite a React identificar qué elemento cambió, se añadió o se eliminó sin re-renderizar toda la lista. Sin <code>key</code> funciona, pero lento y con bugs en animaciones. Con el índice funciona si el orden nunca cambia — si puede cambiar (filtros, reordenación), usa el ID del dato.</div>
+        <pre class="rt-card-code">// Correcto — key es el ID del dato (estable y único)
+{apartamentos.map((apt) =&gt; (
+  &lt;Tarjeta key={apt.id} titulo={apt.titulo} precio={apt.precio} /&gt;
+))}
+
+// Aceptable solo si el orden NUNCA cambia
+{items.map((item, i) =&gt; &lt;li key={i}&gt;{item}&lt;/li&gt;)}
+
+// Filtrar + mapear
+{apartamentos
+  .filter(apt =&gt; apt.disponible)
+  .map(apt =&gt; &lt;Tarjeta key={apt.id} {...apt} /&gt;)}</pre>
+        <div class="rt-card-tip">Nunca uses Math.random() como key — cambia en cada render y React re-monta el componente entero cada vez.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ESTADO & EVENTOS ══ -->
+  <div class="rt-panel" id="rt-estado">
+    <div class="rt-note"><strong>El estado es la memoria privada de un componente.</strong> Cuando cambia, React vuelve a ejecutar la función del componente (re-render) y actualiza el DOM con el nuevo resultado. Es el único mecanismo legítimo para cambiar la UI en respuesta a acciones del usuario.</div>
+
+    <div class="rt-section-label">useState — la base</div>
+    <div class="rt-grid">
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Hook fundamental</div>
+        <div class="rt-card-title">useState</div>
+        <div class="rt-card-def">Devuelve un array de dos elementos: el valor actual y una función para actualizarlo (setter). Llama al setter → React re-renderiza el componente con el nuevo valor.</div>
+        <div class="rt-card-why">Las variables normales no funcionan para la UI porque cuando las cambias React no se entera y no redibuja nada. El setter de useState le avisa a React: "este componente tiene datos nuevos, vuelve a renderizarlo".</div>
+        <pre class="rt-card-code">import { useState } from 'react';
+
+function Contador() {
+  const [cuenta, setCuenta] = useState(0);
+  //     ↑ valor  ↑ setter    ↑ valor inicial
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Clicks: {cuenta}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCuenta(cuenta + 1)}&gt;
+        +1
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// MAL — React no se entera, no redibuja
+let cuenta = 0;
+cuenta++;           // ← invisible para React
+
+// BIEN — React redibuja con el nuevo valor
+setCuenta(cuenta + 1);</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Concepto clave</div>
+        <div class="rt-card-title">El estado como instantánea</div>
+        <div class="rt-card-def">El estado no es una variable que cambia — es una <strong>fotografía</strong> del valor en el momento del render. Cada render tiene su propia copia fija del estado.</div>
+        <div class="rt-card-why">Este es el concepto más contraintuitivo de React. Cuando llamas a <code>setCuenta(cuenta + 1)</code> tres veces en el mismo handler, las tres lecturas de <code>cuenta</code> son el mismo valor (el de este render). No acumulas +3, acumulas +1.</div>
+        <pre class="rt-card-code">// Ejemplo — cuenta empieza en 0
+function handler() {
+  setCuenta(cuenta + 1); // programa: "pon el estado a 0+1 = 1"
+  setCuenta(cuenta + 1); // programa: "pon el estado a 0+1 = 1"
+  setCuenta(cuenta + 1); // programa: "pon el estado a 0+1 = 1"
+  // Resultado: cuenta = 1, no 3
+  // 'cuenta' es siempre 0 durante todo este render
+}</pre>
+        <div class="rt-card-tip">Para acumular múltiples cambios, usa la forma de función: <code>setCuenta(prev =&gt; prev + 1)</code> — ve la sección siguiente.</div>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Actualizaciones en cola</div>
+        <div class="rt-card-title">La forma <code>prev =&gt;</code></div>
+        <div class="rt-card-def">Cuando el nuevo estado depende del estado anterior, pasa una función al setter. React la llama con el valor más reciente, no con el del render actual.</div>
+        <pre class="rt-card-code">// Con función — acumula correctamente
+function handler() {
+  setCuenta(prev =&gt; prev + 1); // prev=0 → 1
+  setCuenta(prev =&gt; prev + 1); // prev=1 → 2
+  setCuenta(prev =&gt; prev + 1); // prev=2 → 3
+  // Resultado: cuenta = 3 ✓
+}
+
+// Regla práctica:
+// · El nuevo valor no depende del anterior → setCuenta(5)
+// · El nuevo valor SÍ depende del anterior → setCuenta(prev =&gt; prev + 1)
+// · Modificar objetos/arrays               → setCuenta(prev =&gt; ({ ...prev, campo: nuevo }))
+
+// Ejemplo real — toggle
+setExpandido(prev =&gt; !prev);
+
+// Ejemplo real — añadir a array
+setItems(prev =&gt; [...prev, nuevoItem]);</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Estado con objetos</div>
+        <div class="rt-card-title">Actualizar objetos — spread</div>
+        <div class="rt-card-def">El estado en React es inmutable. Para cambiar un campo de un objeto, crea un objeto nuevo con todos los campos del anterior más el campo modificado. Usa el spread operator.</div>
+        <div class="rt-card-why">Si mutas el objeto directamente (<code>usuario.nombre = 'Ana'</code>), React compara la referencia del objeto — y es la misma que antes, así que decide que no hay cambios y no redibuja. Siempre crea un objeto nuevo.</div>
+        <pre class="rt-card-code">const [usuario, setUsuario] = useState({ nombre: 'Ana', edad: 25, ciudad: 'Valencia' });
+
+// MAL — muta el objeto existente, React no redibuja
+usuario.edad = 26;
+setUsuario(usuario);
+
+// BIEN — crea un objeto nuevo con spread
+setUsuario({ ...usuario, edad: 26 });
+//          ↑ copia todos los campos, luego sobreescribe solo 'edad'
+
+// Con objeto anidado — hay que hacer spread en cada nivel
+const [form, setForm] = useState({ nombre: 'Ana', direccion: { ciudad: 'Valencia', cp: '46001' } });
+setForm({ ...form, direccion: { ...form.direccion, ciudad: 'Madrid' } });</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Estado con arrays</div>
+        <div class="rt-card-title">Actualizar arrays — sin mutar</div>
+        <div class="rt-card-def">Igual que con objetos: nunca mutaciones directas. Los métodos de array se dividen en permitidos (crean array nuevo) y prohibidos (mutan el original).</div>
+        <pre class="rt-card-code">const [items, setItems] = useState(['Wifi', 'Parking', 'Piscina']);
+
+// ✓ PERMITIDOS — crean array nuevo
+setItems([...items, 'Gym']);               // añadir al final
+setItems(['Nuevo', ...items]);             // añadir al principio
+setItems(items.filter(i =&gt; i !== 'Parking')); // eliminar
+setItems(items.map(i =&gt; i === 'Wifi' ? 'WiFi 6' : i)); // editar
+setItems([...items].sort());              // sort (sobre copia)
+
+// ✗ PROHIBIDOS — mutan el array original
+items.push('Gym');          // ← React no redibuja
+items.splice(1, 1);         // ← React no redibuja
+items.sort();               // ← muta in-place
+items.reverse();            // ← muta in-place</pre>
+        <div class="rt-card-tip">Si el código de actualización se vuelve muy verboso con objetos anidados, considera la librería <strong>Immer</strong> — permite escribir mutaciones que internamente crea objetos nuevos.</div>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Eventos</div>
+        <div class="rt-card-title">Manejadores de eventos</div>
+        <div class="rt-card-def">Los eventos se pasan como props en camelCase. La diferencia clave: <code>onClick={fn}</code> pasa la función; <code>onClick={fn()}</code> la ejecuta durante el render — bug clásico.</div>
+        <pre class="rt-card-code">// onClick — click
+&lt;button onClick={() =&gt; setCuenta(cuenta + 1)}&gt;+1&lt;/button&gt;
+
+// onClick con argumento
+&lt;button onClick={() =&gt; eliminar(item.id)}&gt;Borrar&lt;/button&gt;
+
+// onChange — input (e.target.value = texto escrito)
+&lt;input onChange={(e) =&gt; setTexto(e.target.value)} value={texto} /&gt;
+
+// onSubmit — formulario (siempre preventDefault)
+&lt;form onSubmit={(e) =&gt; {
+  e.preventDefault();   // evita recarga de página
+  enviar(texto);
+}}&gt;
+
+// Pasar el manejador como prop (event handlers como props)
+function Boton({ onClick, children }) {
+  return &lt;button onClick={onClick}&gt;{children}&lt;/button&gt;;
+}
+&lt;Boton onClick={() =&gt; setCuenta(0)}&gt;Reset&lt;/Boton&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GESTIÓN DEL ESTADO ══ -->
+  <div class="rt-panel" id="rt-estado-avanzado">
+    <div class="rt-note"><strong>Cuándo el estado en un componente ya no es suficiente.</strong> Hay cuatro problemas frecuentes: estado mal estructurado, estado que necesitan varios componentes, prop drilling (pasar props 5 niveles), y lógica de actualización muy compleja. Cada uno tiene su solución.</div>
+
+    <div class="rt-section-label">Estructura del estado</div>
+    <div class="rt-grid">
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Principio DRY</div>
+        <div class="rt-card-title">Qué no guardar en estado</div>
+        <div class="rt-card-def">Si un valor se puede <strong>calcular</strong> a partir del estado o las props, no es estado — es estado derivado. Calcularlo en el render, no guardarlo en <code>useState</code>.</div>
+        <div class="rt-card-why">Guardar estado derivado crea duplicación y fuente de verdad ambigua: si <code>nombre</code> cambia, ¿se actualiza también <code>nombreCompleto</code>? Con la sincronización manual siempre hay un momento en que los dos están desincronizados.</div>
+        <pre class="rt-card-code">// MAL — nombreCompleto es derivado, no estado propio
+const [nombre, setNombre] = useState('Ana');
+const [apellido, setApellido] = useState('García');
+const [nombreCompleto, setNombreCompleto] = useState('Ana García'); // ← innecesario
+
+// BIEN — se calcula en el render, siempre sincronizado
+const [nombre, setNombre] = useState('Ana');
+const [apellido, setApellido] = useState('García');
+const nombreCompleto = `${nombre} ${apellido}`; // ← calculado, no estado
+
+// Otros ejemplos de estado derivado (no usar useState):
+const totalItems = carrito.length;          // derivado de carrito
+const precioTotal = items.reduce(...);      // derivado de items
+const itemsFiltrados = items.filter(...);   // derivado de items + filtro</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Principio</div>
+        <div class="rt-card-title">Reglas de estructura del estado</div>
+        <div class="rt-card-def">Cinco reglas de la documentación oficial para tener un estado bien diseñado.</div>
+        <pre class="rt-card-code">// 1. Agrupa lo que siempre cambia junto
+// MAL:
+const [x, setX] = useState(0);
+const [y, setY] = useState(0);
+// BIEN:
+const [pos, setPos] = useState({ x: 0, y: 0 });
+
+// 2. Evita el estado contradictorio
+// MAL: cargando=true y error="algo" al mismo tiempo → imposible en prod
+// BIEN: un solo campo 'status': 'idle' | 'loading' | 'success' | 'error'
+
+// 3. Evita duplicar datos del padre
+// MAL: recibir usuario como prop y también guardarlo en estado propio
+// BIEN: usar directamente la prop
+
+// 4. Evita anidado profundo — aplana la estructura
+// MAL: { pais: { ciudad: { barrio: { calle: '...' } } } }
+// BIEN: { pais: 'ES', ciudad: 'Valencia', barrio: 'Ruzafa', calle: '...' }</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Compartir estado</div>
+        <div class="rt-card-title">Levantar el estado al padre</div>
+        <div class="rt-card-def">Cuando dos componentes hermanos necesitan compartir datos o sincronizarse, el estado sube al ancestro común más cercano. Los hijos reciben el valor y los callbacks como props.</div>
+        <div class="rt-card-why">El flujo de datos en React es unidireccional (solo hacia abajo). Si dos hermanos comparten estado local propio, están desincronizados. La única forma de sincronizarlos es que el padre sea el propietario del estado y lo comparta hacia abajo.</div>
+        <pre class="rt-card-code">// Dos paneles que se sincronizan — solo uno abierto a la vez
+function Acordeon() {
+  const [abierto, setAbierto] = useState(null); // ← estado en el padre
+
+  return (
+    &lt;&gt;
+      &lt;Panel titulo="Servicios" esActivo={abierto === 0} onToggle={() =&gt; setAbierto(0)} /&gt;
+      &lt;Panel titulo="Precios"   esActivo={abierto === 1} onToggle={() =&gt; setAbierto(1)} /&gt;
+    &lt;/&gt;
+  );
+}
+
+// Panel no tiene estado propio — recibe todo del padre
+function Panel({ titulo, esActivo, onToggle }) {
+  return (
+    &lt;div&gt;
+      &lt;button onClick={onToggle}&gt;{titulo}&lt;/button&gt;
+      {esActivo &amp;&amp; &lt;div&gt;Contenido...&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Prop drilling</div>
+        <div class="rt-card-title">Context — evitar pasar props en cadena</div>
+        <div class="rt-card-def">Cuando una prop tiene que pasar por 4 componentes intermedios que no la usan, Context la hace disponible en cualquier descendiente sin pasarla manualmente.</div>
+        <div class="rt-card-why">Context no es un sustituto de las props — es para datos que son genuinamente "globales" al árbol: el locale activo, el usuario autenticado, el tema visual. Para datos que solo comparten 2-3 componentes cercanos, levanta el estado y pasa props normales.</div>
+        <pre class="rt-card-code">// 1. Crear el contexto
+const LocaleContext = createContext('es');
+
+// 2. Proveedor — envuelve el árbol donde quieres que esté disponible
+function App() {
+  const [locale, setLocale] = useState('es');
+  return (
+    &lt;LocaleContext.Provider value={locale}&gt;
+      &lt;Pagina /&gt;   {/* Pagina → Seccion → Componente → ... */}
+    &lt;/LocaleContext.Provider&gt;
+  );
+}
+
+// 3. Consumir en cualquier descendiente (sin pasar props)
+function BotonIdioma() {
+  const locale = useContext(LocaleContext);
+  return &lt;span&gt;Idioma: {locale}&lt;/span&gt;;
+}</pre>
+      </div>
+
+      <div class="rt-card">
+        <div class="rt-card-bar"></div>
+        <div class="rt-card-label">Lógica compleja</div>
+        <div class="rt-card-title">useReducer — consolidar actualizaciones</div>
+        <div class="rt-card-def">Sustituye a <code>useState</code> cuando la lógica de actualización es compleja: múltiples sub-valores relacionados, actualizaciones que dependen del estado anterior, lógica repartida en muchos handlers.</div>
+        <div class="rt-card-why">Con useState, si tienes 5 acciones distintas que modifican el mismo estado, la lógica queda dispersa en 5 handlers. Con useReducer, toda la lógica vive en una función pura (<code>reducer</code>) que es fácil de testear, leer y compartir.</div>
+        <pre class="rt-card-code">// El reducer — función pura: (estadoActual, acción) → nuevoEstado
+function reducer(state, action) {
+  switch (action.type) {
+    case 'añadir':   return [...state, action.item];
+    case 'eliminar': return state.filter(i =&gt; i.id !== action.id);
+    case 'limpiar':  return [];
+    default: throw new Error(`Acción desconocida: ${action.type}`);
+  }
+}
+
+function Lista() {
+  const [items, dispatch] = useReducer(reducer, []);
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'añadir', item: nuevoItem })}&gt;
+        Añadir
+      &lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'limpiar' })}&gt;
+        Limpiar todo
+      &lt;/button&gt;
+    &lt;/&gt;
+  );
+}</pre>
+      </div>
+    </div>
+
+    <div class="rt-section-label">Cuándo usar cada herramienta</div>
+    <table class="rt-table">
+      <thead><tr><th>Herramienta</th><th>Cuándo</th><th>No usar cuando</th></tr></thead>
+      <tbody>
+        <tr><td class="rt-td-key">useState</td><td>Estado simple e independiente de un componente. La mayoría de casos.</td><td>La lógica de actualización es muy compleja o hay muchas acciones.</td></tr>
+        <tr><td class="rt-td-key">useReducer</td><td>Estado con múltiples sub-valores relacionados. Muchas acciones distintas. Necesitas testear la lógica por separado.</td><td>Estado simple con 1-2 valores. No añade valor frente a useState.</td></tr>
+        <tr><td class="rt-td-key">Levantar estado</td><td>Dos componentes hermanos necesitan los mismos datos o sincronizarse.</td><td>Están muy lejos en el árbol — crear prop drilling de 5+ niveles.</td></tr>
+        <tr><td class="rt-td-key">Context</td><td>Datos globales al árbol: locale, usuario autenticado, tema.</td><td>Datos que solo necesitan 2-3 componentes cercanos — usa props normales.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ HOOKS & EFECTOS ══ -->
+  <div class="rt-panel" id="rt-hooks">
+    <div class="rt-note"><strong>Los hooks son funciones que empiezan por <code>use</code>.</strong> Solo pueden llamarse en el nivel superior de un componente o de otro hook — nunca dentro de condicionales, bucles o funciones anidadas. Esta regla garantiza que React siempre los llama en el mismo orden.</div>
+
+    <div class="rt-section-label">Hooks de referencia y efectos</div>
+
+    <div class="rt-hook-card">
+      <div class="rt-hook-head">
+        <div class="rt-hook-name">useRef <span class="rt-hook-tag">referencia al DOM · valor sin re-render</span></div>
+        <div class="rt-hook-when">Cuando necesitas acceso directo a un elemento del DOM (medir su altura, hacer .focus(), inicializar una librería) o guardar un valor que no debe provocar re-render cuando cambia.</div>
+        <div class="rt-hook-why">A diferencia de useState, cambiar <code>ref.current</code> no redibuja el componente. Útil para valores de "infraestructura" que el usuario no necesita ver: un timer ID, una instancia de mapa Leaflet, el valor anterior de un estado.</div>
+      </div>
+      <pre class="rt-hook-code">import { useRef } from 'react';
+
+// Caso 1 — referencia al DOM
+function Formulario() {
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null);
+
+  const enfocar = () =&gt; inputRef.current?.focus(); // ?. porque puede ser null inicialmente
+
+  return &lt;&gt;
+    &lt;input ref={inputRef} type="text" /&gt;
+    &lt;button onClick={enfocar}&gt;Enfocar&lt;/button&gt;
+  &lt;/&gt;;
+}
+
+// Caso 2 — array de refs (uno por elemento de lista)
+const itemRefs = useRef&lt;(HTMLDivElement | null)[]&gt;([]);
+&lt;div ref={(el) =&gt; { itemRefs.current[i] = el; }}&gt;
+
+// Caso 3 — valor que no provoca re-render (ej: ID de timer)
+const timerId = useRef&lt;number | null&gt;(null);
+timerId.current = setTimeout(() =&gt; { ... }, 1000);
+clearTimeout(timerId.current);</pre>
+    </div>
+
+    <div class="rt-hook-card">
+      <div class="rt-hook-head">
+        <div class="rt-hook-name">useEffect <span class="rt-hook-tag">efectos después del paint</span></div>
+        <div class="rt-hook-when">Cuando necesitas sincronizar el componente con algo externo: llamar a una API, suscribirte a eventos del DOM, inicializar una librería que necesita el DOM real, conectar a un websocket.</div>
+        <div class="rt-hook-why">Los efectos corren después de que React haya pintado en pantalla. El usuario ya ve el resultado antes de que el efecto corra. Si el efecto tarda mucho (un fetch lento), el componente ya está visible con el estado de carga — la UX no se bloquea.</div>
+      </div>
+      <pre class="rt-hook-code">import { useEffect, useState } from 'react';
+
+function Perfil({ userId }: { userId: number }) {
+  const [datos, setDatos] = useState(null);
+
+  useEffect(() =&gt; {
+    // Este código corre DESPUÉS de que React pinte
+    fetch(`/api/usuario/${userId}`)
+      .then(r =&gt; r.json())
+      .then(d =&gt; setDatos(d));
+
+    // Función de limpieza — corre antes del próximo efecto o al desmontar
+    return () =&gt; {
+      // Cancelar la petición, desuscribirse, limpiar timers, etc.
+    };
+  }, [userId]); // ← dependencias: re-ejecuta cuando userId cambia
+
+  // Variantes del array de dependencias:
+  // []          → solo corre al montar (nunca más)
+  // [a, b]      → corre al montar y cuando a o b cambian
+  // (sin array) → corre en cada render — casi siempre un bug
+
+  return &lt;div&gt;{datos?.nombre}&lt;/div&gt;;
+}</pre>
+    </div>
+
+    <div class="rt-hook-card">
+      <div class="rt-hook-head">
+        <div class="rt-hook-name">useLayoutEffect <span class="rt-hook-tag">efectos antes del paint</span></div>
+        <div class="rt-hook-when">Solo cuando necesitas medir o modificar el DOM antes de que el usuario lo vea. Si lo haces con useEffect, el usuario verá un parpadeo (el estado incorrecto un frame antes de corregirse).</div>
+        <div class="rt-hook-why">Corre síncronamente después del commit de React pero antes de que el navegador pinte. Es más caro que useEffect porque bloquea el paint. Úsalo solo para animaciones y medidas del DOM que necesitan ser invisibles para el usuario.</div>
+      </div>
+      <pre class="rt-hook-code">import { useLayoutEffect, useRef } from 'react';
+
+// Animar altura de un acordeón sin parpadeo
+function Acordeon({ abierto, children }) {
+  const contenedorRef = useRef&lt;HTMLDivElement&gt;(null);
+
+  useLayoutEffect(() =&gt; {
+    const el = contenedorRef.current;
+    if (!el) return;
+    // Cambia la altura ANTES de que el usuario vea el render
+    // → sin parpadeo, animación suave
+    el.style.maxHeight = abierto ? `${el.scrollHeight}px` : '0';
+  }, [abierto]); // re-ejecuta cada vez que cambia 'abierto'
+
+  return (
+    &lt;div ref={contenedorRef} style={{ overflow: 'hidden', transition: 'max-height 0.3s' }}&gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+
+// Regla práctica:
+// Empieza siempre con useEffect.
+// Si ves un parpadeo visual, cambia a useLayoutEffect.</pre>
+    </div>
+
+    <div class="rt-hook-card">
+      <div class="rt-hook-head">
+        <div class="rt-hook-name">useId <span class="rt-hook-tag">IDs únicos para accesibilidad</span></div>
+        <div class="rt-hook-when">Cuando necesitas conectar elementos de formulario o ARIA con <code>id</code> y <code>htmlFor</code> / <code>aria-controls</code>, y el componente puede instanciarse varias veces en la misma página.</div>
+        <div class="rt-hook-why">Si inventas IDs estáticos (<code>id="faq-1"</code>) y tienes dos instancias del componente FAQ en la misma página, los IDs se repiten — eso rompe la accesibilidad y los lectores de pantalla. <code>useId</code> garantiza un ID único por instancia, sea cual sea el número de instancias.</div>
+      </div>
+      <pre class="rt-hook-code">import { useId } from 'react';
+
+function CampoFormulario({ label, tipo = 'text' }) {
+  const id = useId(); // genera: ':r0:', ':r1:', etc. — único por instancia
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor={id}&gt;{label}&lt;/label&gt;
+      &lt;input id={id} type={tipo} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Dos instancias — cada una tiene su ID único, no hay conflictos
+&lt;CampoFormulario label="Nombre" /&gt;
+&lt;CampoFormulario label="Email" tipo="email" /&gt;
+
+// En acordeones — conecta botón con contenido (aria)
+const uid = useId().replace(/:/g, '');
+&lt;button aria-controls={`${uid}-panel-${i}`} aria-expanded={abierto[i]}&gt;
+&lt;div id={`${uid}-panel-${i}`}&gt;</pre>
+    </div>
+
+    <div class="rt-hook-card">
+      <div class="rt-hook-head">
+        <div class="rt-hook-name">Custom hooks — <code>use...</code> <span class="rt-hook-tag">extraer lógica reutilizable</span></div>
+        <div class="rt-hook-when">Cuando la misma lógica con hooks aparece en dos o más componentes. Un custom hook extrae esa lógica en una función reutilizable con su propio estado.</div>
+        <div class="rt-hook-why">Los custom hooks no son una API especial de React — son simplemente funciones que empiezan por <code>use</code> y pueden llamar a otros hooks. La convención del prefijo es obligatoria: React usa el nombre para aplicar las reglas de hooks (linters, herramientas).</div>
+      </div>
+      <pre class="rt-hook-code">// Custom hook — extrae lógica de fetch reutilizable
+function useFetch&lt;T&gt;(url: string) {
+  const [datos, setDatos] = useState&lt;T | null&gt;(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  useEffect(() =&gt; {
+    setCargando(true);
+    fetch(url)
+      .then(r =&gt; r.json())
+      .then(d =&gt; { setDatos(d); setCargando(false); })
+      .catch(e =&gt; { setError(e.message); setCargando(false); });
+  }, [url]);
+
+  return { datos, cargando, error };
+}
+
+// Uso — limpio, sin repetir la lógica de fetch
+function Apartamentos() {
+  const { datos, cargando, error } = useFetch('/api/apartamentos');
+  if (cargando) return &lt;Spinner /&gt;;
+  if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+  return &lt;Lista items={datos} /&gt;;
+}</pre>
+    </div>
+
+    <div class="rt-section-label">Resumen — cuándo usar cada hook</div>
+    <table class="rt-table">
+      <thead><tr><th>Hook</th><th>Para qué</th><th>Provoca re-render</th></tr></thead>
+      <tbody>
+        <tr><td class="rt-td-key">useState</td><td>Datos que cambian y que la UI debe reflejar</td><td>Sí — al llamar al setter</td></tr>
+        <tr><td class="rt-td-key">useReducer</td><td>Como useState pero con lógica compleja centralizada</td><td>Sí — al hacer dispatch</td></tr>
+        <tr><td class="rt-td-key">useRef</td><td>Referencia al DOM · Valores que no deben redibujar</td><td>No</td></tr>
+        <tr><td class="rt-td-key">useEffect</td><td>Sincronizar con sistemas externos, fetch, suscripciones</td><td>Indirectamente (si llama setState)</td></tr>
+        <tr><td class="rt-td-key">useLayoutEffect</td><td>Medir/modificar el DOM antes del paint, sin parpadeo</td><td>Indirectamente</td></tr>
+        <tr><td class="rt-td-key">useId</td><td>IDs únicos por instancia para accesibilidad</td><td>No</td></tr>
+        <tr><td class="rt-td-key">useContext</td><td>Leer datos de un Context sin prop drilling</td><td>Sí — cuando el Context cambia</td></tr>
+        <tr><td class="rt-td-key">useCallback</td><td>Memorizar una función para no recrearla en cada render</td><td>No</td></tr>
+        <tr><td class="rt-td-key">useMemo</td><td>Memorizar un valor calculado caro de computar</td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ PENSAR EN REACT ══ -->
+  <div class="rt-panel" id="rt-pensar">
+    <div class="rt-note"><strong>El método oficial de la documentación de React para atacar cualquier UI nueva.</strong> 5 pasos en orden. La clave: construir primero sin estado, añadir estado solo al final.</div>
+
+    <div class="rt-section-label">Los 5 pasos</div>
+    <ol class="rt-step-list">
+      <li class="rt-step">
+        <span class="rt-step-num">1</span>
+        <div class="rt-step-body">
+          <div class="rt-step-title">Separa la UI en una jerarquía de componentes</div>
+          <div class="rt-step-desc">Dibuja cajas en el boceto. Cada caja que hace una sola cosa es un componente candidato (principio de responsabilidad única). Si un componente crece demasiado, se divide. El resultado es una jerarquía en árbol.</div>
+          <pre class="rt-step-code">// Ejemplo: buscador de apartamentos
+App
+├── BarraBusqueda       ← input de texto + checkbox
+└── TablaApartamentos  ← tabla con datos filtrados
+    ├── FilaCategoria  ← fila de encabezado (Playas, Centros...)
+    └── FilaApartamento ← una fila por apartamento</pre>
+        </div>
+      </li>
+      <li class="rt-step">
+        <span class="rt-step-num">2</span>
+        <div class="rt-step-body">
+          <div class="rt-step-title">Construye una versión estática primero</div>
+          <div class="rt-step-desc">Implementa los componentes con props y datos fijos — <strong>sin useState, sin eventos</strong>. Solo renderizado. Esto requiere escribir mucho código pero pensar poco (sin interactividad aún). El estado se añade en el paso 3.</div>
+          <pre class="rt-step-code">// Versión estática — datos hardcodeados, sin estado
+function App() {
+  return &lt;TablaApartamentos apartamentos={DATOS_EJEMPLO} /&gt;;
+}
+
+function TablaApartamentos({ apartamentos }) {
+  return (
+    &lt;table&gt;
+      {apartamentos.map(apt =&gt; (
+        &lt;FilaApartamento key={apt.id} apt={apt} /&gt;
+      ))}
+    &lt;/table&gt;
+  );
+}
+// Sin useState. Sin onClick. Solo JSX y props.</pre>
+        </div>
+      </li>
+      <li class="rt-step">
+        <span class="rt-step-num">3</span>
+        <div class="rt-step-body">
+          <div class="rt-step-title">Identifica el estado mínimo necesario</div>
+          <div class="rt-step-desc">Pregúntate por cada dato: ¿se puede calcular a partir de otra cosa? → no es estado. ¿Es siempre igual (constante)? → no es estado. ¿Viene de un padre como prop? → no es estado. Lo que queda es el estado real.</div>
+          <pre class="rt-step-code">// Datos del ejemplo:
+// - Lista de apartamentos     → prop (viene del padre) — NO es estado
+// - Texto de búsqueda         → cambia, no se calcula → SÍ es estado
+// - Checkbox "solo disponibles" → cambia, no se calcula → SÍ es estado
+// - Lista filtrada             → se calcula de las dos anteriores → NO es estado
+
+const [textoBusqueda, setTextoBusqueda] = useState('');
+const [soloDisponibles, setSoloDisponibles] = useState(false);
+
+// Derivado — se calcula en render, no es estado
+const aptsFiltrados = apartamentos
+  .filter(a =&gt; !soloDisponibles || a.disponible)
+  .filter(a =&gt; a.nombre.toLowerCase().includes(textoBusqueda.toLowerCase()));</pre>
+        </div>
+      </li>
+      <li class="rt-step">
+        <span class="rt-step-num">4</span>
+        <div class="rt-step-body">
+          <div class="rt-step-title">Decide dónde vive cada estado</div>
+          <div class="rt-step-desc">Para cada estado: ¿qué componentes lo necesitan? Sube hasta el ancestro común más cercano. Si no existe un componente apropiado, crea uno nuevo solo para contener ese estado.</div>
+          <pre class="rt-step-code">// textoBusqueda y soloDisponibles los necesitan:
+// - BarraBusqueda (para mostrar el valor actual del input)
+// - TablaApartamentos (para filtrar)
+//
+// Ancestro común: App → el estado vive en App
+
+function App() {
+  const [textoBusqueda, setTextoBusqueda] = useState('');
+  const [soloDisponibles, setSoloDisponibles] = useState(false);
+
+  return (
+    &lt;&gt;
+      &lt;BarraBusqueda texto={textoBusqueda} soloDisp={soloDisponibles} /&gt;
+      &lt;TablaApartamentos texto={textoBusqueda} soloDisp={soloDisponibles} /&gt;
+    &lt;/&gt;
+  );
+}</pre>
+        </div>
+      </li>
+      <li class="rt-step">
+        <span class="rt-step-num">5</span>
+        <div class="rt-step-body">
+          <div class="rt-step-title">Añade el flujo de datos inverso</div>
+          <div class="rt-step-desc">Los hijos no pueden modificar el estado del padre directamente. El padre les pasa callbacks como props. El hijo llama al callback cuando el usuario interactúa — el estado cambia en el padre y baja de nuevo al hijo.</div>
+          <pre class="rt-step-code">// El padre pasa los setters como callbacks
+function App() {
+  const [texto, setTexto] = useState('');
+  const [soloDisp, setSoloDisp] = useState(false);
+
+  return (
+    &lt;&gt;
+      &lt;BarraBusqueda
+        texto={texto}
+        soloDisp={soloDisp}
+        onTexto={setTexto}        // ← callback hacia arriba
+        onSoloDisp={setSoloDisp}  // ← callback hacia arriba
+      /&gt;
+      &lt;TablaApartamentos texto={texto} soloDisp={soloDisp} /&gt;
+    &lt;/&gt;
+  );
+}
+
+// El hijo llama al callback — no modifica estado directamente
+function BarraBusqueda({ texto, soloDisp, onTexto, onSoloDisp }) {
+  return (
+    &lt;&gt;
+      &lt;input value={texto} onChange={e =&gt; onTexto(e.target.value)} /&gt;
+      &lt;input type="checkbox" checked={soloDisp} onChange={e =&gt; onSoloDisp(e.target.checked)} /&gt;
+    &lt;/&gt;
+  );
+}</pre>
+        </div>
+      </li>
+    </ol>
+
+    <div class="rt-section-label">Resumen del flujo completo</div>
+    <table class="rt-table">
+      <thead><tr><th>Paso</th><th>Qué haces</th><th>Sin estado todavía</th></tr></thead>
+      <tbody>
+        <tr><td class="rt-td-key">1 · Jerarquía</td><td>Dibuja cajas en el boceto, nombra los componentes</td><td>Sí</td></tr>
+        <tr><td class="rt-td-key">2 · Estático</td><td>Implementa con props y datos fijos, sin eventos</td><td>Sí</td></tr>
+        <tr><td class="rt-td-key">3 · Estado mínimo</td><td>Identifica qué cambia que NO es calculable ni prop</td><td>No (primer useState)</td></tr>
+        <tr><td class="rt-td-key">4 · Dónde vive</td><td>Sube el estado hasta el ancestro común que lo necesite</td><td>No</td></tr>
+        <tr><td class="rt-td-key">5 · Flujo inverso</td><td>Pasa callbacks de padre a hijo, hijo los llama</td><td>No</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rt-note"><strong>La trampa más común:</strong> añadir estado demasiado pronto. Los pasos 1 y 2 son estáticos a propósito. Entender primero la estructura de componentes y el flujo de datos hace que decidir el estado en el paso 3 sea obvio.</div>
+  </div>
+
+</div><!-- /panel-react -->
 
 </main>
 </div><!-- /shell -->

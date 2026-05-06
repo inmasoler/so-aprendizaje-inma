@@ -425,6 +425,7 @@ function showDisenoSection(id, btn) {
 function showA11yTab(id, btn) { _sp('.a11y-tabpanel', '.a11y-tab', id, btn); }
 function showGitTab(id, btn) { _sp('.git-panel', '.git-stab', id, btn); }
 function showWatanTab(id, btn) { _sp('.wa-panel', '.wa-stab', id, btn); }
+function showReactTab(id, btn) { _sp('.rt-panel', '.rt-stab', id, btn); }
 
 // ═══════════════════════════════════════
 // DATA: DS GLOSARIO
