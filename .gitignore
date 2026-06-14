@@ -1,0 +1,8 @@
+# Node local del proyecto (weAAAre MCP requiere Node >= 24)
+.tools/node/
+
+# Docusaurus v1
+craftbase-site/node_modules/
+craftbase-site/build/
+craftbase-site/.docusaurus/
+craftbase-site/.cache/

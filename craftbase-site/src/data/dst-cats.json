@@ -1,0 +1,57 @@
+[
+  {
+    "id": "color",
+    "label": "Color",
+    "emoji": "🎨"
+  },
+  {
+    "id": "tipografia",
+    "label": "Tipografía",
+    "emoji": "🔤"
+  },
+  {
+    "id": "espaciado",
+    "label": "Espaciado y Layout",
+    "emoji": "📐"
+  },
+  {
+    "id": "tokens",
+    "label": "Tokens y Variables",
+    "emoji": "🪙"
+  },
+  {
+    "id": "accesibilidad",
+    "label": "Accesibilidad",
+    "emoji": "♿"
+  },
+  {
+    "id": "iconos",
+    "label": "Iconos",
+    "emoji": "🔷"
+  },
+  {
+    "id": "componentes",
+    "label": "Componentes",
+    "emoji": "🧩"
+  },
+  {
+    "id": "documentacion",
+    "label": "Documentación",
+    "emoji": "📚"
+  },
+  {
+    "id": "inspeccion",
+    "label": "Inspección CSS",
+    "emoji": "🔍"
+  },
+  {
+    "id": "colaboracion",
+    "label": "Colaboración",
+    "emoji": "🤝"
+  },
+  {
+    "id": "otros",
+    "label": "Otros",
+    "emoji": "⚡"
+  }
+]

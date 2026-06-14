@@ -1,0 +1,131 @@
+import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+
+const sidebars: SidebarsConfig = {
+  craftbaseSidebar: [
+    'intro',
+    'frameworks/index',
+    {
+      type: 'category',
+      label: 'Diseño',
+      link: {type: 'doc', id: 'diseno/index'},
+      items: [
+        'diseno/index',
+        'diseno/metricas',
+        'diseno/glosario-ds',
+        'diseno/herramientas',
+        'diseno/color',
+        'diseno/accesibilidad',
+        {
+          type: 'category',
+          label: 'DS Métricas',
+          items: [
+            'diseno/metricas/adopcion',
+            'diseno/metricas/eficiencia',
+            'diseno/metricas/calidad',
+            'diseno/metricas/equipo',
+            'diseno/metricas/negocio',
+            'diseno/metricas/tamano',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Accesibilidad',
+          items: [
+            'diseno/accesibilidad/principios',
+            'diseno/accesibilidad/niveles',
+            'diseno/accesibilidad/wcag',
+            'diseno/accesibilidad/aria',
+            'diseno/accesibilidad/tools',
+          ],
+        },
+      ],
+    },
+    'glosario/index',
+    'vibetips/index',
+    'hosting/index',
+    {
+      type: 'category',
+      label: 'Despliegue',
+      link: {type: 'doc', id: 'despliegue/index'},
+      items: [
+        'despliegue/index',
+        'despliegue/dns',
+        'despliegue/cpanel',
+        'despliegue/cache',
+        'despliegue/docker',
+        'despliegue/seguridad',
+        'despliegue/integraciones',
+      ],
+    },
+    'docker-curso/index',
+    'roadmap/index',
+    {
+      type: 'category',
+      label: 'Git & Docs',
+      link: {type: 'doc', id: 'git-docs/index'},
+      items: [
+        'git-docs/index',
+        'git-docs/fundamentos',
+        'git-docs/guia-completa',
+        'git-docs/conventional',
+        'git-docs/flow',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Astro (Watan)',
+      link: {type: 'doc', id: 'astro/index'},
+      items: [
+        'astro/index',
+        'astro/flujo',
+        'astro/capas',
+        'astro/islands',
+        'astro/script-vs-frontmatter',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'React',
+      link: {type: 'doc', id: 'react/index'},
+      items: [
+        'react/index',
+        'react/fundamentos',
+        'react/estado',
+        'react/estado-avanzado',
+        'react/hooks',
+        'react/pensar',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'JavaScript',
+      link: {type: 'doc', id: 'javascript/index'},
+      items: [
+        'javascript/index',
+        'javascript/fundamentos',
+        'javascript/variables',
+        'javascript/funciones',
+        'javascript/dom',
+        'javascript/arrays',
+        'javascript/objetos',
+        'javascript/promesas',
+        'javascript/timers',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'APIs & MySQL',
+      link: {type: 'doc', id: 'apis-mysql/index'},
+      items: [
+        'apis-mysql/index',
+        'apis-mysql/que-es',
+        'apis-mysql/rutas',
+        'apis-mysql/auth',
+        'apis-mysql/middleware',
+        'apis-mysql/mysql',
+      ],
+    },
+  ],
+};
+
+export default sidebars;

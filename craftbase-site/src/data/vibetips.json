@@ -1,0 +1,83 @@
+[
+  {
+    "fw": "next",
+    "fwlabel": "Next.js",
+    "fwcolor": "#888",
+    "type": "Arquitectura",
+    "title": "App Router con Server Components",
+    "desc": "Indica el patrón correcto de Next.js 14+ para que la IA no mezcle paradigmas viejos con nuevos.",
+    "prompt": "Actúa como experto en Next.js 14 con App Router. Usa Server Components por defecto y solo añade \"use client\" cuando sea estrictamente necesario (eventos, hooks de estado). Estructura el proyecto así: /app para rutas, /components/ui para componentes reutilizables, /lib para utilidades. No uses getServerSideProps ni getStaticProps — esos son del Pages Router antiguo."
+  },
+  {
+    "fw": "next",
+    "fwlabel": "Next.js",
+    "fwcolor": "#888",
+    "type": "Datos",
+    "title": "Fetching de datos con cache",
+    "desc": "Evita que la IA genere fetch sin control de cache, lo más común en código Next.js de mala calidad.",
+    "prompt": "En Next.js App Router, implementa fetching de datos con estas reglas: usa fetch() nativo con opciones de revalidación explícitas ({next: {revalidate: 60}} para ISR, {cache: \"no-store\"} para datos en tiempo real). Nunca uses useEffect para fetching en Server Components. Para datos de usuario, usa cookies() o headers() del paquete next/headers."
+  },
+  {
+    "fw": "astro",
+    "fwlabel": "Astro",
+    "fwcolor": "#ff5d01",
+    "type": "Rendimiento",
+    "title": "Islands con carga diferida",
+    "desc": "El error más común en Astro es hidratar todo. Este prompt fuerza el patrón correcto.",
+    "prompt": "Actúa como experto en Astro. Sigue estas reglas de hidratación: usa client:load solo si el componente es crítico y visible al inicio. Usa client:idle para componentes secundarios. Usa client:visible para componentes que aparecen con scroll. Usa client:only para componentes que no pueden renderizarse en el servidor (mapas, gráficos con DOM). El resto del HTML debe ser estático sin JS."
+  },
+  {
+    "fw": "react",
+    "fwlabel": "React",
+    "fwcolor": "#0f9aba",
+    "type": "Estado",
+    "title": "Estado con Zustand",
+    "desc": "Zustand es la solución de estado más limpia para React. Este prompt genera código idiomático.",
+    "prompt": "Usa Zustand para gestionar el estado global de esta feature. Crea el store en /store/[nombre]Store.ts con tipado TypeScript completo. Estructura el store con: state (los datos), actions (funciones que modifican el estado, siempre inmutables con set()), y selectors (funciones para derivar datos del estado). No uses Redux ni Context API para esto."
+  },
+  {
+    "fw": "astro",
+    "fwlabel": "Astro",
+    "fwcolor": "#ff5d01",
+    "type": "i18n",
+    "title": "Multiidioma con i18n nativo",
+    "desc": "La forma correcta de implementar i18n en Astro sin librerías externas.",
+    "prompt": "Implementa multiidioma en Astro usando su sistema de i18n nativo (Astro 4+). Configura en astro.config.mjs: i18n con defaultLocale y locales. Crea la estructura /src/i18n/[idioma].json para las traducciones. Genera rutas automáticas por idioma. Usa la función getRelativeLocaleUrl() para los enlaces entre idiomas. No uses react-i18next ni i18next — Astro tiene esto integrado."
+  },
+  {
+    "fw": "fastapi",
+    "fwlabel": "FastAPI",
+    "fwcolor": "#009688",
+    "type": "API",
+    "title": "Endpoint con validación Pydantic",
+    "desc": "FastAPI sin Pydantic bien definido es código frágil. Este prompt genera el patrón correcto.",
+    "prompt": "Actúa como experto en FastAPI. Para cada endpoint: define un modelo Pydantic de Request y otro de Response con tipos explícitos y validaciones (Field con constraints). Usa status_code explícito en el decorador. Documenta con docstring para la descripción en Swagger. Gestiona errores con HTTPException y códigos semánticos (400 para validación, 404 para no encontrado, 422 para datos inválidos). Añade el router en un archivo separado, no todo en main.py."
+  },
+  {
+    "fw": "supabase",
+    "fwlabel": "Supabase",
+    "fwcolor": "#3ecf8e",
+    "type": "Auth",
+    "title": "Auth con Row Level Security",
+    "desc": "Supabase sin RLS es una base de datos abierta. Este prompt genera el patrón seguro.",
+    "prompt": "Implementa auth con Supabase siguiendo estas reglas de seguridad: activa Row Level Security (RLS) en todas las tablas. Crea policies específicas: SELECT para que cada usuario solo vea sus propios datos (auth.uid() = user_id). Usa el cliente de servidor (createServerClient) en Next.js Server Components, nunca el cliente browser para operaciones sensibles. Nunca expongas el service_role key en el frontend."
+  },
+  {
+    "fw": "general",
+    "fwlabel": "General",
+    "fwcolor": "#5a6080",
+    "type": "Estructura",
+    "title": "Estructura de proyecto limpia",
+    "desc": "El prompt más universal: fuerza al agente a generar código organizado desde el principio.",
+    "prompt": "Antes de escribir código, define la estructura de carpetas completa y el propósito de cada una. Sigue estas reglas: separa concerns (UI, lógica de negocio, acceso a datos). Usa barrel files (index.ts) para re-exportar. Nombra archivos en kebab-case, componentes en PascalCase, hooks con use prefix. Escribe TypeScript estricto (no any). Añade comentarios solo cuando el \"por qué\" no es obvio — nunca el \"qué\"."
+  },
+  {
+    "fw": "general",
+    "fwlabel": "General",
+    "fwcolor": "#5a6080",
+    "type": "Revisión",
+    "title": "Auditar código generado",
+    "desc": "Usa este prompt para que la IA revise código que ya generó antes de aceptarlo.",
+    "prompt": "Revisa el código anterior como si fueras un senior developer haciendo code review. Identifica: 1) Problemas de seguridad (datos expuestos, validación faltante). 2) Problemas de rendimiento (renders innecesarios, fetching ineficiente, N+1 queries). 3) Malas prácticas del framework usado. 4) Código duplicado que debería extraerse. 5) Tipado incompleto o uso de any. Proporciona el código corregido con comentarios explicando cada cambio."
+  }
+]

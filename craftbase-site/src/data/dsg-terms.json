@@ -1,0 +1,772 @@
+[
+  {
+    "term": "Single Brand",
+    "en": "Single Brand",
+    "cat": "arquitectura",
+    "def": "Design System construido para servir exclusivamente a un producto o marca. Es el caso más común y el punto de partida natural. Toda la toma de decisiones está centrada en un único contexto visual y funcional.",
+    "features": [
+      "Menor complejidad de tokens",
+      "Iteración más rápida",
+      "Equipo reducido",
+      "Sin fricción por multi-contexto"
+    ],
+    "example": "color.primary = #1a56db — hardcoded, sin capa de abstracción adicional",
+    "related": [
+      "Multibrand",
+      "White label"
+    ]
+  },
+  {
+    "term": "Multibrand",
+    "en": "Multibrand",
+    "cat": "arquitectura",
+    "def": "Design System que soporta múltiples marcas o productos desde una misma base de componentes, cambiando únicamente la capa de tokens. Un mismo componente se renderiza con identidades visuales distintas. <strong>Nace por una cuestión de coste y eficiencia</strong>: en lugar de mantener sistemas independientes para cada marca (costoso, duplicado), un único sistema con tokens parametrizados es más ágil y sostenible. <strong>Según Raúl Marín</strong>: requiere fondo, resistencia y paciencia; cada marca tiene su tradición y orgullo; la meta es eliminar la idea de que un sistema restringe la creatividad; hay que enfocar la estrategia en la independencia e individualidad de cada marca; necesitas aprender a hablar el idioma de negocio.",
+    "features": [
+      "Capa de tokens separada por marca",
+      "Componentes agnósticos de marca",
+      "Mayor complejidad de mantenimiento",
+      "Economía de escala en componentes",
+      "Reducción de costes de mantenimiento"
+    ],
+    "example": "color.primary = brand-a: #1a56db · brand-b: #e11d48 · brand-c: #7c3aed",
+    "related": [
+      "Single Brand",
+      "White label",
+      "Design Token",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "White label",
+    "en": "White label",
+    "cat": "arquitectura",
+    "def": "Sistema diseñado para ser rebrandeado completamente por clientes o partners (ocultando la identidad del creador original).",
+    "features": [
+      "Altamente configurable y personalizable",
+      "Sin marca predeterminada visible",
+      "Documentación para personalización por terceros"
+    ],
+    "example": "color.primary = var(--client-color, #666666) · font.family = var(--client-font, 'Inter')",
+    "related": [
+      "Multibrand",
+      "Design Token"
+    ]
+  },
+  {
+    "term": "Headless",
+    "en": "Headless",
+    "cat": "componentes",
+    "def": "Sistema que separa la lógica de componentes (comportamiento, accesibilidad) de la presentación visual, permitiendo libertad total en el estilo. <em>Raúl lo considera la tipología de DS del futuro.</em>",
+    "features": [
+      "Componentes sin estilos predefinidos (unstyled)",
+      "Enfoque en funcionalidad, accesibilidad y comportamiento",
+      "Máxima flexibilidad visual",
+      "APIs y hooks reutilizables",
+      "Lógica y accesibilidad preresueltas",
+      "Compatible con cualquier sistema de diseño visual",
+      "Ejemplos: Radix UI, Headless UI, React Aria (el componente gestiona foco y ARIA; tú defines los estilos)"
+    ],
+    "example": "color.primary = platform.color.primary · font.family = platform.typography.body (solo referencias, no valores visuales concretos)",
+    "related": [
+      "Componente",
+      "Accesibilidad",
+      "Tokens",
+      "Design Token",
+      "White label"
+    ]
+  },
+  {
+    "term": "Design Token",
+    "en": "Design Token",
+    "cat": "tokens",
+    "def": "Unidad mínima de decisión de diseño almacenada como dato (nombre → valor). Abstrae valores concretos (color, espaciado, tipografía) para que puedan ser consumidos por cualquier plataforma.",
+    "features": [
+      "Independiente de plataforma",
+      "Fuente de verdad única",
+      "Permite theming y multibrand"
+    ],
+    "example": "color.primary.500 = #1a56db · space.4 = 16px · font.size.body = 1rem",
+    "related": [
+      "Single Brand",
+      "Multibrand",
+      "Theming"
+    ]
+  },
+  {
+    "term": "Atomic Design",
+    "en": "Atomic Design",
+    "cat": "arquitectura",
+    "def": "Metodología que organiza los componentes UI en cinco niveles de complejidad creciente: átomos, moléculas, organismos, plantillas y páginas.",
+    "features": [
+      "Reutilización máxima",
+      "Jerarquía clara",
+      "Nomenclatura compartida entre design y dev"
+    ],
+    "example": "Átomo: Button · Molécula: SearchBar (Input + Button) · Organismo: Header (Logo + Nav + SearchBar)",
+    "related": [
+      "Componente",
+      "Arquitectura de componentes"
+    ]
+  },
+  {
+    "term": "Design System (DS)",
+    "en": "Design System",
+    "cat": "arquitectura",
+    "def": "Conjunto cohesionado de componentes reutilizables, tokens visuales (colores, tipografía, espaciado) y documentación que define cómo construir productos digitales consistentes. Es la fuente de verdad visual y funcional de una marca o familia de productos.",
+    "features": [
+      "Documentación centralizada",
+      "Componentes reutilizables",
+      "Tokens agnósticos de implementación",
+      "Guías de uso y patrones",
+      "Versioning y evolución controlada"
+    ],
+    "example": "Figma library + componentes React + tokens JSON + documentación = Design System",
+    "related": [
+      "Design Token",
+      "Componente",
+      "Single Brand",
+      "Multibrand",
+      "Headless"
+    ]
+  },
+  {
+    "term": "Multidimensional",
+    "en": "Multidimensional",
+    "cat": "tokens",
+    "def": "Capacidad de un Design System para gestionar múltiples dimensiones de variación dentro de un único contexto (no múltiples marcas). Ejemplos: breakpoints para responsive (mobile, tablet, desktop), espacios según densidad (compact, normal, spacious), o temas visuales (light, dark). Los tokens varían en función de estas dimensiones, pero siguen siendo <strong>un único sistema</strong>, no multibrand.",
+    "features": [
+      "Variaciones por breakpoint (responsive)",
+      "Variaciones por tema (light/dark)",
+      "Variaciones por densidad de espaciado",
+      "Escalabilidad dentro de un contexto único",
+      "Diferente a multibrand (no se cambia identidad)"
+    ],
+    "example": "space.sm = 8px (compact) · space.sm = 12px (normal) · color.bg = #fff (light) · color.bg = #1a1a1a (dark)",
+    "related": [
+      "Design Token",
+      "Single Brand",
+      "Theming"
+    ]
+  },
+  {
+    "term": "State Layer",
+    "en": "State Layer",
+    "cat": "componentes",
+    "def": "Capa semitransparente (overlay) que se coloca entre el container y el contenido de un componente para indicar su estado de interacción (hover, focus, press, drag, disabled). Usa opacidades fijas según el estado en lugar de cambiar el color base, proporcionando un enfoque sistemático y predecible. Originada en <strong>Material Design 3</strong> y adoptada por Figma, Atlassian, Stripe y otros grandes sistemas. El state layer usa el mismo color que el contenido (generalmente el \"on color\") con diferentes niveles de opacidad, eliminando la necesidad de múltiples paletas de color por estado.",
+    "features": [
+      "Opacidad fija por estado: hover 8%, focus 10%, press 10%, drag 16%, disabled 38%",
+      "Un único color para todos los estados (variable solo la opacidad)",
+      "Coherencia visual garantizada",
+      "Sin dicotomía de paletas por estado",
+      "Mejora accesibilidad (legibilidad preservada)",
+      "Agnóstica al color base del componente",
+      "Escalable entre temas (light/dark)"
+    ],
+    "example": "Button.primary: bg=#0066cc + on-color(#fff) + state-layer-8%-opacity(hover) = capa blanca semi-visible, sin necesidad de #0052a3 alternativo",
+    "related": [
+      "Componente",
+      "Design Token",
+      "Theming",
+      "Accesibilidad",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Variante",
+    "en": "Variant",
+    "cat": "organizacion",
+    "def": "Versión específica de un componente con comportamiento o apariencia diferente pero manteniendo la misma funcionalidad base. Las variantes permiten un único componente adaptarse a múltiples contextos sin duplicar código. Se controlan mediante props (size, color, state, variant).",
+    "features": [
+      "Control mediante props o enum",
+      "Reutilización de lógica base",
+      "Reducción de duplicación",
+      "Consistencia visual garantizada",
+      "Fácil mantenimiento centralizado"
+    ],
+    "example": "Button con variantes: primary | secondary | tertiary. O tamaños: sm, md, lg. O estado: default, loading, disabled",
+    "related": [
+      "Componente",
+      "Component API",
+      "Controlled Component",
+      "State Layer"
+    ]
+  },
+  {
+    "term": "Compound Component",
+    "en": "Compound Component",
+    "cat": "organizacion",
+    "def": "Patrón donde múltiples componentes trabajan juntos como una unidad implícita, compartiendo estado interno sin props explícitas. El padre gestiona el estado, los hijos lo leen del contexto. Usado en: Dialog (Dialog + DialogTitle + DialogContent), Form (Form + FormField + Input), etc. Permite composición flexible sin props \"perforadas\" a través de niveles.",
+    "features": [
+      "Patrón implicit state sharing",
+      "API simple para el consumidor",
+      "Flexibilidad en la estructura interna",
+      "Contexto compartido entre hijos",
+      "Usado en librerías: Headless UI, Radix UI"
+    ],
+    "example": "<Dialog><DialogTitle/><DialogContent/></Dialog> — el content no necesita saber que está dentro del Dialog; lo detecta vía contexto",
+    "related": [
+      "Componente",
+      "Component API",
+      "Composition"
+    ]
+  },
+  {
+    "term": "Component API",
+    "en": "Component API",
+    "cat": "organizacion",
+    "def": "Interfaz pública de un componente: props que acepta, eventos que emite, métodos que expone y el estado que gestiona. Una buena API es intuitiva, consistente con otros componentes del sistema, y documenta qué es obligatorio vs opcional con ejemplos de uso.",
+    "features": [
+      "Props tipadas y documentadas",
+      "Valores por defecto razonables",
+      "Eventos/callbacks claramente nombrados",
+      "Métodos accesibles si aplica",
+      "JSDoc o documentación paralela"
+    ],
+    "example": "Button API: <Button size=\"sm|md|lg\" variant=\"primary|secondary\" disabled={bool} onClick={fn} {...props}/>",
+    "related": [
+      "Componente",
+      "Variante",
+      "Compound Component"
+    ]
+  },
+  {
+    "term": "Primitives",
+    "en": "Primitives",
+    "cat": "tokens",
+    "def": "Nivel base fundamental de tokens: valores sin contexto (colors, sizes, values). También llamados \"core tokens\", \"global tokens\" u \"options\". Son los datos crudos sobre los cuales se construyen tokens semánticos y específicos. No tienen significado funcional, solo valores brutos.",
+    "features": [
+      "Valores sin contexto (color hexadecimal puro, número de pixel)",
+      "Base numérica o matemática (ej: 4px, 8px, 16px)",
+      "Agnósticos de uso (no dicen para qué sirven)",
+      "Reutilizables en múltiples tokens semánticos",
+      "Nivel más bajo de la jerarquía de tokens"
+    ],
+    "example": "Primitives: color-raw-blue-600: #0066cc · space-base-unit: 4px · size-full: 100%. Semantic: color-primary: color-raw-blue-600",
+    "related": [
+      "Design Token",
+      "Semantic tokens",
+      "Specific tokens",
+      "Color Scale",
+      "Spacing Scale"
+    ]
+  },
+  {
+    "term": "Semantic tokens",
+    "en": "Semantic Tokens",
+    "cat": "tokens",
+    "def": "Tokens que añaden contexto y significado a los valores primitivos. Usan nombres que describen su propósito funcional (color-primary, color-error, space-padding-md) en lugar de valores literales. Permiten fácil cambio de temas y multibrand. Nivel intermedio entre primitivos y específicos.",
+    "features": [
+      "Nombres descriptivos y contextuales",
+      "Reutilizan primitives como referencia",
+      "Facilita theming y multibrand",
+      "Mantiene semántica entre plataformas",
+      "Evita tener colores hardcodeados en componentes",
+      "Pueden ser alias de primitives o funciones derivadas"
+    ],
+    "example": "Semantic: color-primary: {light: #0066cc, dark: #3b9bff} · color-error: #e11d48 · space-padding: {sm: 8px, md: 16px, lg: 24px}",
+    "related": [
+      "Design Token",
+      "Primitives",
+      "Specific tokens",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Specific tokens",
+    "en": "Specific Tokens",
+    "cat": "tokens",
+    "def": "Tokens aplicados a componentes o patrones específicos del sistema. Nivel más granular: color-button-primary-bg, space-input-padding-vertical. Usan semánticos como base pero especifican exactamente dónde y cómo se aplican. No deben usarse directamente en markup (solo design tokens semánticos).",
+    "features": [
+      "Nombres específicos a componente (button-*, input-*, modal-*)",
+      "Derivan de semantic tokens",
+      "Mayor granularidad que semánticos",
+      "Documentación en componentes individuales",
+      "Optional: puede no existir si semantic es suficiente"
+    ],
+    "example": "Specific: button-primary-bg: color-primary · button-primary-text: color-inverse · input-padding-x: space-padding-md · modal-border-radius: radius-lg",
+    "related": [
+      "Design Token",
+      "Primitives",
+      "Semantic tokens",
+      "Component API"
+    ]
+  },
+  {
+    "term": "Breakpoints",
+    "en": "Breakpoints",
+    "cat": "tokens",
+    "def": "Valores de ancho (width) que definen los puntos de cambio para diseño responsive. Típicamente en píxeles: mobile (320px), tablet (768px), laptop (1024px), desktop (1280px). Usados en media queries CSS y en lógica condicional de componentes. Son tokens multidimensionales que coordinan toda la jerarquía de otros tokens (spacing, typography, grid).",
+    "features": [
+      "Puntos de quiebre predefinidos",
+      "Aplicados en media queries",
+      "Disponibles en código y Figma",
+      "Consistentes entre diseño y desarrollo",
+      "Usualmente nombrados semánticamente (mobile, tablet) o por rango (sm, md, lg)",
+      "Alteran valores de otros tokens (ej: font-size sube en desktop)"
+    ],
+    "example": "phone (portrait): 320px · tablet: 601px · laptop: 1023px · desktop: 1281px. En CSS: @media (min-width: 768px) { ... }",
+    "related": [
+      "Design Token",
+      "Spacing Scale",
+      "Typographic Scale",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Color Scale",
+    "en": "Color Scale",
+    "cat": "tokens",
+    "def": "Conjunto ordenado de variaciones de un color base, organizadas por luminosidad o intensidad. Típicamente 11 pasos: 50 (casi blanco), 100, 200... 900, 950 (casi negro). Permite coherencia visual en contraste, legibilidad y state layers sin hardcodear colores.",
+    "features": [
+      "11 escalones estándar (50–950)",
+      "Escalones impares para perceptibilidad",
+      "Base matemática (interpolación de LAB o LCH)",
+      "Versiones light/dark",
+      "Usadas en Tailwind, Material Design, Stripe"
+    ],
+    "example": "primary-50: #f0f9ff · primary-100: #e0f2fe · ... primary-900: #0c2d57 · primary-950: #001a33",
+    "related": [
+      "Design Token",
+      "Multidimensional",
+      "Theming"
+    ]
+  },
+  {
+    "term": "OKLCH Chroma (%)",
+    "en": "OKLCH Chroma Percentage",
+    "cat": "tokens",
+    "def": "En flujos basados en OKLCH, el canal C (chroma) puede expresarse y gestionarse como proporción o porcentaje relativo respecto al máximo útil del tono, no como valor absoluto fijo. Esto ayuda a construir rampas más uniformes perceptualmente y evita saltos bruscos de saturación entre pasos.",
+    "features": [
+      "C controla intensidad/saturación percibida",
+      "Gestionarlo por porcentaje mantiene coherencia entre pasos 50–950",
+      "Facilita adaptación a light/dark sin recalcular todo",
+      "Mejora decisiones de contraste para accesibilidad",
+      "Evita oversaturation en tonos medios y oscuros"
+    ],
+    "example": "Mismo hue (H=260): paso 100 con C al 12%, paso 500 al 36%, paso 900 al 18% (porcentaje relativo), ajustando L para lograr contraste AA/AAA según el uso.",
+    "related": [
+      "OKLCH",
+      "Color Scale",
+      "Design Token",
+      "Theming",
+      "Accesibilidad"
+    ]
+  },
+  {
+    "term": "Typographic Scale",
+    "en": "Typographic Scale",
+    "cat": "tokens",
+    "def": "Sistema de tamaños, pesos y espacios de línea para tipografía consistente. Basado en ratios o pasos discretos (xs, sm, base, lg, xl, 2xl...). Define no solo tamaño sino también line-height, letter-spacing y peso para cada nivel.",
+    "features": [
+      "Ratios consistentes (1.25x, 1.5x, etc.)",
+      "Categorías semánticas (xs, sm, base, lg, xl)",
+      "Múltiples pesos por tamaño si aplica",
+      "Line-height y letter-spacing integrados",
+      "Compatible con responsive (cambios por breakpoint)"
+    ],
+    "example": "h1: 48px, weight 700, line-height 1.1 · body: 16px, weight 400, line-height 1.5 · caption: 12px, weight 500, line-height 1.4",
+    "related": [
+      "Design Token",
+      "Spacing Scale",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Spacing Scale",
+    "en": "Spacing Scale",
+    "cat": "tokens",
+    "def": "Sistema de espaciados consistentes basado en múltiplos de una unidad base (usualmente 4px u 8px). Proporciona valores discretos para márgenes, paddings, gaps, etc. Garantiza alineación visual y ritmo consistente en toda la interfaz.",
+    "features": [
+      "Unidad base: 4px u 8px",
+      "Múltiplos: 4, 8, 12, 16, 24, 32, 48, 64, 96...",
+      "Nombres semánticos: xs, sm, md, lg, xl",
+      "Aplicable a margin, padding, gap, border-radius",
+      "Versiones responsive por breakpoint"
+    ],
+    "example": "space-2: 8px · space-4: 16px · space-6: 24px · space-8: 32px (multíplos de 8 base)",
+    "related": [
+      "Design Token",
+      "Color Scale",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Token Naming Convention",
+    "en": "Token Naming",
+    "cat": "tokens",
+    "def": "Convención sistemática para nombrar tokens en el Design System. Típicamente: category/subcategory/variant (color/primary/500 o space/padding/md). Un buen naming es semántico (color-primary, no color-azul), jerárquico y predecible, facilitando autocompletado y búsqueda.",
+    "features": [
+      "Estructura jerárquica consistente",
+      "Semántica clara (no hardcodeo de atributos)",
+      "Evita nombres ambiguos o redundantes",
+      "Facilita búsqueda y autocompletado",
+      "Agnóstico a plataforma (CSS, Figma, Tokens Studio)"
+    ],
+    "example": "color/primary/50, color/primary/500, color/primary/900 · space/padding/sm, space/padding/md · font/size/body, font/size/heading",
+    "related": [
+      "Design Token",
+      "Composition"
+    ]
+  },
+  {
+    "term": "Component Maturity",
+    "en": "Component Maturity",
+    "cat": "gobernanza",
+    "def": "Nivel de estabilidad y adopción de un componente en el Design System: Alpha (experimental), Beta (funcional pero puede cambiar), Stable (producción, contrato estable), Deprecated (marcado para retiro). Comunica a los equipos el riesgo de usar un componente.",
+    "features": [
+      "Alpha: cambios frecuentes, testing en progreso",
+      "Beta: funcional, breaking changes posibles",
+      "Stable: contrato garantizado, cambios mínimos",
+      "Deprecated: anuncios con plazo para retiro",
+      "Migración path documentada"
+    ],
+    "example": "Button: Stable · NewModal: Alpha · OldSelectNative: Deprecated (usar Select nuevo en 3 meses)",
+    "related": [
+      "Design System (DS)",
+      "Gobernanza"
+    ]
+  },
+  {
+    "term": "Composition",
+    "en": "Composition",
+    "cat": "organizacion",
+    "def": "Técnica de construir interfaces complejas componiendo componentes simples. Un Header se compone de Logo + Nav + SearchBar. Favorece reutilización, mantenibilidad y claridad. Alternativa a herencia o props profundas.",
+    "features": [
+      "Componentes pequeños y enfocados",
+      "Composición flexible en lugar de herencia",
+      "Props fluyen hacia abajo (unidireccionales)",
+      "Fácil de testear y mantener",
+      "Facilita design systems escalables"
+    ],
+    "example": "Header = Logo + Nav + SearchBar · Nav = NavList + NavItems · NavItems map sobre array de items",
+    "related": [
+      "Componente",
+      "Atomic Design",
+      "Compound Component"
+    ]
+  },
+  {
+    "term": "Theming",
+    "en": "Theming",
+    "cat": "tokens",
+    "def": "Capacidad de cambiar la apariencia global de una interfaz (colores, tipografía, espaciados) sin cambiar la estructura o lógica de componentes. Típicamente implementado mediante tokens globales (CSS variables, Figma variables, Design Token SDK) que los componentes consultan en tiempo de renderizado.",
+    "features": [
+      "Cambio global sin refactor de código",
+      "Temas predefinidos (light/dark, brand-a/brand-b)",
+      "Tokens centralizados como fuente de verdad",
+      "Transiciones suaves entre temas",
+      "Runtime o build-time según plataforma"
+    ],
+    "example": "CSS: body { color-scheme: light; } body.dark { --color-bg: #1a1a1a; } · O Figma: File Settings > Variables > Brand A/Brand B",
+    "related": [
+      "Design Token",
+      "Multidimensional",
+      "Multibrand",
+      "Color Scale"
+    ]
+  },
+  {
+    "term": "Asset availability",
+    "en": "Asset Availability",
+    "cat": "figma",
+    "def": "Colección de Figma que documenta la disponibilidad de assets (colores, tipografías, iconos, componentes) según su estado: available (usable ahora), deprecated (retirado próximamente), new (recién añadido), restricted (uso limitado). Permite rastrear qué assets están en uso, cuáles son obsoletos y cuáles están en beta.",
+    "features": [
+      "Estatus para cada asset: available, deprecated, new, restricted",
+      "Versionado de componentes",
+      "Facilita migraciones planificadas",
+      "Documentación de lifecyclo de assets",
+      "Visible en Figma inspection panel",
+      "Sincronizable con Design System documentation"
+    ],
+    "example": "Color: primary-blue available · old-navy deprecated (usar navy-dark) · new-teal new (beta, testing). Component: Modal available · OldSelectNative deprecated · NewMultiSelect new",
+    "related": [
+      "Design Token",
+      "Component Maturity",
+      "Gobernanza"
+    ]
+  },
+  {
+    "term": "Brands collection",
+    "en": "Brands Collection",
+    "cat": "figma",
+    "def": "Colección de Figma (o archivo de variables en Tokens Studio) que gestiona variables por marca dentro del mismo sistema. Cada marca tiene sus propios valores para color-primary, typography, etc., pero comparten componentes. Similar a Multibrand pero organizado como una sola colección de variables con sub-sets por brand. Permite switching visual instant en Figma.",
+    "features": [
+      "Sub-sets de variables por marca (Brand A, Brand B, Brandless)",
+      "Componentes agnósticos de marca",
+      "Switching visual instantáneo en Figma",
+      "Sincronizable con Tokens Studio o similar",
+      "Facilita QA y testing multi-brand",
+      "Patrón moderno de multibrand en Figma 4.0+"
+    ],
+    "example": "Variable: Brand/Brand A/primary = #1a56db · Brand/Brand B/primary = #e11d48 · Brand/Brandless/primary = #666666. Switch en inspection: selecciona Brand A y todos los componentes se renderizan con esa paleta.",
+    "related": [
+      "Multibrand",
+      "Design Token",
+      "Theming",
+      "Subscription level collection"
+    ]
+  },
+  {
+    "term": "Promotions collection",
+    "en": "Promotions Collection",
+    "cat": "figma",
+    "def": "Colección de Figma para gestionar estados visuales relacionados con promociones (sale, Black Friday, holiday, etc.). Contiene variables para colores, iconografía y tipografía adaptadas a cada contexto promocional. Permite a designers visualizar cómo lucen componentes bajo diferentes escenarios comerciales sin duplicar componentes.",
+    "features": [
+      "Sub-sets: None, Standard Sale, Black Friday, Holiday, Limited Time",
+      "Variables para sale-badge color, sale-price-color, promotion-icon",
+      "Cambios visuales sin alterar componentes base",
+      "Fácil A/B testing de escenarios",
+      "Visible en Figma para QA y stakeholders"
+    ],
+    "example": "Variable: Promotion/None/sale-badge = hidden · Promotion/Black Friday/sale-badge = #ff3e00 · Promotion/Holiday/accent = #c1121f. Switch en Figma: ver el mismo componente renderizarse bajo diferentes contextos de venta.",
+    "related": [
+      "Theming",
+      "Brands collection",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Subscription level collection",
+    "en": "Subscription Level Collection",
+    "cat": "figma",
+    "def": "Colección de Figma para modelar diferencias visuales y de componentes según nivel de suscripción del usuario (None, Professional, Organization, Enterprise). Controla qué características se muestran, qué botones están habilitados, qué iconografía aparece. Permite diseñadores visualizar la experiencia de cada tier sin crear mockups separados.",
+    "features": [
+      "Sub-sets por nivel: None, Professional, Organization, Enterprise",
+      "Variables para visibility, enable state, badge color de tier",
+      "Iconografía diferente por tier (ej: pro badge, enterprise badge)",
+      "Facilita conversión funnel design",
+      "Testing de paywall flows en Figma"
+    ],
+    "example": "Variable: Subscription/Professional/premium-features-visible = true · Subscription/None/premium-features-visible = false · Subscription/Enterprise/badge-color = #c084fc. Diseñadores switchean para ver qué ve cada tier.",
+    "related": [
+      "Theming",
+      "Brands collection",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Loyalty status collection",
+    "en": "Loyalty Status Collection",
+    "cat": "figma",
+    "def": "Colección de Figma para estados de lealtad del usuario (None, Silver, Gold, Titanium, etc.). Maneja paletas de color, iconografía y tipografía específicas para cada tier de programa de fidelización. Permite visualizar cómo la interfaz se transforma según estatus de cliente sin duplicar diseños.",
+    "features": [
+      "Sub-sets por estatus: None, Silver, Gold, Titanium, Diamond",
+      "Paleta de colores diferenciada por tier",
+      "Iconografía y badge exclusiva por tier",
+      "Tipografía o weight diferenciada (ej: gold = peso 700)",
+      "Facilitadesenio de loyalty rewards experience",
+      "Testing visual de gradientes de premium"
+    ],
+    "example": "Variable: Loyalty/Silver/card-color = #d4d4d8 · Loyalty/Gold/card-color = #fbbf24 · Loyalty/Titanium/card-color = #a78bfa. Cardholders ven su card renderizada con el color de su tier.",
+    "related": [
+      "Theming",
+      "Subscription level collection",
+      "Multidimensional"
+    ]
+  },
+  {
+    "term": "Authentication status collection",
+    "en": "Logged In / Logged Out Collection",
+    "cat": "figma",
+    "def": "Colección de Figma que modela diferencias visuales entre estado autenticado (Logged In) y no autenticado (Logged Out). Controla visibilidad de elementos (profile menu, saved items), textos (\"Log in\" vs \"Profile\"), e iconografía. Permite diseñadores visualizar ambos flujos en un mismo archivo sin mockups duplicados.",
+    "features": [
+      "Sub-sets: Logged Out, Logged In",
+      "Variables para visibility, button labels, menu items",
+      "Iconografía diferente por estado (user icon vs profile badge)",
+      "Facilita auth flow design",
+      "Testing de conditional rendering en Figma",
+      "Navega diferente según estado"
+    ],
+    "example": "Variable: Auth/Logged Out/menu-items = [Home, About, Log in, Sign up] · Auth/Logged In/menu-items = [Home, About, Courses, Profile (AP), Logout]. UI cambia automáticamente al switchear.",
+    "related": [
+      "Theming",
+      "Multidimensional",
+      "Conditional Component Patterns"
+    ]
+  },
+  {
+    "term": "Extended Collections",
+    "en": "Extended Collections",
+    "cat": "figma",
+    "def": "Patrón avanzado de organización de variables en Figma Enterprise donde una colección base (core) puede extenderse por colecciones derivadas que solo sobrescriben (override) los valores necesarios. Evita duplicar todo el sistema por cada marca y mejora mantenibilidad multimarca.",
+    "features": [
+      "Herencia de variables core",
+      "Overrides mínimos por marca o contexto",
+      "Menos duplicación de tokens",
+      "Escalado más limpio cuando crecen marcas/modos",
+      "Reduce listas gigantes de variables"
+    ],
+    "example": "Core/color.text.primary = #111; Brand B solo sobrescribe color.accent.* y hereda el resto del core sin copiar toda la colección.",
+    "related": [
+      "Brands collection",
+      "Multibrand",
+      "Design Token",
+      "Theming"
+    ]
+  },
+  {
+    "term": "Slots",
+    "en": "Slots / Space Property",
+    "cat": "figma",
+    "def": "Mecanismo para reservar un hueco configurable dentro de un componente y permitir insertar instancias distintas sin crear una variante por cada combinación posible. Es clave para organismos complejos (cards, modals, headers) sin explosión de variantes.",
+    "features": [
+      "Composición flexible en Figma",
+      "Menos variantes difíciles de mantener",
+      "Mayor reutilización de componentes base",
+      "Modela contenido dinámico en diseño"
+    ],
+    "example": "Un componente Card define un slot de media: hoy insertas icono, mañana avatar o ilustración, sin crear Card-icon, Card-avatar, Card-illustration.",
+    "related": [
+      "Composition",
+      "Compound Component",
+      "Component API"
+    ]
+  },
+  {
+    "term": "APCA",
+    "en": "Advanced Perceptual Contrast Algorithm",
+    "cat": "tokens",
+    "def": "Modelo de contraste perceptual que estima mejor la legibilidad real en diferentes fondos, tamaños y pesos, especialmente útil en dark mode. No reemplaza automáticamente el cumplimiento legal WCAG vigente, pero aporta una señal práctica de calidad visual más realista en interfaces modernas.",
+    "features": [
+      "Sensibilidad a polaridad (texto claro sobre oscuro vs oscuro sobre claro)",
+      "Más útil en fondos oscuros complejos",
+      "Complementa métricas WCAG 2.x",
+      "Ayuda a priorizar legibilidad efectiva"
+    ],
+    "example": "Un par de colores puede pasar WCAG AA y aun así sentirse débil en dark mode; APCA detecta ese problema perceptual y sugiere ajuste de L/C.",
+    "related": [
+      "OKLCH Chroma (%)",
+      "Theming",
+      "Color Scale",
+      "Accesibilidad"
+    ]
+  },
+  {
+    "term": "Token Pipeline",
+    "en": "Design Token Pipeline",
+    "cat": "proceso",
+    "def": "Flujo automatizado que conecta diseño y código: definición de tokens, versionado, transformación por plataforma y publicación de artefactos listos para consumo. Es la base operativa para escalar un Design System multimarca sin depender de copias manuales.",
+    "features": [
+      "Fuente de verdad única",
+      "Push/Pull entre diseño y repositorio",
+      "Build reproducible por entorno",
+      "Publicación versionada de tokens",
+      "Reduce drift entre Figma y código"
+    ],
+    "example": "Figma/Tokens Studio -> GitHub (JSON) -> Style Dictionary -> CSS variables + iOS + Android -> release del paquete de tokens.",
+    "related": [
+      "Design Token",
+      "Style Dictionary",
+      "Tokens Studio",
+      "Theming"
+    ]
+  },
+  {
+    "term": "Style Dictionary",
+    "en": "Style Dictionary",
+    "cat": "proceso",
+    "def": "Herramienta de transformación de design tokens que convierte un formato fuente (JSON) en salidas específicas para cada plataforma. Permite centralizar naming, escalas y formatos de salida para web, iOS, Android o sistemas propietarios.",
+    "features": [
+      "Transformaciones por plataforma",
+      "Build configurable por tema/marca",
+      "Output en múltiples formatos",
+      "Automatizable en CI/CD"
+    ],
+    "example": "Con un solo comando generas tokens CSS, Android XML e iOS Swift a partir de la misma fuente de datos.",
+    "related": [
+      "Token Pipeline",
+      "Design Token",
+      "Theming"
+    ]
+  },
+  {
+    "term": "Web Components en DS",
+    "en": "Web Components for Design Systems",
+    "cat": "componentes",
+    "def": "Estrategia para construir componentes encapsulados y agnósticos de framework, reutilizables en ecosistemas React, Vue, Angular o vanilla. Muy útil en organizaciones multimarca y multi-stack donde mantener librerías separadas por framework sería costoso.",
+    "features": [
+      "Interoperabilidad entre frameworks",
+      "Encapsulación por Shadow DOM (según estrategia)",
+      "Contrato estable de API por atributos/eventos",
+      "Ideal para plataformas heterogéneas"
+    ],
+    "example": "Un mismo <x-button> puede consumirse en React y Angular sin reescribir lógica base de accesibilidad y comportamiento.",
+    "related": [
+      "Headless",
+      "Component API",
+      "Multibrand"
+    ]
+  },
+  {
+    "term": "Snowflakes",
+    "en": "Snowflake Components",
+    "cat": "gobernanza",
+    "def": "Componentes o variaciones que solo necesita una marca o contexto muy específico. No son un fallo por sí mismos: el problema aparece cuando entran sin control al core del sistema y erosionan su coherencia.",
+    "features": [
+      "Excepciones legítimas en multimarca",
+      "Deben vivir fuera del core por defecto",
+      "Necesitan revisión periódica",
+      "Riesgo de deuda si se multiplican"
+    ],
+    "example": "Un widget promocional exclusivo para Brand C se mantiene en capa de marca, no en el paquete central de componentes.",
+    "related": [
+      "Multibrand",
+      "Component Maturity",
+      "Gobernanza"
+    ]
+  },
+  {
+    "term": "Federated Governance",
+    "en": "Federated Governance Model",
+    "cat": "gobernanza",
+    "def": "Modelo de gobernanza donde existe un equipo core que define estándares globales y equipos de producto/marca que contribuyen con necesidades locales. Equilibra consistencia y velocidad, evitando tanto el caos distribuido como el cuello de botella central.",
+    "features": [
+      "Core team con decisiones globales",
+      "Contribución distribuida por dominios",
+      "Reglas claras de aceptación al core",
+      "Backlog compartido y priorización transparente"
+    ],
+    "example": "El core define tokens y componentes base; Brand squads proponen extensiones vía RFC y solo las generalizables se promueven al sistema central.",
+    "related": [
+      "Snowflakes",
+      "Design System (DS)",
+      "Component Maturity"
+    ]
+  },
+  {
+    "term": "DS Maturity Horizon",
+    "en": "Design System Maturity Horizon",
+    "cat": "proceso",
+    "def": "Marco temporal para entender que un Design System multimarca no madura en semanas. Normalmente requiere 18-24 meses para estabilizar lenguaje, componentes, pipeline técnico y adopción real en producto y desarrollo.",
+    "features": [
+      "Expectativas realistas con negocio",
+      "Plan por fases (fundación, adopción, escalado, optimización)",
+      "Métricas progresivas según etapa",
+      "Evita abandono prematuro"
+    ],
+    "example": "Fase 1: core tokens y base components; fase 2: adopción y docs; fase 3: multimarca/automatización; fase 4: optimización y métricas de ROI.",
+    "related": [
+      "Token Pipeline",
+      "Federated Governance",
+      "Design System (DS)"
+    ]
+  },
+  {
+    "term": "Tipografía semántica multimarca",
+    "en": "Multibrand Semantic Typography",
+    "cat": "tokens",
+    "def": "Estrategia tipográfica donde los tokens se nombran por función (title-1, body-2, label-sm) en vez de por tamaño absoluto. Cada marca asigna su familia, peso y ajustes ópticos a esos roles, preservando consistencia funcional aunque cambien las fuentes.",
+    "features": [
+      "Roles tipográficos estables entre marcas",
+      "Mapeo por marca sin romper componentes",
+      "Mejor compatibilidad con fuentes heterogéneas",
+      "Facilita theming y accesibilidad"
+    ],
+    "example": "title-1 en Brand A usa 700/44px y en Brand B usa 600/42px; ambos mantienen la misma jerarquía en UI.",
+    "related": [
+      "Typographic Scale",
+      "Multibrand",
+      "Theming"
+    ]
+  }
+]

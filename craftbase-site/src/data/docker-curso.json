@@ -1,0 +1,985 @@
+{
+  "fundamentos": [
+    {
+      "name": "Contenedor",
+      "cat": "Concepto base",
+      "color": "#3b6fd4",
+      "def": "Proceso aislado que corre sobre el kernel del host compartido. Tiene su propio sistema de archivos, red y espacio de procesos, pero no virtualiza hardware. Arranca en milisegundos y usa mucha menos RAM que una VM.",
+      "cmd": "docker run hello-world",
+      "tip": "Un contenedor SÍ comparte el kernel del host. Una VM NO — virtualiza hardware completo. Por eso los contenedores son tan más ligeros."
+    },
+    {
+      "name": "Imagen",
+      "cat": "Concepto base",
+      "color": "#3b6fd4",
+      "def": "Plantilla inmutable de solo lectura que define el sistema de archivos y la configuración de un contenedor. Se construye en capas. El contenedor es una instancia en ejecución de una imagen. Las imágenes se almacenan en registros (Docker Hub, GHCR, etc.).",
+      "cmd": "docker pull nginx:alpine",
+      "tip": "Las imágenes son inmutables. Cuando un contenedor escribe datos, lo hace en una capa extra de escritura por encima de la imagen."
+    },
+    {
+      "name": "Docker Engine",
+      "cat": "Arquitectura",
+      "color": "#5b8fd4",
+      "def": "El daemon dockerd que gestiona contenedores, imágenes, redes y volúmenes. El cliente docker se comunica con él a través de una API REST (normalmente vía socket UNIX /var/run/docker.sock).",
+      "cmd": "systemctl status docker",
+      "tip": "El socket /var/run/docker.sock es la puerta trasera al host. Montar este socket en un contenedor le da acceso total al host — nunca lo hagas en producción con contenedores no confiables."
+    },
+    {
+      "name": "Docker Hub",
+      "cat": "Registro",
+      "color": "#5b8fd4",
+      "def": "El registro de imágenes oficial de Docker. Contiene millones de imágenes públicas: ubuntu, nginx, node, postgres, redis, etc. También puedes crear imágenes privadas. Alternativas: GHCR (GitHub), ECR (AWS), GCR (Google).",
+      "cmd": "docker search nginx\ndocker pull nginx:1.25-alpine",
+      "tip": "Siempre especifica la versión de la imagen (tag). Usar :latest puede romperte el deploy cuando publican una nueva versión incompatible."
+    },
+    {
+      "name": "Capa (Layer)",
+      "cat": "Sistema de archivos",
+      "color": "#3b6fd4",
+      "def": "Cada instrucción de un Dockerfile crea una capa inmutable. Docker cachea cada capa — si no ha cambiado, la reutiliza en el siguiente build. El orden importa: pon las capas que cambian menos arriba (FROM, RUN apt) y las que cambian más abajo (COPY código).",
+      "cmd": "docker history mi-imagen:latest",
+      "tip": "Si cambias el package.json, Docker invalida la caché a partir de ese COPY y reconstruye todo lo que viene después. Copia el package.json antes que el resto del código para aprovechar la caché de dependencias."
+    },
+    {
+      "name": "VM vs Contenedor",
+      "cat": "Comparación",
+      "color": "#5b8fd4",
+      "def": "VM: virtualiza hardware completo, necesita SO invitado propio (GBs), arranca en minutos, aislamiento total. Contenedor: comparte kernel del host, solo empaqueta la app y sus dependencias (MBs), arranca en segundos, aislamiento a nivel de proceso.",
+      "cmd": "docker stats  # vs htop en una VM",
+      "tip": "En producción moderna, muchas veces se combinan: VMs para aislamiento de infraestructura, contenedores dentro de las VMs para aislamiento de apps."
+    },
+    {
+      "name": "Instalación Docker",
+      "cat": "Setup",
+      "color": "#5b8fd4",
+      "def": "Linux: instalar docker-ce vía repositorio oficial. No uses el docker.io del repositorio del sistema operativo — suele estar desactualizado. macOS/Windows: Docker Desktop incluye VM ligera + GUI. En servidor: añadir tu usuario al grupo docker para no usar sudo.",
+      "cmd": "curl -fsSL https://get.docker.com | sh\nusermod -aG docker $USER",
+      "tip": "En producción en Linux, nunca uses Docker Desktop — usa docker-ce directamente. Docker Desktop está diseñado para desarrollo local."
+    },
+    {
+      "name": "Modo detached (-d)",
+      "cat": "Ejecución",
+      "color": "#3b6fd4",
+      "def": "Por defecto docker run bloquea el terminal. Con -d el contenedor corre en background. Usa docker logs para ver su salida, docker attach para conectarte, docker exec para ejecutar comandos dentro.",
+      "cmd": "docker run -d --name mi-nginx nginx\ndocker logs mi-nginx\ndocker exec -it mi-nginx bash",
+      "tip": "-it en docker exec: -i mantiene stdin abierto, -t asigna un pseudo-terminal. Necesitas ambos para tener una shell interactiva."
+    }
+  ],
+  "cheatsheet": [
+    {
+      "section": "CONTENEDORES"
+    },
+    {
+      "cmd": "docker run [opts] IMAGEN [cmd]",
+      "desc": "Crear y arrancar contenedor",
+      "note": "--name, -d, -p, -v, -e, --rm, --network"
+    },
+    {
+      "cmd": "docker run -it IMAGEN bash",
+      "desc": "Contenedor interactivo con shell",
+      "note": "-i stdin, -t pseudo-tty"
+    },
+    {
+      "cmd": "docker start / stop / restart",
+      "desc": "Arrancar / parar / reiniciar",
+      "note": "Usa el nombre o ID del contenedor"
+    },
+    {
+      "cmd": "docker ps",
+      "desc": "Listar contenedores en ejecución",
+      "note": "-a para ver todos, incluidos parados"
+    },
+    {
+      "cmd": "docker rm [-f] CONTENEDOR",
+      "desc": "Eliminar contenedor",
+      "note": "-f para forzar si está corriendo"
+    },
+    {
+      "cmd": "docker logs [-f] CONTENEDOR",
+      "desc": "Ver logs del contenedor",
+      "note": "-f para seguir en tiempo real"
+    },
+    {
+      "cmd": "docker exec -it CONT cmd",
+      "desc": "Ejecutar comando en contenedor vivo",
+      "note": "exec -it CONT bash para entrar"
+    },
+    {
+      "cmd": "docker inspect CONTENEDOR",
+      "desc": "Info detallada en JSON",
+      "note": "IPs, volúmenes, variables de entorno…"
+    },
+    {
+      "cmd": "docker stats",
+      "desc": "Monitor de CPU/RAM en tiempo real",
+      "note": "Similar a htop para contenedores"
+    },
+    {
+      "cmd": "docker top CONTENEDOR",
+      "desc": "Procesos dentro del contenedor",
+      "note": ""
+    },
+    {
+      "cmd": "docker cp CONT:/ruta ./local",
+      "desc": "Copiar archivos host ↔ contenedor",
+      "note": "Funciona en ambas direcciones"
+    },
+    {
+      "cmd": "docker commit CONT nueva-imagen",
+      "desc": "Crear imagen desde contenedor",
+      "note": "Útil para debug, no para producción"
+    },
+    {
+      "section": "IMÁGENES"
+    },
+    {
+      "cmd": "docker images",
+      "desc": "Listar imágenes locales",
+      "note": "-a incluye imágenes intermedias"
+    },
+    {
+      "cmd": "docker pull IMAGEN[:TAG]",
+      "desc": "Descargar imagen del registro",
+      "note": "Por defecto tag = latest"
+    },
+    {
+      "cmd": "docker push USUARIO/IMAGEN",
+      "desc": "Subir imagen al registro",
+      "note": "Necesitas docker login primero"
+    },
+    {
+      "cmd": "docker build -t nombre:tag .",
+      "desc": "Construir imagen desde Dockerfile",
+      "note": ". = contexto de build (directorio actual)"
+    },
+    {
+      "cmd": "docker rmi IMAGEN",
+      "desc": "Eliminar imagen",
+      "note": "-f para forzar. Libera espacio en disco"
+    },
+    {
+      "cmd": "docker tag ORIG USER/NUEVO:TAG",
+      "desc": "Renombrar/etiquetar imagen",
+      "note": "No duplica datos, es un alias"
+    },
+    {
+      "cmd": "docker history IMAGEN",
+      "desc": "Ver capas de una imagen",
+      "note": "Muestra tamaño y comando de cada capa"
+    },
+    {
+      "cmd": "docker save -o file.tar IMAGEN",
+      "desc": "Exportar imagen a .tar",
+      "note": "Para transferir sin registro"
+    },
+    {
+      "cmd": "docker load -i file.tar",
+      "desc": "Importar imagen desde .tar",
+      "note": ""
+    },
+    {
+      "section": "REDES"
+    },
+    {
+      "cmd": "docker network ls",
+      "desc": "Listar redes",
+      "note": "bridge, host, none por defecto"
+    },
+    {
+      "cmd": "docker network create NOMBRE",
+      "desc": "Crear red bridge personalizada",
+      "note": "--driver bridge|host|overlay|macvlan"
+    },
+    {
+      "cmd": "docker network connect RED CONT",
+      "desc": "Conectar contenedor a red",
+      "note": "Un contenedor puede estar en varias redes"
+    },
+    {
+      "cmd": "docker network inspect RED",
+      "desc": "Detalles de la red",
+      "note": "Muestra contenedores conectados y sus IPs"
+    },
+    {
+      "section": "VOLÚMENES"
+    },
+    {
+      "cmd": "docker volume ls",
+      "desc": "Listar volúmenes",
+      "note": ""
+    },
+    {
+      "cmd": "docker volume create NOMBRE",
+      "desc": "Crear volumen",
+      "note": "Gestionado por Docker en /var/lib/docker/volumes"
+    },
+    {
+      "cmd": "docker volume inspect NOMBRE",
+      "desc": "Ver detalles del volumen",
+      "note": "Mountpoint en el host"
+    },
+    {
+      "cmd": "docker volume rm NOMBRE",
+      "desc": "Eliminar volumen",
+      "note": "El contenedor debe estar parado"
+    },
+    {
+      "section": "SISTEMA Y LIMPIEZA"
+    },
+    {
+      "cmd": "docker system prune",
+      "desc": "Limpiar recursos no usados",
+      "note": "-a elimina también imágenes sin usar"
+    },
+    {
+      "cmd": "docker system df",
+      "desc": "Espacio usado por Docker",
+      "note": "Imágenes, contenedores, volúmenes"
+    },
+    {
+      "cmd": "docker info",
+      "desc": "Info del daemon Docker",
+      "note": "Versión, storage driver, memoria…"
+    },
+    {
+      "section": "DOCKER COMPOSE"
+    },
+    {
+      "cmd": "docker compose up -d",
+      "desc": "Levantar stack en background",
+      "note": "-d detached, --build para rebuild"
+    },
+    {
+      "cmd": "docker compose down",
+      "desc": "Parar y eliminar contenedores",
+      "note": "-v también elimina volúmenes"
+    },
+    {
+      "cmd": "docker compose ps",
+      "desc": "Estado de los servicios",
+      "note": ""
+    },
+    {
+      "cmd": "docker compose logs -f [SVC]",
+      "desc": "Logs del stack o servicio",
+      "note": "-f sigue en tiempo real"
+    },
+    {
+      "cmd": "docker compose exec SVC cmd",
+      "desc": "Ejecutar comando en servicio",
+      "note": "docker compose exec web bash"
+    },
+    {
+      "cmd": "docker compose build [SVC]",
+      "desc": "Construir imágenes del Compose",
+      "note": "Solo las que tienen build: en el yml"
+    },
+    {
+      "cmd": "docker compose pull",
+      "desc": "Actualizar imágenes del stack",
+      "note": "Descarga versiones nuevas del registro"
+    },
+    {
+      "cmd": "docker compose scale SVC=N",
+      "desc": "Escalar servicio a N réplicas",
+      "note": "Requiere no tener puerto fijo asignado"
+    },
+    {
+      "cmd": "docker compose config",
+      "desc": "Validar y ver compose.yml resuelto",
+      "note": "Útil para debug de variables de entorno"
+    }
+  ],
+  "dockerfile": [
+    {
+      "instr": "FROM",
+      "code": "node:20-alpine",
+      "desc": "Imagen base. Siempre la primera instrucción. alpine = imagen minimal (5MB). Especifica versión exacta, nunca latest."
+    },
+    {
+      "instr": "WORKDIR",
+      "code": "/app",
+      "desc": "Directorio de trabajo dentro del contenedor. Todas las instrucciones siguientes se ejecutan desde aquí. Crea la carpeta si no existe."
+    },
+    {
+      "instr": "COPY",
+      "code": "package*.json ./",
+      "desc": "Copia archivos del host al contenedor. Primero copia package.json solo (para cachear npm install) y luego el resto del código."
+    },
+    {
+      "instr": "RUN",
+      "code": "npm ci --only=production",
+      "desc": "Ejecuta comando durante el build. Cada RUN crea una nueva capa. Encadena comandos con && para reducir capas."
+    },
+    {
+      "instr": "COPY",
+      "code": ". .",
+      "desc": "Copia el resto del código fuente. Va después de RUN npm install para aprovechar la caché de dependencias."
+    },
+    {
+      "instr": "ENV",
+      "code": "NODE_ENV=production",
+      "desc": "Variables de entorno disponibles en build y runtime. Para secretos usa ARG (solo build) o variables inyectadas en runtime."
+    },
+    {
+      "instr": "EXPOSE",
+      "code": "3000",
+      "desc": "Documenta el puerto que usa el contenedor. No abre el puerto realmente — eso lo hace -p en docker run o ports: en Compose."
+    },
+    {
+      "instr": "USER",
+      "code": "node",
+      "desc": "Ejecuta el proceso como usuario no-root. Buena práctica de seguridad. Las imágenes node incluyen el usuario \"node\"."
+    },
+    {
+      "instr": "HEALTHCHECK",
+      "code": "--interval=30s CMD curl -f http://localhost:3000/health",
+      "desc": "Docker verifica periódicamente si el contenedor está sano. Compose puede reiniciar contenedores unhealthy."
+    },
+    {
+      "instr": "CMD",
+      "code": "[\"node\", \"index.js\"]",
+      "desc": "Comando por defecto al arrancar el contenedor. Formato JSON (exec form) preferido — no usa shell, recibe señales correctamente."
+    },
+    {
+      "instr": "ENTRYPOINT",
+      "code": "[\"docker-entrypoint.sh\"]",
+      "desc": "Script que siempre se ejecuta. CMD se pasa como argumentos a ENTRYPOINT. Útil para init scripts."
+    },
+    {
+      "instr": "ARG",
+      "code": "VERSION=1.0",
+      "desc": "Variable solo disponible durante el build. Se pasa con --build-arg. Nunca para secretos — son visibles en docker history."
+    },
+    {
+      "instr": "LABEL",
+      "code": "maintainer=\"yo@miweb.com\"",
+      "desc": "Metadatos de la imagen. Útil para documentación y filtrado."
+    },
+    {
+      "instr": "VOLUME",
+      "code": "[\"/data\"]",
+      "desc": "Declara un punto de montaje. Docker crea un volumen anónimo si no se especifica uno explícito."
+    }
+  ],
+  "imgCards": [
+    {
+      "name": "Multi-stage build",
+      "cat": "Optimización",
+      "color": "#3b6fd4",
+      "def": "Usar múltiples FROM en un Dockerfile para separar el entorno de build del de producción. La imagen final solo contiene lo necesario para ejecutar, no las herramientas de compilación.",
+      "cmd": "FROM node:20 AS builder\nRUN npm run build\n\nFROM nginx:alpine\nCOPY --from=builder /app/dist /usr/share/nginx/html",
+      "tip": "Una imagen React con multi-stage pesa ~25MB. Sin multi-stage, 800MB. La diferencia está en no incluir node_modules ni devDependencies en la imagen final."
+    },
+    {
+      "name": "Docker Hub Registry",
+      "cat": "Distribución",
+      "color": "#3b6fd4",
+      "def": "Para publicar tu imagen: hacer login, etiquetar la imagen con tu usuario/repositorio y hacer push. Para registros privados (GHCR, ECR) el proceso es similar pero con credenciales distintas.",
+      "cmd": "docker login\ndocker tag mi-app:latest usuario/mi-app:1.0\ndocker push usuario/mi-app:1.0",
+      "tip": ""
+    },
+    {
+      "name": ".dockerignore",
+      "cat": "Optimización",
+      "color": "#5b8fd4",
+      "def": "Como .gitignore pero para el contexto de build. Excluye archivos que no necesita el contenedor: node_modules, .git, .env, logs. Reduce el tamaño del contexto y acelera el build.",
+      "cmd": "node_modules\n.git\n.env\n*.log\ndist",
+      "tip": "El contexto de build se envía entero al daemon. Sin .dockerignore, enviar node_modules puede tardar minutos y añadir GB innecesarios."
+    },
+    {
+      "name": "Caché de capas",
+      "cat": "Performance",
+      "color": "#3b6fd4",
+      "def": "Docker cachea cada capa del Dockerfile. Si una capa cambia, invalida todas las siguientes. Estrategia: ordena las instrucciones de menos a más cambiante. Dependencias primero, código después.",
+      "cmd": "# MAL: invalida caché de deps en cada cambio de código\nCOPY . .\nRUN npm install\n\n# BIEN: deps cacheadas independientemente\nCOPY package*.json ./\nRUN npm install\nCOPY . .",
+      "tip": ""
+    }
+  ],
+  "networks": [
+    {
+      "name": "bridge",
+      "type": "Red por defecto",
+      "color": "#3b6fd4",
+      "desc": "Red virtual privada en el host. Los contenedores pueden comunicarse por IP o nombre (en redes bridge personalizadas). Los puertos se publican explícitamente con -p.",
+      "cmd": "docker network create mi-red\ndocker run --network mi-red ..."
+    },
+    {
+      "name": "host",
+      "type": "Sin aislamiento de red",
+      "color": "#5b8fd4",
+      "desc": "El contenedor usa directamente la red del host. No hay NAT ni traducción de puertos. Solo disponible en Linux. Máxima performance de red pero sin aislamiento.",
+      "cmd": "docker run --network host nginx"
+    },
+    {
+      "name": "none",
+      "type": "Sin red",
+      "color": "#5b8fd4",
+      "desc": "El contenedor no tiene ninguna interfaz de red excepto loopback. Máximo aislamiento. Para contenedores batch que no necesitan red.",
+      "cmd": "docker run --network none mi-batch"
+    },
+    {
+      "name": "overlay",
+      "type": "Multi-host (Swarm)",
+      "color": "#3b6fd4",
+      "desc": "Red que abarca múltiples hosts Docker. Solo disponible en Swarm. Los contenedores en distintas máquinas se ven como si estuvieran en la misma red.",
+      "cmd": "docker network create --driver overlay mi-overlay"
+    },
+    {
+      "name": "macvlan",
+      "type": "IP real en LAN",
+      "color": "#5b8fd4",
+      "desc": "Asigna una IP real de tu LAN al contenedor. Útil para servicios legacy que necesitan estar visibles en la red local como si fueran un dispositivo físico.",
+      "cmd": "docker network create --driver macvlan ..."
+    }
+  ],
+  "volumes": [
+    {
+      "name": "Volumen gestionado",
+      "sub": "docker volume",
+      "color": "#065f46",
+      "desc": "Docker gestiona el almacenamiento en /var/lib/docker/volumes. Independiente de la estructura del host. Portátil entre hosts. El modo recomendado para datos de producción.",
+      "when": "Bases de datos, datos persistentes de apps, backups."
+    },
+    {
+      "name": "Bind mount",
+      "sub": "ruta del host",
+      "color": "#1d4ed8",
+      "desc": "Monta una carpeta específica del host en el contenedor. El contenedor ve y modifica los archivos del host directamente. Ideal para desarrollo: editas en el host y el contenedor lo recoge.",
+      "when": "Desarrollo local, archivos de config, logs accesibles desde el host."
+    },
+    {
+      "name": "tmpfs mount",
+      "sub": "solo en memoria",
+      "color": "#f5a97f",
+      "desc": "Almacenamiento temporal en RAM. Rapidísimo pero volátil — desaparece al parar el contenedor. Caso de uso del curso: acelerar juegos de prueba con dumps de SQL.",
+      "when": "Datos temporales, caches de build, datos sensibles que no deben tocar disco."
+    }
+  ],
+  "netConcepts": [
+    {
+      "name": "DNS interno de Docker",
+      "cat": "Red",
+      "color": "#3b6fd4",
+      "def": "En redes bridge personalizadas, Docker incluye un servidor DNS interno. Los contenedores se pueden referir entre sí por nombre de servicio (no por IP). En Docker Compose esto es automático: el servicio \"db\" es accesible como hostname \"db\".",
+      "cmd": "# En Compose, postgres accesible como \"db\"\nservices:\n  web:\n    environment:\n      DB_HOST: db",
+      "tip": ""
+    },
+    {
+      "name": "Publicar puertos (-p)",
+      "cat": "Red",
+      "color": "#3b6fd4",
+      "def": "Mapea un puerto del host a un puerto del contenedor. El tráfico que llega al puerto del host se reenvía al contenedor. Formato: HOST_PORT:CONTAINER_PORT. Sin -p, el contenedor está aislado de la red externa.",
+      "cmd": "docker run -p 8080:80 nginx\n# localhost:8080 → contenedor:80",
+      "tip": "Para bind solo en localhost (no exponer al exterior): -p 127.0.0.1:8080:80. En producción, expón solo lo que necesites."
+    },
+    {
+      "name": "Proxy inverso con Traefik",
+      "cat": "Avanzado",
+      "color": "#5b8fd4",
+      "def": "Alternativa a Nginx como reverse proxy para contenedores. Traefik se integra con Docker y descubre automáticamente los servicios vía labels en el Compose. Gestiona certificados SSL automáticamente con Let's Encrypt.",
+      "cmd": "labels:\n  - \"traefik.enable=true\"\n  - \"traefik.http.routers.web.rule=Host(`miweb.com`)\"",
+      "tip": "Para stacks en VPS con múltiples servicios, Traefik + Docker Compose es mucho más fácil de mantener que configurar Nginx manualmente para cada servicio."
+    },
+    {
+      "name": "HAProxy balanceo de carga",
+      "cat": "Avanzado",
+      "color": "#5b8fd4",
+      "def": "Proxy TCP/HTTP de alto rendimiento. El curso lo usa para distribuir tráfico entre múltiples réplicas del mismo contenedor. Junto con docker compose scale, puedes escalar horizontalmente un servicio.",
+      "cmd": "docker compose up --scale web=3 -d",
+      "tip": ""
+    }
+  ],
+  "composeAnatomy": [
+    {
+      "key": "services:",
+      "fields": [
+        {
+          "k": "image:",
+          "d": "Imagen del registro a usar. Si se especifica build: se construye localmente."
+        },
+        {
+          "k": "build:",
+          "d": "Ruta al Dockerfile para construir la imagen. Alternativa a image:."
+        },
+        {
+          "k": "container_name:",
+          "d": "Nombre fijo para el contenedor. Sin esto, Compose genera uno automático."
+        },
+        {
+          "k": "ports:",
+          "d": "Mapeo de puertos HOST:CONTENEDOR. Solo exponer los necesarios externamente."
+        },
+        {
+          "k": "environment:",
+          "d": "Variables de entorno. Pueden venir de un archivo .env con env_file:."
+        },
+        {
+          "k": "volumes:",
+          "d": "Montajes: volumen gestionado, bind mount o tmpfs."
+        },
+        {
+          "k": "depends_on:",
+          "d": "Orden de arranque. Con condition: service_healthy para esperar health check."
+        },
+        {
+          "k": "restart:",
+          "d": "Política: no | always | on-failure | unless-stopped. En producción: unless-stopped."
+        },
+        {
+          "k": "networks:",
+          "d": "Redes a las que conectar el servicio. Por defecto Compose crea una red para el proyecto."
+        },
+        {
+          "k": "healthcheck:",
+          "d": "Comando que Compose ejecuta para verificar si el servicio está sano."
+        },
+        {
+          "k": "labels:",
+          "d": "Metadatos. Traefik y otras herramientas los usan para configuración automática."
+        },
+        {
+          "k": "deploy:",
+          "d": "Config de despliegue (réplicas, recursos). Relevante en Swarm mode."
+        }
+      ]
+    },
+    {
+      "key": "volumes:",
+      "fields": [
+        {
+          "k": "nombre-volumen:",
+          "d": "Declara un volumen gestionado. Los servicios lo referencian por este nombre."
+        },
+        {
+          "k": "external: true",
+          "d": "Usa un volumen ya existente, no creado por Compose."
+        }
+      ]
+    },
+    {
+      "key": "networks:",
+      "fields": [
+        {
+          "k": "nombre-red:",
+          "d": "Declara una red. Por defecto bridge. Los servicios la referencian por nombre."
+        },
+        {
+          "k": "external: true",
+          "d": "Usa una red existente, creada fuera de este Compose."
+        }
+      ]
+    }
+  ],
+  "composeCards": [
+    {
+      "name": "Variables con .env",
+      "cat": "Configuración",
+      "color": "#3b6fd4",
+      "def": "Docker Compose lee automáticamente el archivo .env del mismo directorio. Las variables se usan en el compose.yml con sintaxis ${VARIABLE}. El .env nunca va a Git — usa env.example como plantilla documentada.",
+      "cmd": "# .env\nPOSTGRES_PASSWORD=secreto123\n\n# compose.yml\nenvironment:\n  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}",
+      "tip": ""
+    },
+    {
+      "name": "depends_on + healthcheck",
+      "cat": "Orden de arranque",
+      "color": "#3b6fd4",
+      "def": "depends_on garantiza que un servicio arranque antes que otro, pero no espera a que esté listo (conexión a DB, etc.). Combinar con condition: service_healthy y un healthcheck: sí espera a que el servicio esté operativo.",
+      "cmd": "depends_on:\n  db:\n    condition: service_healthy\nhealthcheck:\n  test: [\"CMD\", \"pg_isready\"]\n  interval: 10s",
+      "tip": "Sin healthcheck, tu app puede intentar conectar a la DB antes de que Postgres haya terminado de arrancar. Esto causa errores de \"connection refused\" intermitentes."
+    },
+    {
+      "name": "Profiles",
+      "cat": "Entornos",
+      "color": "#5b8fd4",
+      "def": "Los profiles permiten activar servicios opcionales. Por ejemplo, tener un servicio de debug o un adminer solo cuando lo necesitas, sin que arranque en producción.",
+      "cmd": "services:\n  adminer:\n    image: adminer\n    profiles: [\"debug\"]\n\n# Activar:\ndocker compose --profile debug up",
+      "tip": ""
+    },
+    {
+      "name": "Override files",
+      "cat": "Entornos",
+      "color": "#5b8fd4",
+      "def": "Docker Compose fusiona automáticamente docker-compose.yml con docker-compose.override.yml. Útil para tener configuración base + overrides por entorno (dev, prod). Puedes especificar archivos con -f.",
+      "cmd": "docker compose -f compose.yml -f compose.prod.yml up -d",
+      "tip": ""
+    }
+  ],
+  "tools": [
+    {
+      "name": "Portainer CE",
+      "kind": "Panel web",
+      "color": "#3b6fd4",
+      "desc": "Interfaz web completa para gestionar Docker. Visualiza contenedores, imágenes, redes, volúmenes y stacks Compose. Permite gestionar múltiples hosts Docker remotos. Se despliega él mismo como contenedor.",
+      "cmd": "docker run -d -p 9000:9000 --name portainer -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce"
+    },
+    {
+      "name": "LazyDocker",
+      "kind": "TUI (terminal)",
+      "color": "#5b8fd4",
+      "desc": "Interfaz Docker en terminal. Sin instalar nada extra — muestra contenedores, logs, stats y permite acciones con teclado. Alternativa rápida a Portainer para quien prefiere la terminal.",
+      "cmd": "lazydocker"
+    },
+    {
+      "name": "VS Code Dev Containers",
+      "kind": "IDE integration",
+      "color": "#3b6fd4",
+      "desc": "Extensión de VS Code que abre tu proyecto directamente dentro de un contenedor Docker. El entorno de desarrollo está definido en .devcontainer/devcontainer.json. Elimina el \"funciona en mi máquina\".",
+      "cmd": "# .devcontainer/devcontainer.json\n{ \"image\": \"node:20\", \"extensions\": [...] }"
+    },
+    {
+      "name": "cTop",
+      "kind": "Monitor terminal",
+      "color": "#5b8fd4",
+      "desc": "Monitor de recursos de contenedores en tiempo real similar a htop. Muestra CPU, RAM, red y disco por contenedor. Útil para identificar cuellos de botella sin salir de la terminal.",
+      "cmd": "docker run --rm -ti -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop"
+    },
+    {
+      "name": "Glances",
+      "kind": "Monitor sistema",
+      "color": "#3b6fd4",
+      "desc": "Monitor de sistema completo con integración Docker. Muestra métricas del host Y de los contenedores en una sola vista. Tiene modo web accesible desde el browser.",
+      "cmd": "docker run -d -p 61208:61208 -v /var/run/docker.sock:/var/run/docker.sock nicolargo/glances"
+    },
+    {
+      "name": "Watchtower",
+      "kind": "Auto-update",
+      "color": "#5b8fd4",
+      "desc": "Monitoriza los contenedores y automáticamente actualiza las imágenes cuando hay nuevas versiones disponibles. Útil para mantener servicios actualizados sin intervención manual.",
+      "cmd": "docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower"
+    }
+  ],
+  "k8sConcepts": [
+    {
+      "name": "¿Cuándo usar K8s vs Compose?",
+      "cat": "Decisión",
+      "color": "#3b6fd4",
+      "def": "Docker Compose: un solo host, desarrollo, proyectos pequeños/medianos, simplicidad. Kubernetes: múltiples hosts, alta disponibilidad, auto-scaling automático, rolling updates sin downtime, gran escala. La mayoría de proyectos empiezan con Compose y escalan a K8s cuando lo necesitan.",
+      "cmd": "",
+      "tip": "Un proyecto con < 10 servicios en un VPS no necesita K8s. La complejidad operativa de K8s se justifica cuando Compose no puede gestionar la escala o la disponibilidad requerida."
+    },
+    {
+      "name": "Clúster K8s",
+      "cat": "Arquitectura",
+      "color": "#5b8fd4",
+      "def": "Conjunto de nodos (máquinas) donde K8s ejecuta los contenedores. Un nodo master (control plane) gestiona el estado deseado. Los nodos worker ejecutan los Pods. Herramientas locales: minikube, kind, k3s para aprender sin un cloud.",
+      "cmd": "minikube start\nkubectl cluster-info",
+      "tip": ""
+    },
+    {
+      "name": "kubectl",
+      "cat": "CLI",
+      "color": "#3b6fd4",
+      "def": "La herramienta de línea de comandos para interactuar con K8s. Equivale al docker CLI pero para el clúster. Casi todo se puede hacer declarativamente con archivos YAML aplicados con kubectl apply.",
+      "cmd": "kubectl get pods\nkubectl apply -f deployment.yaml\nkubectl describe pod mi-pod\nkubectl logs mi-pod",
+      "tip": ""
+    }
+  ],
+  "k8sObjects": [
+    {
+      "name": "Pod",
+      "layer": "Unidad mínima",
+      "color": "#3b6fd4",
+      "desc": "Uno o más contenedores que comparten red y almacenamiento. La unidad mínima de K8s. No se gestionan directamente — se crean a través de Deployments."
+    },
+    {
+      "name": "Deployment",
+      "layer": "Gestión de Pods",
+      "color": "#3b6fd4",
+      "desc": "Define el estado deseado: cuántas réplicas del Pod, qué imagen usar. K8s mantiene ese estado y hace rolling updates y rollbacks."
+    },
+    {
+      "name": "Service",
+      "layer": "Red interna",
+      "color": "#5b8fd4",
+      "desc": "Expone un conjunto de Pods con una IP/DNS estable. Los Pods pueden cambiar de IP — el Service los abstrae. Tipos: ClusterIP (interno), NodePort, LoadBalancer."
+    },
+    {
+      "name": "Ingress",
+      "layer": "Entrada externa",
+      "color": "#5b8fd4",
+      "desc": "Equivalente a Nginx/Traefik en Compose. Gestiona el acceso HTTP/HTTPS externo, enrutamiento por host/path y terminación SSL."
+    },
+    {
+      "name": "ConfigMap",
+      "layer": "Configuración",
+      "color": "#3b6fd4",
+      "desc": "Almacena configuración no sensible (como variables de entorno o archivos de config) separada de la imagen del contenedor."
+    },
+    {
+      "name": "Secret",
+      "layer": "Secretos",
+      "color": "#5b8fd4",
+      "desc": "Como ConfigMap pero para datos sensibles (contraseñas, tokens). Codificado en base64. En producción se integra con gestores de secretos externos."
+    },
+    {
+      "name": "PersistentVolume",
+      "layer": "Almacenamiento",
+      "color": "#3b6fd4",
+      "desc": "Equivalente a los volúmenes de Docker pero con ciclo de vida independiente del Pod y del Deployment. El PVC (Claim) es la solicitud de almacenamiento."
+    },
+    {
+      "name": "Namespace",
+      "layer": "Aislamiento lógico",
+      "color": "#5b8fd4",
+      "desc": "Separa recursos dentro del mismo clúster. Útil para separar entornos (dev, staging, prod) o equipos en el mismo K8s."
+    }
+  ],
+  "cases": [
+    {
+      "ud": "UD03",
+      "title": "Práctica de comandos en contenedor Docker",
+      "stack": [
+        "docker run",
+        "docker exec",
+        "docker logs",
+        "Comandos básicos"
+      ]
+    },
+    {
+      "ud": "UD03",
+      "title": "LAMP + WordPress en contenedor",
+      "stack": [
+        "Apache",
+        "MySQL",
+        "PHP",
+        "WordPress",
+        "Contenedor único"
+      ]
+    },
+    {
+      "ud": "UD03",
+      "title": "Interfaz gráfica con NoVNC",
+      "stack": [
+        "VNC",
+        "NoVNC",
+        "Browser UI",
+        "Contenedor con GUI"
+      ]
+    },
+    {
+      "ud": "UD04",
+      "title": "Imagen Ubuntu personalizada con nano",
+      "stack": [
+        "Dockerfile",
+        "FROM ubuntu",
+        "RUN apt",
+        "Build"
+      ]
+    },
+    {
+      "ud": "UD04",
+      "title": "App Node.js en imagen Docker",
+      "stack": [
+        "Dockerfile",
+        "Node.js",
+        "Multi-stage",
+        "Docker Hub"
+      ]
+    },
+    {
+      "ud": "UD04",
+      "title": "Apache + PHP desde Alpine",
+      "stack": [
+        "Alpine",
+        "Apache2",
+        "PHP",
+        "Imagen ligera"
+      ]
+    },
+    {
+      "ud": "UD05",
+      "title": "WordPress + MariaDB con redes Docker",
+      "stack": [
+        "bridge network",
+        "Volúmenes",
+        "MariaDB",
+        "WordPress"
+      ]
+    },
+    {
+      "ud": "UD05",
+      "title": "Balanceo de carga con HAProxy",
+      "stack": [
+        "HAProxy",
+        "bridge network",
+        "Múltiples réplicas",
+        "Round-robin"
+      ]
+    },
+    {
+      "ud": "UD05",
+      "title": "Juegos de prueba acelerados con tmpfs",
+      "stack": [
+        "tmpfs",
+        "RAM mount",
+        "SQL dumps",
+        "Performance"
+      ]
+    },
+    {
+      "ud": "UD05",
+      "title": "Grafana + Prometheus monitorización",
+      "stack": [
+        "Grafana",
+        "Prometheus",
+        "Métricas",
+        "Dashboard"
+      ]
+    },
+    {
+      "ud": "UD05",
+      "title": "Proxy inverso con Traefik en VPS",
+      "stack": [
+        "Traefik",
+        "Let's Encrypt",
+        "Labels",
+        "Múltiples servicios"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "WordPress con Docker Compose",
+      "stack": [
+        "compose.yml",
+        "WordPress",
+        "MySQL",
+        "Volúmenes",
+        "depends_on"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Django con Docker Compose",
+      "stack": [
+        "Django",
+        "PostgreSQL",
+        "Compose",
+        "Migrate",
+        "Gunicorn"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Nginx + balanceo escalado con Compose",
+      "stack": [
+        "Nginx proxy",
+        "Apache",
+        "compose scale",
+        "Load balancing"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Whisper AI + Web Whisper",
+      "stack": [
+        "OpenAI Whisper",
+        "IA local",
+        "GPU/CPU",
+        "Web UI"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Bot Telegram con Whisper AI",
+      "stack": [
+        "Telegram Bot API",
+        "Whisper",
+        "Audio→texto",
+        "Python"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Stable Diffusion con Compose",
+      "stack": [
+        "Stable Diffusion",
+        "GPU",
+        "IA generativa",
+        "Web UI"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "Odoo ERP con Docker Compose",
+      "stack": [
+        "Odoo",
+        "PostgreSQL",
+        "ERP",
+        "Compose"
+      ]
+    },
+    {
+      "ud": "UD06",
+      "title": "DeepSeek R1 (Ollama) + Open WebUI",
+      "stack": [
+        "Ollama",
+        "DeepSeek R1",
+        "LLM local",
+        "Open WebUI"
+      ]
+    },
+    {
+      "ud": "UD07",
+      "title": "VS Code en contenedor remoto",
+      "stack": [
+        "Dev Containers",
+        "devcontainer.json",
+        "VS Code",
+        "Remote"
+      ]
+    },
+    {
+      "ud": "UD07",
+      "title": "Portainer CE panel de gestión",
+      "stack": [
+        "Portainer",
+        "Panel web",
+        "Gestión visual",
+        "Multi-host"
+      ]
+    },
+    {
+      "ud": "UD07",
+      "title": "LazyDocker interfaz terminal",
+      "stack": [
+        "LazyDocker",
+        "TUI",
+        "Terminal",
+        "Monitor"
+      ]
+    },
+    {
+      "ud": "UD07",
+      "title": "cTop y Glances monitores",
+      "stack": [
+        "cTop",
+        "Glances",
+        "CPU/RAM",
+        "Métricas tiempo real"
+      ]
+    },
+    {
+      "ud": "UD08",
+      "title": "App Flask con Kubernetes",
+      "stack": [
+        "Flask",
+        "kubectl",
+        "Deployment",
+        "Service",
+        "Ingress"
+      ]
+    },
+    {
+      "ud": "UD08",
+      "title": "WordPress con Kubernetes",
+      "stack": [
+        "K8s",
+        "PersistentVolume",
+        "ConfigMap",
+        "Secret",
+        "Ingress"
+      ]
+    }
+  ]
+}

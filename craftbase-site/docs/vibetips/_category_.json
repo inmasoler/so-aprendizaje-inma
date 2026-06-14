@@ -1,0 +1,8 @@
+﻿{
+  "label": "VibeTips",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Stub de migración desde legacy v0."
+  }
+}

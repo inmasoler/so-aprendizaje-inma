@@ -1,0 +1,38 @@
+---
+slug: /intro
+title: Inicio
+sidebar_position: 1
+visibility: public
+---
+
+import CraftCallout from '@site/src/components/CraftCallout';
+import CraftBadge from '@site/src/components/CraftBadge';
+
+# CraftBase v1
+
+<CraftBadge status="wip" label="Migración" /> Base de conocimiento en Docusaurus. El sitio legacy (v0) sigue en la raíz del repo.
+
+<CraftCallout variant="info" title="Estado">
+  Migración de contenido masiva completada: todas las secciones del sidebar tienen páginas con contenido del legacy v0. Próximo paso: colores, a11y y pulido visual.
+</CraftCallout>
+
+## Ejemplo de código en vivo
+
+Los bloques `live` permiten editar y ejecutar ejemplos (útil para JavaScript y snippets interactivos):
+
+```jsx live
+function Saludo() {
+  const [n, setN] = React.useState(0);
+  return (
+    <button type="button" onClick={() => setN(n + 1)}>
+      Hola CraftBase ({n})
+    </button>
+  );
+}
+```
+
+Para comandos de terminal, Docker o SQL, usa bloques estáticos con resaltado de sintaxis.
+
+```bash
+npm run dev:v1
+```

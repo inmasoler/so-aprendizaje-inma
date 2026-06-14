@@ -1,0 +1,42 @@
+[
+  {
+    "id": "arquitectura",
+    "label": "Arquitectura",
+    "color": "#818cf8"
+  },
+  {
+    "id": "tokens",
+    "label": "Tokens",
+    "color": "#34d399"
+  },
+  {
+    "id": "componentes",
+    "label": "Componentes",
+    "color": "#f59e0b"
+  },
+  {
+    "id": "organizacion",
+    "label": "Organización",
+    "color": "#06b6d4"
+  },
+  {
+    "id": "figma",
+    "label": "Figma Patterns",
+    "color": "#d4a574"
+  },
+  {
+    "id": "proceso",
+    "label": "Proceso",
+    "color": "#f87171"
+  },
+  {
+    "id": "gobernanza",
+    "label": "Gobernanza",
+    "color": "#c084fc"
+  },
+  {
+    "id": "patron",
+    "label": "Patrón",
+    "color": "#60a5fa"
+  }
+]

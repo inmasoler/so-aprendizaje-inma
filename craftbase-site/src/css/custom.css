@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Syne:wght@600;700;800&display=swap');
+@import './craft-cards.css';
+
+:root {
+  --craftbase-prose: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  --craftbase-sans: 'Syne', sans-serif;
+  --craftbase-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --craftbase-focus-ring: #1a6fbe;
+
+  --craftbase-fs-read: 1rem;
+  --craftbase-lh-body: 1.75;
+  --craftbase-measure: 100%;
+
+  --ifm-container-width-xl: 1400px;
+
+  --ifm-color-primary: #1a6fbe;
+  --ifm-color-primary-dark: #155a9e;
+  --ifm-color-primary-darker: #135592;
+  --ifm-color-primary-darkest: #0f4678;
+  --ifm-color-primary-light: #1f7ed4;
+  --ifm-color-primary-lighter: #2184dc;
+  --ifm-color-primary-lightest: #4599e4;
+
+  --ifm-font-family-base: var(--craftbase-prose);
+  --ifm-heading-font-family: var(--craftbase-sans);
+  --ifm-font-size-base: var(--craftbase-fs-read);
+  --ifm-code-font-size: 92%;
+  --ifm-code-font-family: var(--craftbase-mono);
+  --ifm-line-height-base: var(--craftbase-lh-body);
+  --ifm-global-radius: 0.375rem;
+
+  --docusaurus-highlighted-code-line-bg: rgba(26, 111, 190, 0.12);
+}
+
+html[data-text-size='large'] {
+  --craftbase-fs-read: 1.125rem;
+  --ifm-font-size-base: 1.125rem;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #5eb0ff;
+  --ifm-color-primary-dark: #3a9eff;
+  --ifm-color-primary-darker: #2a96ff;
+  --ifm-color-primary-darkest: #0078f0;
+  --ifm-color-primary-light: #82c2ff;
+  --ifm-color-primary-lighter: #92caff;
+  --ifm-color-primary-lightest: #b6dcff;
+  --docusaurus-highlighted-code-line-bg: rgba(94, 176, 255, 0.15);
+}
+
+.markdown {
+  max-width: var(--craftbase-measure);
+}
+
+/* Usar todo el ancho disponible en la columna principal (código legible) */
+@media (min-width: 997px) {
+  [class*='docItemCol'] {
+    max-width: 100% !important;
+  }
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4 {
+  font-family: var(--craftbase-sans);
+}
+
+.navbar__title {
+  font-family: var(--craftbase-sans);
+  font-weight: 800;
+}
+
+.theme-doc-markdown pre,
+.theme-doc-markdown code {
+  font-family: var(--craftbase-mono);
+}
+
+/* TOC: secciones (h2) más visibles que subsecciones */
+.table-of-contents > ul > li > a {
+  font-family: var(--craftbase-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table-of-contents ul ul a {
+  font-family: var(--craftbase-prose);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Ocultar buscador pill de Infima/Docusaurus; solo el de NavbarTools */
+.navbar__items--right > [class*='navbarSearchContainer'],
+.navbar__items--right > .navbar__item > [class*='navbarSearchContainer'] {
+  display: none !important;
+}
+
+.navbar__items--right .navbar__search {
+  display: none !important;
+}
+
+.craftbase-navbar-tools .navbar__search {
+  display: inline-block !important;
+}
+
+.craftbase-navbar-tools .navbar__search-input {
+  width: 11rem;
+  min-width: 0;
+  height: 2rem;
+  padding: 0 0.625rem !important;
+  border: 1px solid var(--ifm-color-emphasis-300) !important;
+  border-radius: 0.375rem !important;
+  background: var(--ifm-background-surface-color) !important;
+  background-image: none !important;
+  color: var(--ifm-font-color-base);
+  font-family: var(--craftbase-prose);
+  font-size: 0.875rem;
+  line-height: 1.25;
+  cursor: text;
+  transition: width 0.2s ease, border-color 0.15s ease;
+}
+
+.craftbase-navbar-tools .navbar__search-input::placeholder {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.craftbase-navbar-tools .navbar__search-input:hover {
+  border-color: var(--ifm-color-emphasis-400) !important;
+}
+
+.craftbase-navbar-tools .navbar__search-input:focus {
+  width: 16rem;
+  border-color: var(--ifm-color-primary) !important;
+  outline: 2px solid var(--craftbase-focus-ring);
+  outline-offset: 0;
+}
+
+@media (max-width: 996px) {
+  .craftbase-navbar-tools .navbar__search-input {
+    width: 9rem;
+  }
+
+  .craftbase-navbar-tools .navbar__search-input:focus {
+    width: 12rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .craftbase-navbar-tools .navbar__search-input:not(:focus) {
+    width: 2.25rem;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}

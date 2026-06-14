@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Redis",
+    "type": "Motor de caché",
+    "color": "#1d4ed8",
+    "def": "Base de datos en memoria ultrarrápida usada principalmente como caché. Guarda pares clave-valor en RAM. En un servidor cPanel tienes que activar el módulo PHP de Redis, conocer host/puerto/contraseña y configurarlo en WordPress con un plugin como LiteSpeed Cache.",
+    "example": "WordPress hace 80 queries a MySQL por pageview. Con Redis Object Cache, las queries se cachean: segunda visita → 3 queries.",
+    "warn": "Redis tiene memoria máxima configurable. Si se llena, empieza a borrar datos. Configura la política de eviction correctamente (allkeys-lru)."
+  },
+  {
+    "name": "LiteSpeed Cache (WordPress)",
+    "type": "Plugin de caché",
+    "color": "#f5a97f",
+    "def": "Plugin de WordPress que gestiona múltiples capas de caché: página completa, objeto (Redis), browser y CDN. Es el plugin de caché más potente para WordPress en servidores LiteSpeed (habitual en Verpex).",
+    "example": "En LiteSpeed Cache: activas caché de página → activas Object Cache con Redis → defines exclusiones (páginas de carrito, perfil) → defines TTL por tipo de contenido.",
+    "warn": ""
+  },
+  {
+    "name": "Cache-Control headers",
+    "type": "Caché de browser",
+    "color": "#065f46",
+    "def": "Headers HTTP que le dicen al browser (y a los proxies/CDNs) durante cuánto tiempo puede guardar en caché un recurso sin volver a pedirlo al servidor. Cache-Control: max-age=31536000 = caché 1 año.",
+    "example": "Nginx: location ~* \\.(js|css)$ { add_header Cache-Control \"public, max-age=31536000, immutable\"; }",
+    "warn": ""
+  }
+]

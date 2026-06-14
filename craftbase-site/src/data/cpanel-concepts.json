@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Virtual Host",
+    "type": "Servidor web",
+    "color": "#6d28d9",
+    "def": "Configuración que permite a un mismo servidor físico responder a múltiples dominios. cPanel crea automáticamente un virtual host por cada dominio/subdominio que añades, configurando desde dónde sirve los archivos (public_html) y cómo los procesa.",
+    "example": "En un servidor con cPanel puedes tener miweb.com → /home/user/public_html y tienda.miweb.com → /home/user/tienda/public_html",
+    "warn": ""
+  },
+  {
+    "name": "public_html",
+    "type": "Estructura archivos",
+    "color": "#6d28d9",
+    "def": "La carpeta raíz pública de tu dominio en cPanel. Todo lo que pones aquí es accesible desde el browser. Es el equivalente al /dist o /out de tu build de Astro/Next.js que subas por FTP o deploy.",
+    "example": "Subes index.html a public_html → el usuario accede a miweb.com y ve ese archivo.",
+    "warn": "Nunca pongas archivos con credenciales (.env) dentro de public_html — serían accesibles desde internet."
+  },
+  {
+    "name": "PHP vs HTML en servidor",
+    "type": "Procesamiento",
+    "color": "#6d28d9",
+    "def": "cPanel sirve archivos HTML directamente (el servidor los lee y los envía). PHP se procesa primero: el servidor ejecuta el código PHP, genera HTML y lo envía. Por eso PHP puede leer bases de datos y HTML no.",
+    "example": "WordPress es PHP: el servidor ejecuta WordPress, que consulta MySQL y genera el HTML de cada página antes de enviarlo.",
+    "warn": ""
+  },
+  {
+    "name": "phpMyAdmin",
+    "type": "Base de datos",
+    "color": "#6d28d9",
+    "def": "Interfaz web para gestionar bases de datos MySQL/MariaDB incluida en cPanel. Permite crear bases de datos, tablas, ejecutar queries SQL, importar/exportar datos y ver la estructura sin usar línea de comandos.",
+    "example": "WordPress necesita una base de datos MySQL. En cPanel: crear DB → crear usuario → asignar permisos → conectar WordPress con las credenciales.",
+    "warn": ""
+  },
+  {
+    "name": "JetBackup 5",
+    "type": "Backup y recuperación",
+    "color": "#6d28d9",
+    "def": "Plugin de backup para cPanel que permite hacer y restaurar copias de seguridad completas (archivos, bases de datos, emails, configuraciones). Permite restaurar desde puntos específicos sin perder todo.",
+    "example": "Tu WordPress se rompe tras una actualización. Con JetBackup restauras el backup de ayer en 2 minutos.",
+    "warn": ""
+  },
+  {
+    "name": "SSH (Secure Shell)",
+    "type": "Acceso y seguridad",
+    "color": "#6d28d9",
+    "def": "Protocolo de acceso remoto seguro al servidor mediante línea de comandos. Cifrado extremo-a-extremo. Más potente que FTP: puedes ejecutar cualquier comando, instalar software, reiniciar servicios.",
+    "example": "ssh usuario@85.43.22.10 → accedes al servidor y puedes ejecutar git pull, npm install, reiniciar Nginx, etc.",
+    "warn": "Desactiva el acceso root por SSH. Usa claves SSH en lugar de contraseñas."
+  },
+  {
+    "name": "SSL/TLS con Let's Encrypt",
+    "type": "Seguridad",
+    "color": "#6d28d9",
+    "def": "cPanel incluye AutoSSL para instalar certificados SSL gratuitos de Let's Encrypt automáticamente. SSL cifra la comunicación entre el browser y el servidor (el candado verde). Sin SSL, los datos viajan en texto plano.",
+    "example": "cPanel instala automáticamente un certificado para miweb.com y www.miweb.com. El browser muestra el candado.",
+    "warn": "Let's Encrypt caduca cada 90 días. cPanel lo renueva automáticamente, pero vigila que no falle."
+  },
+  {
+    "name": "Verpex",
+    "type": "Hosting",
+    "color": "#6d28d9",
+    "def": "Hosting que habilita y gestiona cPanel para sus clientes. Con Verpex tienes acceso a un cPanel completo donde puedes crear múltiples dominios, bases de datos, emails y configurar todo el servidor desde la interfaz visual.",
+    "example": "Con tu cuenta Verpex accedes a cPanel → Domains → Add Domain → introduces tu dominio → cPanel crea la carpeta, el virtual host y la zona DNS.",
+    "warn": ""
+  }
+]

@@ -1,0 +1,37 @@
+---
+title: DNS y dominios
+sidebar_position: 2
+visibility: public
+---
+
+import CraftCallout from '@site/src/components/CraftCallout';
+import CraftDataTable from '@site/src/components/CraftDataTable';
+import CraftConceptCards from '@site/src/components/CraftConceptCards';
+import dnsRecords from '@site/src/data/dns-records.json';
+import dnsConcepts from '@site/src/data/dns-concepts.json';
+
+# DNS y dominios
+
+<CraftCallout variant="info" title="El DNS en una frase">
+  **El DNS es la agenda de teléfonos de internet.** Traduce nombres de dominio legibles (`miweb.com`) a direcciones IP numéricas. Sin entender DNS, no puedes controlar dónde apunta tu web ni tu email.
+</CraftCallout>
+
+## Flujo: ¿qué pasa cuando alguien escribe tu dominio?
+
+1. **Browser** — escribe `miweb.com`
+2. **Resolver DNS local** — ¿lo tengo en caché?
+3. **Root DNS** — ¿quién gestiona `.com`?
+4. **Nameserver del dominio** — tabla de registros DNS
+5. **IP del servidor** — registro A
+
+## Registros DNS
+
+<CraftDataTable variant="dns" data={dnsRecords} caption="Tipos de registro DNS más habituales" />
+
+<CraftCallout variant="warn" title="CNAME en el root">
+  Un registro **CNAME no puede coexistir** con otros registros en el mismo nombre. No uses CNAME en el root (`@`).
+</CraftCallout>
+
+## Conceptos clave
+
+<CraftConceptCards items={dnsConcepts} />

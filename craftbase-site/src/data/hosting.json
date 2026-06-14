@@ -1,0 +1,105 @@
+[
+  {
+    "name": "Vercel",
+    "color": "#fff",
+    "tagline": "El hosting de Next.js y meta-frameworks",
+    "desc": "Creado por el equipo de Next.js. Despliega con git push, preview URLs automáticas, Edge Functions y CDN global. El estándar para proyectos JS modernos.",
+    "pills": [
+      "Next.js",
+      "Astro",
+      "Nuxt",
+      "SvelteKit",
+      "Remix"
+    ],
+    "best": "Frontend y full-stack JS. Gratis para proyectos pequeños."
+  },
+  {
+    "name": "Netlify",
+    "color": "#00c7b7",
+    "tagline": "Hosting JAMstack maduro y fiable",
+    "desc": "Pionero en el hosting estático con CI/CD integrado. Excelente para sitios Astro o sites puramente estáticos. Forms y functions incluidas.",
+    "pills": [
+      "Astro",
+      "Gatsby",
+      "Vue",
+      "Svelte"
+    ],
+    "best": "Sites estáticos y JAMstack. Muy estable y bien documentado."
+  },
+  {
+    "name": "Railway",
+    "color": "#7b5ea7",
+    "tagline": "Backend en contenedores sin fricción",
+    "desc": "Despliega cualquier backend con Dockerfile o buildpack automático. Bases de datos PostgreSQL, MySQL y Redis incluidas. El Heroku moderno.",
+    "pills": [
+      "Django",
+      "Laravel",
+      "Rails",
+      "Express",
+      "NestJS"
+    ],
+    "best": "Backend Python, PHP, Ruby o Node.js. Bases de datos incluidas."
+  },
+  {
+    "name": "Render",
+    "color": "#46e3b7",
+    "tagline": "Alternativa a Railway más económica",
+    "desc": "Similar a Railway pero con tier gratuito generoso. Auto-deploy desde Git, bases de datos, cron jobs y services. Buena opción para proyectos con presupuesto ajustado.",
+    "pills": [
+      "Django",
+      "Express",
+      "FastAPI",
+      "Laravel"
+    ],
+    "best": "Backend con poco presupuesto. Tier gratuito incluye bases de datos."
+  },
+  {
+    "name": "Fly.io",
+    "color": "#8b5cf6",
+    "tagline": "Despliegue global cercano al usuario",
+    "desc": "Ejecuta contenedores Docker en múltiples regiones simultáneamente. Latencia mínima para apps con usuarios en todo el mundo. Más técnico pero muy potente.",
+    "pills": [
+      "Cualquier Docker",
+      "Elixir",
+      "Go",
+      "Rails"
+    ],
+    "best": "Apps que necesitan presencia multi-región y baja latencia global."
+  },
+  {
+    "name": "Cloudflare Pages",
+    "color": "#f38020",
+    "tagline": "CDN + deploy estático ultrarrápido",
+    "desc": "Build y deploy de sites estáticos sobre la CDN más grande del mundo. Workers para lógica edge. Tier gratuito muy generoso con límites altos.",
+    "pills": [
+      "Astro",
+      "SvelteKit",
+      "Vue",
+      "React"
+    ],
+    "best": "Sites con tráfico alto y rendimiento crítico. El CDN es imbatible."
+  },
+  {
+    "name": "Supabase",
+    "color": "#3ecf8e",
+    "tagline": "Backend-as-a-Service completo",
+    "desc": "No es solo hosting: es PostgreSQL + Auth + Storage + Realtime + Edge Functions en un paquete. El backend de tu app sin gestionar servidores.",
+    "pills": [
+      "Next.js",
+      "Astro",
+      "Nuxt",
+      "SvelteKit"
+    ],
+    "best": "Cuando necesitas base de datos + auth + backend sin devops."
+  },
+  {
+    "name": "AWS / GCP / Azure",
+    "color": "#ff9900",
+    "tagline": "Cloud enterprise para escala real",
+    "desc": "Los tres grandes clouds. Máxima flexibilidad y escala, pero complejidad alta. Necesitas conocimientos de devops o un equipo dedicado. Para proyectos enterprise o con requerimientos específicos.",
+    "pills": [
+      "Cualquier stack"
+    ],
+    "best": "Proyectos enterprise, compliance específico o escala masiva."
+  }
+]

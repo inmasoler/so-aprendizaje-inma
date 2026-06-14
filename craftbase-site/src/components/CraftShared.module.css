@@ -1,0 +1,99 @@
+.craftGrid {
+  display: grid;
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.card {
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-background-color);
+}
+
+.cardTitle {
+  margin: 0 0 0.35rem;
+  font-family: var(--craftbase-sans);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.cardMeta {
+  margin: 0 0 0.5rem;
+  font-family: var(--craftbase-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.cardBody {
+  margin: 0;
+  line-height: var(--craftbase-lh-body);
+}
+
+.cardBody + .cardBody {
+  margin-top: 0.5rem;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.pill {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-200);
+  font-family: var(--craftbase-mono);
+  font-size: 0.6875rem;
+}
+
+.prompt {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--ifm-global-radius);
+  background: var(--ifm-color-emphasis-100);
+  font-family: var(--craftbase-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--craftbase-fs-read);
+}
+
+.table th,
+.table td {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  vertical-align: top;
+  text-align: left;
+}
+
+.table th {
+  background: var(--ifm-color-emphasis-100);
+  font-family: var(--craftbase-mono);
+  font-size: 0.75rem;
+}
+
+.sectionTitle {
+  margin: 2rem 0 0.75rem;
+  font-family: var(--craftbase-sans);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.sectionTitle:first-child {
+  margin-top: 0;
+}

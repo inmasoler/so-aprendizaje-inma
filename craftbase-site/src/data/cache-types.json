@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Caché estática",
+    "type": "Archivos JS/CSS/imágenes",
+    "color": "#065f46",
+    "desc": "El servidor guarda en memoria o disco los archivos estáticos (JS, CSS, imágenes) y los sirve sin leerlos de disco cada vez. Headers Cache-Control y ETag controlan cuánto tiempo los guarda el browser.",
+    "pros": "Trivial de implementar. Nginx/Apache lo hacen solos.",
+    "cons": "Si actualizas un archivo, el browser puede seguir usando la versión vieja hasta que expire el caché."
+  },
+  {
+    "name": "Caché de objeto (Redis)",
+    "type": "Datos de base de datos",
+    "color": "#1d4ed8",
+    "desc": "Redis guarda en memoria los resultados de consultas a la base de datos. Próximas peticiones idénticas se responden desde RAM sin tocar MySQL. En WordPress lo gestiona el plugin LiteSpeed Cache u Object Cache Pro.",
+    "pros": "Drástica reducción de queries a DB. Ideal para sites con mucho tráfico.",
+    "cons": "Requiere configurar Redis (host, puerto, contraseña, memoria máxima). Si el caché y la DB desincroniza hay problemas."
+  },
+  {
+    "name": "Caché de página completa",
+    "type": "HTML generado",
+    "color": "#f5a97f",
+    "desc": "Guarda el HTML completo de cada página en disco. La siguiente visita recibe el HTML directo sin ejecutar PHP ni consultar la BD. LiteSpeed Cache en WordPress hace esto muy bien.",
+    "pros": "Máximo rendimiento. El servidor solo lee un archivo HTML.",
+    "cons": "Si el contenido cambia (post nuevo, precio actualizado) el caché puede quedar obsoleto. Hay que configurar reglas de invalidación."
+  },
+  {
+    "name": "CDN (Content Delivery Network)",
+    "type": "Red distribuida global",
+    "color": "#6d28d9",
+    "desc": "Tu web se replica en servidores de todo el mundo. El visitante recibe los datos del nodo más cercano a su ubicación. Cloudflare es el CDN más usado — también actúa como proxy de seguridad.",
+    "pros": "Latencia mínima para usuarios globales. Protección DDoS incluida en Cloudflare.",
+    "cons": "Cambios pueden tardar en propagarse (purgar caché del CDN). Más complejo de configurar correctamente."
+  }
+]

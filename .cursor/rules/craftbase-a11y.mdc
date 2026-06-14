@@ -1,0 +1,37 @@
+---
+description: Estándares de accesibilidad y legibilidad para CraftBase (HTML/CSS/JS)
+globs: index.html,style.css,script.js
+alwaysApply: false
+---
+
+# CraftBase — Accesibilidad y legibilidad
+
+## Contraste (WCAG AA)
+- Texto normal sobre `--bg2`: ratio ≥ 4.5:1. Usar MCP `@weaaare/mcp-a11y-color` antes de añadir tokens.
+- `--muted` (#5c5650), `--faint` (#7b756f) — no volver a #a09890 ni tonos más claros para texto.
+- Acentos de pestaña activa: verificar con `check-contrast` sobre blanco (ej. `--tjs` = #7a7a22).
+- Topbar: colores sólidos (`--topbar-subtitle`, `--topbar-badge`), no `rgba` semitransparente.
+
+## Tipografía
+- Escala vía tokens `--fs-*` en `:root` (16px base). Modo grande: `html[data-text-size="large"]` (+2px en toda la escala).
+- Toggle `#text-size-toggle` persiste en `localStorage` (`craftbase-text-size`). Script inline en `<head>` evita parpadeo.
+- Lectura densa: `--prose` (Source Sans 3). Mono solo en código e IDs técnicos.
+
+## Patrones ARIA (tabs principales)
+- `#tabnav-scroll`: `role="tablist"` + `aria-label`.
+- `.tabitem`: `role="tab"`, `aria-selected`, `aria-controls`, roving `tabindex` (0 activo, -1 resto).
+- `.panel`: `role="tabpanel"`, `aria-labelledby`, atributo `hidden` cuando inactivo.
+- Activación automática con flechas ←/→ (APG). Tab entra al panel, no a la siguiente pestaña.
+- Mantener sincronizado en `switchTab()` / `_syncMainTabs()`.
+
+## HTML semántico (modern-web-guidance)
+- Landmarks: `<header>`, `<nav aria-label="…">`, `<main id="content" tabindex="-1">`.
+- Skip link visible al foco: `.skip-link` + `.visually-hidden`.
+- Inputs de búsqueda: `<label>` asociado (puede ser visually-hidden).
+- `:focus-visible` con `--focus-ring`; no quitar outline sin reemplazo.
+
+## Filtros del glosario
+- Categoría `ecosistema`: acento morado `--tapi` (#7c3aed), coherente con APIs.
+
+## Auditoría
+Antes de mergear cambios visuales: `analyze-design-tokens` + `analyze-readability` (es) en muestras de contenido denso.

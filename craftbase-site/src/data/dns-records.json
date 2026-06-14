@@ -1,0 +1,58 @@
+[
+  {
+    "type": "A",
+    "full": "Address Record",
+    "desc": "Apunta un dominio a una dirección IPv4. Es el registro más básico — sin él tu web no carga.",
+    "example": "miweb.com → 185.42.10.22",
+    "warn": ""
+  },
+  {
+    "type": "AAAA",
+    "full": "IPv6 Address Record",
+    "desc": "Como el registro A pero para IPv6. Cada vez más importante para redes modernas.",
+    "example": "miweb.com → 2001:db8::1",
+    "warn": ""
+  },
+  {
+    "type": "CNAME",
+    "full": "Canonical Name (Alias)",
+    "desc": "Alias de otro dominio. En lugar de apuntar a una IP, apunta a otro nombre de dominio. Útil para subdominios.",
+    "example": "www.miweb.com → miweb.com (no a una IP)",
+    "warn": "Un CNAME no puede coexistir con otros registros en el mismo nombre. No uses CNAME en el root (@)."
+  },
+  {
+    "type": "MX",
+    "full": "Mail Exchange",
+    "desc": "Indica qué servidor gestiona el email de tu dominio. Tiene prioridad numérica: el número más bajo es el prioritario.",
+    "example": "miweb.com MX 10 → mail.google.com",
+    "warn": "Si tu MX apunta a Google Workspace o similar, la config de email en cPanel no funcionará — el email lo gestiona el servicio externo."
+  },
+  {
+    "type": "TXT",
+    "full": "Text Record",
+    "desc": "Texto libre. Se usa para verificaciones de dominio (Google, HubSpot), SPF (anti-spam de email) y DKIM (firma de emails).",
+    "example": "v=spf1 include:_spf.google.com ~all",
+    "warn": ""
+  },
+  {
+    "type": "NS",
+    "full": "Nameserver",
+    "desc": "Define qué servidores tienen la autoridad sobre la zona DNS de tu dominio. Cambiar los NS es cambiar quién controla el DNS.",
+    "example": "ns1.verpex.com, ns2.verpex.com",
+    "warn": "Cambiar NS puede tardar hasta 48h en propagarse. Durante ese tiempo puede haber inconsistencias."
+  },
+  {
+    "type": "SRV",
+    "full": "Service Record",
+    "desc": "Especifica servicios disponibles en un dominio (puerto, protocolo, prioridad). Usado por VoIP, juegos, etc.",
+    "example": "_sip._tcp.miweb.com",
+    "warn": ""
+  },
+  {
+    "type": "CAA",
+    "full": "Certification Authority",
+    "desc": "Define qué autoridades de certificación (CA) pueden emitir certificados SSL para tu dominio.",
+    "example": "miweb.com CAA 0 issue \"letsencrypt.org\"",
+    "warn": ""
+  }
+]

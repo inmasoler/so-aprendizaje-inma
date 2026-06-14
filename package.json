@@ -1,0 +1,15 @@
+{
+  "name": "craftbase",
+  "version": "0.6.0",
+  "private": true,
+  "description": "CraftBase — base de conocimiento técnico y de diseño (HTML estático)",
+  "scripts": {
+    "dev": "npx --yes serve . -l 4321",
+    "dev:open": "powershell -ExecutionPolicy Bypass -File scripts/dev.ps1",
+    "dev:v1": "npm run start --prefix craftbase-site",
+    "build:v1": "npm run build --prefix craftbase-site",
+    "build:v1:public": "npm run build:public --prefix craftbase-site",
+    "build:v1:full": "npm run build:full --prefix craftbase-site",
+    "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-node.ps1"
+  }
+}

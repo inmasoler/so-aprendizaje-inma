@@ -1,0 +1,386 @@
+/* CraftBase — cards y separación visual por módulo (legacy → Docusaurus) */
+
+:root {
+  --craft-git: #0c7a68;
+  --craft-astro: #c94800;
+  --craft-react: #0d7ea4;
+  --craft-js: #7a7a22;
+  --craft-api: #7c3aed;
+  --craft-design: #1a6fbe;
+}
+
+/* ── Intro / nota superior ── */
+.markdown blockquote.craft-intro {
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left-width: 3px;
+  border-radius: 0 var(--ifm-global-radius) var(--ifm-global-radius) 0;
+  padding: 0.85rem 1rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.markdown blockquote.craft-intro strong {
+  color: var(--ifm-font-color-base);
+}
+
+.markdown blockquote.craft-intro--git {
+  border-left-color: var(--craft-git);
+}
+
+.markdown blockquote.craft-intro--astro {
+  border-left-color: var(--craft-astro);
+}
+
+.markdown blockquote.craft-intro--react {
+  border-left-color: var(--craft-react);
+}
+
+.markdown blockquote.craft-intro--js {
+  border-left-color: var(--craft-js);
+}
+
+.markdown blockquote.craft-intro--api {
+  border-left-color: var(--craft-api);
+}
+
+/* ── Sección principal (h2 fuera de cards) ── */
+.theme-doc-markdown h2 {
+  font-family: var(--craftbase-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.55rem 0 0.65rem;
+  margin: 2.25rem 0 1rem;
+  border-bottom: 2px solid currentColor;
+}
+
+html[class*='docs-doc-id-react'] .theme-doc-markdown h2 {
+  color: var(--craft-react);
+}
+
+html[class*='docs-doc-id-astro'] .theme-doc-markdown h2 {
+  color: var(--craft-astro);
+}
+
+html[class*='docs-doc-id-javascript'] .theme-doc-markdown h2 {
+  color: var(--craft-js);
+}
+
+html[class*='docs-doc-id-git-docs'] .theme-doc-markdown h2 {
+  color: var(--craft-git);
+}
+
+/* ── Grupo temático (h3 + h4 antes de la card) ── */
+.theme-doc-markdown h3:has(+ h4) {
+  font-family: var(--craftbase-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--craft-accent, var(--ifm-color-primary));
+  margin: 1.5rem 0 0.35rem;
+  padding: 0;
+  border: none;
+}
+
+.theme-doc-markdown h4:has(+ .craft-card) {
+  font-family: var(--craftbase-sans);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--ifm-font-color-base);
+}
+
+/* ── Título de card (h3 directamente antes de .craft-card) ── */
+.theme-doc-markdown h3:has(+ .craft-card):not(:has(+ h4)) {
+  font-family: var(--craftbase-sans);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.35rem;
+  color: var(--ifm-font-color-base);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+html[class*='docs-doc-id-react'] .theme-doc-markdown {
+  --craft-accent: var(--craft-react);
+}
+
+html[class*='docs-doc-id-astro'] .theme-doc-markdown {
+  --craft-accent: var(--craft-astro);
+}
+
+html[class*='docs-doc-id-git-docs'] .theme-doc-markdown {
+  --craft-accent: var(--craft-git);
+}
+
+html[class*='docs-doc-id-javascript'] .theme-doc-markdown {
+  --craft-accent: var(--craft-js);
+}
+
+html[class*='docs-doc-id-apis-mysql'] .theme-doc-markdown {
+  --craft-accent: var(--craft-api);
+}
+
+.theme-doc-markdown p.craft-card-label {
+  font-family: var(--craftbase-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--craft-accent, var(--ifm-color-primary));
+  margin-bottom: 0.2rem;
+}
+
+.theme-doc-markdown .craft-card > h3:first-child,
+.theme-doc-markdown .craft-card > h4:first-child {
+  margin-top: 0;
+}
+
+/* ── Grid de cards ── */
+.markdown .craft-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 1px;
+  background: var(--ifm-color-emphasis-300);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  margin: 0.75rem 0 1.5rem;
+}
+
+/* React/Astro/API: cards apiladas — el código necesita ancho completo */
+.markdown .craft-card-grid--react,
+.markdown .craft-card-grid--astro,
+.markdown .craft-card-grid--api {
+  grid-template-columns: 1fr;
+}
+
+.markdown .craft-card-grid--react .craft-card,
+.markdown .craft-card-grid--astro .craft-card,
+.markdown .craft-card-grid--api .craft-card {
+  min-width: 0;
+}
+
+.markdown .craft-card-grid--react pre,
+.markdown .craft-card-grid--astro pre,
+.markdown .craft-card-grid--api pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ── Card individual ── */
+.markdown .craft-card,
+.theme-doc-markdown .craft-card {
+  background: var(--ifm-background-surface-color);
+  padding: 1.1rem 1.15rem;
+  position: relative;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 3px solid var(--craft-accent, var(--ifm-color-primary));
+  margin-bottom: 0.75rem;
+}
+
+.markdown .craft-card-grid .craft-card:hover {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.markdown .craft-card-grid .craft-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--craft-accent, var(--ifm-color-primary));
+}
+
+.markdown .craft-card--git {
+  --craft-accent: var(--craft-git);
+}
+
+.markdown .craft-card--astro {
+  --craft-accent: var(--craft-astro);
+}
+
+.markdown .craft-card--react {
+  --craft-accent: var(--craft-react);
+}
+
+.markdown .craft-card--js {
+  --craft-accent: var(--craft-js);
+}
+
+.markdown .craft-card--api {
+  --craft-accent: var(--craft-api);
+}
+
+.markdown .craft-card--hook {
+  grid-column: 1 / -1;
+}
+
+/* ── Por qué / Tip ── */
+.markdown blockquote.craft-aside {
+  border-left-width: 3px;
+  border-radius: 0 var(--ifm-global-radius) var(--ifm-global-radius) 0;
+  margin: 0.65rem 0;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.markdown blockquote.craft-aside--why {
+  background: color-mix(in srgb, var(--craft-accent, var(--ifm-color-primary)) 8%, transparent);
+  border-left-color: var(--craft-accent, var(--ifm-color-primary));
+}
+
+.markdown blockquote.craft-aside--tip {
+  background: var(--ifm-color-emphasis-100);
+  border-left-color: var(--ifm-color-emphasis-500);
+}
+
+.markdown blockquote.craft-aside--git {
+  --craft-accent: var(--craft-git);
+}
+
+.markdown blockquote.craft-aside--astro {
+  --craft-accent: var(--craft-astro);
+}
+
+.markdown blockquote.craft-aside--react {
+  --craft-accent: var(--craft-react);
+}
+
+.markdown blockquote.craft-aside--js {
+  --craft-accent: var(--craft-js);
+}
+
+.markdown blockquote.craft-aside--api {
+  --craft-accent: var(--craft-api);
+}
+
+/* ── Pasos (Git flow, React steps) ── */
+.markdown ol.craft-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 1.5rem;
+  counter-reset: craft-step;
+}
+
+.markdown ol.craft-steps > li.craft-step {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-left: 3px solid var(--craft-accent, var(--ifm-color-primary));
+  padding: 0.85rem 1rem;
+  margin: 0;
+  counter-increment: craft-step;
+}
+
+.markdown ol.craft-steps--git {
+  --craft-accent: var(--craft-git);
+}
+
+.markdown ol.craft-steps--react {
+  --craft-accent: var(--craft-react);
+}
+
+.markdown ol.craft-steps > li.craft-step > p:first-child {
+  margin-top: 0;
+}
+
+.markdown ol.craft-steps > li.craft-step pre {
+  margin-bottom: 0;
+  font-size: 0.8125rem;
+}
+
+[data-theme='dark'] .markdown blockquote.craft-aside--why {
+  background: color-mix(in srgb, var(--craft-accent, var(--ifm-color-primary)) 14%, transparent);
+}
+
+/* ── Sidebar: acento por módulo (como tabs legacy) ── */
+.menu__link[href*='/docs/git-docs'] {
+  --craft-module: var(--craft-git);
+}
+
+.menu__link[href*='/docs/astro'] {
+  --craft-module: var(--craft-astro);
+}
+
+.menu__link[href*='/docs/react'] {
+  --craft-module: var(--craft-react);
+}
+
+.menu__link[href*='/docs/javascript'] {
+  --craft-module: var(--craft-js);
+}
+
+.menu__link[href*='/docs/apis-mysql'] {
+  --craft-module: var(--craft-api);
+}
+
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/git-docs'])
+  > .menu__list-item-collapsible
+  > .menu__link,
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/git-docs'])
+  > .menu__link,
+.menu__link--active[href*='/docs/git-docs'] {
+  color: var(--craft-git);
+}
+
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/astro'])
+  > .menu__list-item-collapsible
+  > .menu__link,
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/astro'])
+  > .menu__link,
+.menu__link--active[href*='/docs/astro'] {
+  color: var(--craft-astro);
+}
+
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/react'])
+  > .menu__list-item-collapsible
+  > .menu__link,
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/react'])
+  > .menu__link,
+.menu__link--active[href*='/docs/react'] {
+  color: var(--craft-react);
+}
+
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/javascript'])
+  > .menu__list-item-collapsible
+  > .menu__link,
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/javascript'])
+  > .menu__link,
+.menu__link--active[href*='/docs/javascript'] {
+  color: var(--craft-js);
+}
+
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/apis-mysql'])
+  > .menu__list-item-collapsible
+  > .menu__link,
+.menu__list-item-collapsible:has(.menu__link--active[href*='/docs/apis-mysql'])
+  > .menu__link,
+.menu__link--active[href*='/docs/apis-mysql'] {
+  color: var(--craft-api);
+}
+
+html[class*='docs-doc-id-git-docs'] article,
+html[class*='docs-doc-id-git-docs/'] article {
+  border-top: 3px solid var(--craft-git);
+}
+
+html[class*='docs-doc-id-astro'] article {
+  border-top: 3px solid var(--craft-astro);
+}
+
+html[class*='docs-doc-id-react'] article {
+  border-top: 3px solid var(--craft-react);
+}
+
+html[class*='docs-doc-id-javascript'] article {
+  border-top: 3px solid var(--craft-js);
+}
+
+html[class*='docs-doc-id-apis-mysql'] article {
+  border-top: 3px solid var(--craft-api);
+}

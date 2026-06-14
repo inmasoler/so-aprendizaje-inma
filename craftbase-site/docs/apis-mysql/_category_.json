@@ -1,0 +1,8 @@
+﻿{
+  "label": "APIs & MySQL",
+  "position": 14,
+  "link": {
+    "type": "generated-index",
+    "description": "Stub de migración desde legacy v0."
+  }
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "kicker": "Fundamentos",
+    "title": "OKLCH en práctica: qué significa cada canal",
+    "text": "OKLCH describe el color de forma perceptual: L (lightness) controla claridad, C (chroma) controla intensidad y H (hue) define el tono. La ventaja frente a HSL es que los cambios son más uniformes para el ojo humano, especialmente cuando construyes escalas para UI.",
+    "points": [
+      "L te ayuda a ordenar jerarquía visual y contraste entre superficies.",
+      "C regula saturación útil sin romper legibilidad de texto/iconos.",
+      "H mantiene coherencia de familia cromática en toda la rampa."
+    ]
+  },
+  {
+    "kicker": "Rampas",
+    "title": "Chroma en porcentaje relativo: por qué importa",
+    "text": "En flujos de OKLCH, muchas veces conviene tratar C como una proporción o porcentaje relativo por escalón, no como un valor absoluto fijo. Esto evita que tonos medios queden demasiado saturados o que los oscuros se ensucien, y produce rampas más estables visualmente.",
+    "points": [
+      "Ejemplo típico: en 100 y 900 usas menos porcentaje de C que en 400-600.",
+      "El mismo porcentaje no siempre vale para todos los hue; ajusta por familia.",
+      "Después de generar la rampa, valida contraste real AA/AAA en contexto."
+    ]
+  },
+  {
+    "kicker": "Modos de color",
+    "title": "sRGB, Display P3, Lab/LCH y OKLab/OKLCH",
+    "text": "No todos los modos de color sirven para lo mismo. sRGB es el estándar web más seguro en compatibilidad; Display P3 ofrece gamut más amplio en pantallas modernas; Lab/LCH y OKLab/OKLCH son excelentes para calcular y diseñar rampas perceptuales, aunque el output final suele mapearse a sRGB/P3 según soporte.",
+    "points": [
+      "sRGB: máxima compatibilidad cross-device.",
+      "Display P3: colores más vivos en dispositivos compatibles.",
+      "OKLCH: ideal para diseñar tokens de color consistentes."
+    ]
+  },
+  {
+    "kicker": "Tematización",
+    "title": "Light, Dark y High Contrast no son invertir colores",
+    "text": "Cada modo necesita intención semántica. Light mode suele priorizar superficie clara y acentos contenidos; dark mode requiere elevar contraste local en texto y componentes interactivos; high contrast prioriza legibilidad extrema, bordes claros y reducción de ambiguedad cromática.",
+    "points": [
+      "Define tokens semánticos por rol: surface, text, border, accent, danger.",
+      "No reutilices exactamente la misma rampa en dark sin recalibrar L y C.",
+      "Considera forced-colors y preferencias del sistema cuando aplique."
+    ]
+  },
+  {
+    "kicker": "Accesibilidad",
+    "title": "Contraste: medir por uso real, no por intuición",
+    "text": "La relación de contraste depende del par final (foreground/background) y del tamaño/peso tipográfico. Una paleta bonita puede fallar si no se prueba en estados reales (hover, disabled, badges, overlays). Usa contraste como criterio de diseño desde el inicio, no como chequeo final.",
+    "points": [
+      "Texto normal: apunta como base a nivel AA.",
+      "UI crítica y contenido clave: considera umbrales más exigentes.",
+      "Valida también componentes sobre fondos tintados y gradientes."
+    ]
+  },
+  {
+    "kicker": "Operativa DS",
+    "title": "Pipeline recomendado para gestión de color",
+    "text": "Un flujo robusto suele ser: 1) definir intentos semánticos, 2) construir rampas en OKLCH, 3) validar contraste por casos de uso, 4) exportar tokens a Figma y código, 5) monitorizar regresiones visuales. Así el color deja de ser artesanal y pasa a ser un sistema mantenible.",
+    "points": [
+      "Trabaja con nomenclatura semántica (color.text.primary) y no por hex directo.",
+      "Documenta decisiones: por qué ese C%, por qué ese umbral de contraste.",
+      "Versiona cambios de tokens igual que versionas componentes."
+    ]
+  },
+  {
+    "kicker": "Contraste avanzado",
+    "title": "APCA vs WCAG: cómo usar ambos sin contradicciones",
+    "text": "Para cumplimiento formal, WCAG 2.x sigue siendo la referencia principal. Para calidad perceptual real, especialmente en dark mode, APCA ayuda a detectar pares que pasan AA pero se sienten pobres al leer. La práctica recomendable es combinarlos: cumplimiento con WCAG + validación perceptual con APCA en casos críticos de UI.",
+    "points": [
+      "WCAG te da umbrales legales y comparables.",
+      "APCA aporta sensibilidad a polaridad, peso y contexto visual.",
+      "Si hay conflicto, prioriza legibilidad real y documenta la decisión."
+    ]
+  },
+  {
+    "kicker": "Dark mode",
+    "title": "Regla práctica de croma en oscuro (10-20%)",
+    "text": "En superficies oscuras, colores muy saturados vibran más y fatigan antes. Como punto de partida, suele funcionar reducir chroma entre 10% y 20% respecto a la versión light, ajustando después por hue y caso de uso. No es una fórmula universal, pero sí una heurística útil para iterar rápido sin perder consistencia.",
+    "points": [
+      "Reduce más en acentos de uso frecuente y texto coloreado.",
+      "Revisa estados hover/focus: suelen necesitar menos croma del esperado.",
+      "Valida en dispositivos reales con brillo alto y bajo."
+    ]
+  },
+  {
+    "kicker": "Figma strategy",
+    "title": "Colecciones, modos y herencia sin caos",
+    "text": "La organización de variables impacta rendimiento y mantenimiento. Conviene separar por dominios (color, typo, spacing) y evitar colecciones monolíticas. En escenarios enterprise, usa colecciones extendidas para heredar core y sobrescribir solo diferencias de marca o tema.",
+    "points": [
+      "Core estable + overrides mínimos por marca/contexto.",
+      "Evita listas infinitas con naming ambiguo.",
+      "Alinea estructura de Figma con estructura de tokens en código."
+    ]
+  },
+  {
+    "kicker": "Tipografía",
+    "title": "Semántica tipográfica para marcas con fuentes distintas",
+    "text": "En multimarca, lo robusto es definir roles tipográficos (title-1, body-1, caption) y no tamaños fijos por nombre de estilo. Así cada marca mapea su familia, peso y microajustes ópticos manteniendo jerarquía y comportamiento coherente en producto.",
+    "points": [
+      "Los componentes consumen roles, no familias concretas.",
+      "Evitas romper layouts al cambiar de marca o idioma.",
+      "Facilita accesibilidad y mantenimiento de largo plazo."
+    ]
+  },
+  {
+    "kicker": "Gobernanza",
+    "title": "Snowflakes con control: excepción sin contaminar el core",
+    "text": "Las excepciones por marca son inevitables. La clave no es prohibirlas, sino gobernarlas: definir dónde viven, cuándo caducan y cómo se evalúa si deben subir al core. Sin este marco, el sistema se fragmenta y pierde su ventaja de escala.",
+    "points": [
+      "Por defecto, snowflakes fuera del paquete central.",
+      "Revisión trimestral para eliminar o promover patrones repetidos.",
+      "Criterio de promoción: reutilización comprobada en más de un contexto."
+    ]
+  }
+]

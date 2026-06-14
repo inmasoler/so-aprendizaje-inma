@@ -1,0 +1,22 @@
+---
+title: Caché
+sidebar_position: 4
+visibility: public
+---
+
+import CraftCallout from '@site/src/components/CraftCallout';
+import {CraftCacheCompare, CraftConceptList} from '@site/src/components/CraftDepSections';
+import cacheTypes from '@site/src/data/cache-types.json';
+import cacheConcepts from '@site/src/data/cache-concepts.json';
+
+# Caché
+
+<CraftCallout variant="info">
+  **La caché es guardar una copia de algo para no tener que calcularlo o pedirlo de nuevo.** Cada capa de caché tiene su lugar: no todas son iguales ni sirven para lo mismo.
+</CraftCallout>
+
+<CraftCacheCompare items={cacheTypes} />
+
+## Conceptos clave
+
+<CraftConceptList items={cacheConcepts} />

@@ -1,0 +1,691 @@
+{
+  "cats": {
+    "fe": {
+      "label": "Frontend UI",
+      "color": "#c0392b",
+      "cls": "c-fe"
+    },
+    "meta": {
+      "label": "Meta-framework",
+      "color": "#1a5276",
+      "cls": "c-meta"
+    },
+    "be": {
+      "label": "Backend/API",
+      "color": "#196f3d",
+      "cls": "c-be"
+    },
+    "cms": {
+      "label": "CMS Headless",
+      "color": "#6c3483",
+      "cls": "c-cms"
+    },
+    "nc": {
+      "label": "No-Code",
+      "color": "#d35400",
+      "cls": "c-nc"
+    }
+  },
+  "catOrder": [
+    "fe",
+    "meta",
+    "be",
+    "cms",
+    "nc"
+  ],
+  "fws": [
+    {
+      "id": "react",
+      "cat": "fe",
+      "name": "React",
+      "color": "#0f9aba",
+      "tagline": "La librería dominante de UI",
+      "desc": "Librería de Facebook para interfaces basadas en componentes. Sin opiniones sobre router o estado — tú eliges todo. Base de Next.js, Remix y Gatsby.",
+      "uses": [
+        "SPA y dashboards interactivos",
+        "Apps con estado complejo",
+        "Cuando el equipo ya conoce React",
+        "Base para meta-frameworks"
+      ]
+    },
+    {
+      "id": "angular",
+      "cat": "fe",
+      "name": "Angular",
+      "color": "#dd0031",
+      "tagline": "Framework enterprise de Google",
+      "desc": "Framework opinado y completo: router, HTTP, forms y DI incluidos. TypeScript obligatorio. Curva alta pero muy estructurado para equipos grandes.",
+      "uses": [
+        "Proyectos enterprise y corporativos",
+        "Equipos grandes con convenciones estrictas",
+        "Apps de gestión interna",
+        "Cuando TypeScript nativo importa"
+      ]
+    },
+    {
+      "id": "vue",
+      "cat": "fe",
+      "name": "Vue.js",
+      "color": "#42b883",
+      "tagline": "Progresivo y fácil de adoptar",
+      "desc": "El equilibrio entre Angular y React. Progresivo: puedes añadirlo a una web existente o construir una SPA completa. Sintaxis limpia y curva suave.",
+      "uses": [
+        "Apps medianas con estado moderado",
+        "Equipos que vienen de templates HTML",
+        "Base para Nuxt",
+        "Proyectos que prefieren Vue sobre React"
+      ]
+    },
+    {
+      "id": "svelte",
+      "cat": "fe",
+      "name": "Svelte",
+      "color": "#ff3e00",
+      "tagline": "Sin virtual DOM, compilado",
+      "desc": "Compila a JS vanilla en build time: sin runtime, sin virtual DOM. Bundle muy pequeño y sintaxis limpia. Base para SvelteKit.",
+      "uses": [
+        "Componentes con máximo rendimiento",
+        "Bundle muy reducido",
+        "Aprender compilación moderna",
+        "Base para SvelteKit"
+      ]
+    },
+    {
+      "id": "next",
+      "cat": "meta",
+      "name": "Next.js",
+      "color": "#888",
+      "tagline": "React full-stack, el estándar",
+      "desc": "Meta-framework React más usado. Combina SSR, SSG, ISR, API Routes y Server Actions. Enorme ecosistema. Algo complejo en su App Router nuevo.",
+      "uses": [
+        "Apps React con SEO y SSR",
+        "SaaS y dashboards full-stack",
+        "Máxima demanda laboral JS",
+        "Cuando el equipo usa React"
+      ]
+    },
+    {
+      "id": "astro",
+      "cat": "meta",
+      "name": "Astro",
+      "color": "#ff5d01",
+      "tagline": "HTML primero, JS mínimo",
+      "desc": "Genera HTML estático por defecto y añade JS solo donde se necesita (Islands). Multi-framework. Ideal para sitios de contenido con SEO crítico.",
+      "uses": [
+        "Webs corporativas y portfolios",
+        "Blogs con SEO fuerte",
+        "Multiidioma (i18n nativo)",
+        "Rendimiento y velocidad críticos"
+      ]
+    },
+    {
+      "id": "nuxt",
+      "cat": "meta",
+      "name": "Nuxt",
+      "color": "#00dc82",
+      "tagline": "El Next.js del ecosistema Vue",
+      "desc": "Meta-framework Vue equivalente a Next.js. Excelente DX, auto-imports, i18n integrado y soporte SSR/SSG/ISR.",
+      "uses": [
+        "Webs Vue con SSR y SEO",
+        "Full-stack con convenciones Vue",
+        "Proyectos multiidioma",
+        "Si el equipo prefiere Vue"
+      ]
+    },
+    {
+      "id": "remix",
+      "cat": "meta",
+      "name": "Remix",
+      "color": "#3992ff",
+      "tagline": "Web standards, rutas anidadas",
+      "desc": "Abraza la plataforma web: loaders, actions y rutas anidadas. Excelente gestión de errores y formularios. Ahora parte de React Router v7.",
+      "uses": [
+        "SaaS con formularios complejos",
+        "Apps resilientes",
+        "Arquitectura web clásica actualizada",
+        "Cuando la DX de datos importa"
+      ]
+    },
+    {
+      "id": "sveltekit",
+      "cat": "meta",
+      "name": "SvelteKit",
+      "color": "#ff3e00",
+      "tagline": "Svelte con full-stack integrado",
+      "desc": "Meta-framework sobre Svelte. Bundle mínimo, rendimiento top, DX excelente. Menos ecosistema que React/Vue pero creciendo.",
+      "uses": [
+        "Máximo rendimiento con SSR",
+        "Bundle pequeño prioritario",
+        "Full-stack Svelte",
+        "Apps donde JS mínimo importa"
+      ]
+    },
+    {
+      "id": "gatsby",
+      "cat": "meta",
+      "name": "Gatsby",
+      "color": "#663399",
+      "tagline": "SSG pionero, hoy superado",
+      "desc": "Pionero del SSG con React y GraphQL. Todavía funcional para sitios estáticos, pero Astro y Next.js lo superan en la mayoría de casos.",
+      "uses": [
+        "Proyectos legacy en Gatsby",
+        "Sites con fuentes GraphQL complejas",
+        "Migración progresiva",
+        "Blogs con plugin ecosystem"
+      ]
+    },
+    {
+      "id": "express",
+      "cat": "be",
+      "name": "Express.js",
+      "color": "#68a063",
+      "tagline": "Backend Node.js minimalista",
+      "desc": "El framework Node.js más usado. Minimalista y sin opiniones: tú eliges todo. Base de miles de APIs REST y stacks MERN/MEAN.",
+      "uses": [
+        "APIs REST rápidas",
+        "Microservicios Node.js",
+        "Máxima libertad en backend",
+        "Base para aprender backend JS"
+      ]
+    },
+    {
+      "id": "nest",
+      "cat": "be",
+      "name": "NestJS",
+      "color": "#e0234e",
+      "tagline": "Node.js enterprise con TypeScript",
+      "desc": "Framework Node.js opinado inspirado en Angular. TypeScript nativo, modular, soporte GraphQL, WebSockets y microservicios.",
+      "uses": [
+        "Backends enterprise con Node.js",
+        "APIs GraphQL y REST complejas",
+        "Equipos con experiencia Angular",
+        "Estructura estricta en backend"
+      ]
+    },
+    {
+      "id": "fastapi",
+      "cat": "be",
+      "name": "FastAPI",
+      "color": "#009688",
+      "tagline": "Python moderno y ultrarrápido",
+      "desc": "El framework Python más rápido. Async nativo, validación automática con Pydantic, documentación Swagger auto-generada.",
+      "uses": [
+        "APIs de AI/ML",
+        "Data pipelines Python",
+        "Documentación automática",
+        "Prototipos rápidos en Python"
+      ]
+    },
+    {
+      "id": "django",
+      "cat": "be",
+      "name": "Django",
+      "color": "#2d7a4f",
+      "tagline": "Python batteries-included",
+      "desc": "Framework Python completo con ORM, admin, auth y todo incluido. Seguro, estable y con décadas de producción.",
+      "uses": [
+        "Apps con datos complejos y admin",
+        "Plataformas con ML/AI integrado",
+        "Sectores educación, gobierno, fintech",
+        "Equipo Python-first"
+      ]
+    },
+    {
+      "id": "laravel",
+      "cat": "be",
+      "name": "Laravel",
+      "color": "#ff2d20",
+      "tagline": "PHP elegante y productivo",
+      "desc": "El framework PHP más popular y elegante. Ecosistema maduro, Eloquent ORM, queues y broadcasting.",
+      "uses": [
+        "Apps de negocio en PHP",
+        "Equipo PHP existente",
+        "SaaS con backend robusto",
+        "Ecosistema PHP"
+      ]
+    },
+    {
+      "id": "rails",
+      "cat": "be",
+      "name": "Ruby on Rails",
+      "color": "#cc0000",
+      "tagline": "Convenciones sobre configuración",
+      "desc": "Convention over configuration. Productivísimo para CRUDs y MVPs. Dos décadas de track record.",
+      "uses": [
+        "Startups que necesitan ir rápido",
+        "MVPs y prototipos CRUD",
+        "Equipo con experiencia Ruby",
+        "REST arquitectura clásica"
+      ]
+    },
+    {
+      "id": "strapi",
+      "cat": "cms",
+      "name": "Strapi",
+      "color": "#4945ff",
+      "tagline": "CMS headless open-source",
+      "desc": "CMS headless Node.js open-source. Panel de admin personalizable, API REST y GraphQL automáticas. Self-hosted o cloud.",
+      "uses": [
+        "CMS con control total",
+        "Backend de contenido para Astro/Next",
+        "Sin vendor lock-in",
+        "API de contenido personalizada"
+      ]
+    },
+    {
+      "id": "sanity",
+      "cat": "cms",
+      "name": "Sanity",
+      "color": "#f03e2f",
+      "tagline": "CMS estructurado y flexible",
+      "desc": "CMS headless con editor (Sanity Studio) personalizable en React. Esquemas en código, tiempo real, excelente DX para devs.",
+      "uses": [
+        "CMS como producto",
+        "Contenido muy estructurado",
+        "CMS como código",
+        "Tiempo real y colaboración"
+      ]
+    },
+    {
+      "id": "contentful",
+      "cat": "cms",
+      "name": "Contentful",
+      "color": "#2478cc",
+      "tagline": "CMS headless SaaS líder",
+      "desc": "El CMS headless SaaS más adoptado en enterprise. Fiable, bien documentado, con SDKs para todo.",
+      "uses": [
+        "Enterprise con presupuesto CMS",
+        "Equipos no técnicos",
+        "CDN global",
+        "Integraciones marketing"
+      ]
+    },
+    {
+      "id": "wordpress",
+      "cat": "cms",
+      "name": "WordPress",
+      "color": "#21759b",
+      "tagline": "El rey del CMS clásico",
+      "desc": "El CMS más usado del mundo. Puede usarse como headless (REST API + WPGraphQL) o clásico. Enorme ecosistema de plugins.",
+      "uses": [
+        "Marketing publicando a diario",
+        "Blogs y medios",
+        "Cuando el cliente exige WordPress",
+        "CMS headless con WPGraphQL"
+      ]
+    },
+    {
+      "id": "webflow",
+      "cat": "nc",
+      "name": "Webflow",
+      "color": "#4353ff",
+      "tagline": "Diseño visual sin backend",
+      "desc": "La herramienta no-code más potente para marketing. Editor visual, CMS integrado, animaciones CSS avanzadas.",
+      "uses": [
+        "Sites de marketing y landings",
+        "Agencias con clientes no técnicos",
+        "Time-to-market muy corto",
+        "Diseño como prioridad"
+      ]
+    },
+    {
+      "id": "framer",
+      "cat": "nc",
+      "name": "Framer",
+      "color": "#0055ff",
+      "tagline": "Diseño + publicación en uno",
+      "desc": "Herramienta de diseño que genera sitios publicables. Basada en React, soporte CMS, animaciones avanzadas. Popular en diseño.",
+      "uses": [
+        "Portfolios de diseñadores",
+        "Landings con animaciones complejas",
+        "Equipos sin devs",
+        "Prototipado que va a producción"
+      ]
+    },
+    {
+      "id": "bubble",
+      "cat": "nc",
+      "name": "Bubble",
+      "color": "#4040c8",
+      "tagline": "No-code para apps complejas",
+      "desc": "Plataforma no-code para construir apps web con lógica real: bases de datos, flujos, pagos, auth incluidos.",
+      "uses": [
+        "MVPs sin equipo técnico",
+        "Apps con lógica de negocio",
+        "Startups validando ideas",
+        "Presupuesto de desarrollo bajo"
+      ]
+    },
+    {
+      "id": "shopify",
+      "cat": "nc",
+      "name": "Shopify",
+      "color": "#96bf48",
+      "tagline": "E-commerce sin reinventar la rueda",
+      "desc": "Plataforma SaaS de e-commerce más usada. Checkout, pagos, inventario y logística integrados.",
+      "uses": [
+        "Tiendas online",
+        "Sin gestionar infra",
+        "Headless commerce + Next.js",
+        "Escalabilidad e-commerce"
+      ]
+    },
+    {
+      "id": "supabase",
+      "cat": "nc",
+      "name": "Supabase",
+      "color": "#3ecf8e",
+      "tagline": "Firebase open-source alternativo",
+      "desc": "Backend-as-a-Service open-source: PostgreSQL, auth, storage, realtime y edge functions incluidos. Combina con cualquier frontend.",
+      "uses": [
+        "Backend rápido con auth",
+        "SQL con BaaS",
+        "Alternativa open-source a Firebase",
+        "Full-stack React/Vue/Svelte"
+      ]
+    }
+  ],
+  "criteria": [
+    {
+      "crit": "SEO y rendimiento inicial",
+      "cond": "Cargar rápido, posicionar bien",
+      "wins": {
+        "astro": 2,
+        "nuxt": 2,
+        "sveltekit": 2,
+        "next": 1,
+        "gatsby": 1,
+        "wordpress": 1,
+        "webflow": 1,
+        "framer": 1
+      }
+    },
+    {
+      "crit": "Sitio de contenido / corporativo",
+      "cond": "Web empresa, landing, portfolio, blog",
+      "wins": {
+        "astro": 2,
+        "webflow": 2,
+        "framer": 2,
+        "next": 1,
+        "nuxt": 1,
+        "gatsby": 1,
+        "wordpress": 1
+      }
+    },
+    {
+      "crit": "Multiidioma (i18n)",
+      "cond": "Muchas páginas por idioma",
+      "wins": {
+        "astro": 2,
+        "nuxt": 2,
+        "next": 1,
+        "sveltekit": 1,
+        "wordpress": 1
+      }
+    },
+    {
+      "crit": "App interactiva compleja",
+      "cond": "Dashboard, panel, estados complejos",
+      "wins": {
+        "react": 2,
+        "angular": 2,
+        "next": 2,
+        "remix": 2,
+        "nuxt": 1,
+        "vue": 1
+      }
+    },
+    {
+      "crit": "Backend integrado",
+      "cond": "APIs, auth, server actions, SSR avanzado",
+      "wins": {
+        "next": 2,
+        "nuxt": 2,
+        "remix": 2,
+        "sveltekit": 2,
+        "nest": 2,
+        "django": 2,
+        "laravel": 2,
+        "rails": 2,
+        "express": 1
+      }
+    },
+    {
+      "crit": "APIs REST o GraphQL",
+      "cond": "Exponer endpoints para consumir desde frontend",
+      "wins": {
+        "fastapi": 2,
+        "nest": 2,
+        "express": 2,
+        "django": 2,
+        "laravel": 2,
+        "strapi": 2,
+        "supabase": 2,
+        "rails": 1
+      }
+    },
+    {
+      "crit": "AI / ML integrado",
+      "cond": "Modelos de IA, data pipelines, inferencia",
+      "wins": {
+        "fastapi": 2,
+        "django": 2,
+        "express": 1,
+        "nest": 1,
+        "supabase": 1
+      }
+    },
+    {
+      "crit": "Máxima flexibilidad de stack",
+      "cond": "Elegir tú router, estado, librerías",
+      "wins": {
+        "react": 2,
+        "express": 2,
+        "svelte": 1,
+        "vue": 1
+      }
+    },
+    {
+      "crit": "Curva de entrada baja",
+      "cond": "Avanzar rápido con menos complejidad",
+      "wins": {
+        "astro": 2,
+        "vue": 2,
+        "webflow": 2,
+        "framer": 2,
+        "bubble": 2,
+        "nuxt": 1,
+        "supabase": 1
+      }
+    },
+    {
+      "crit": "Ecosistema y empleo",
+      "cond": "Stack muy demandado en mercado laboral",
+      "wins": {
+        "react": 2,
+        "next": 2,
+        "angular": 2,
+        "django": 1,
+        "laravel": 1,
+        "vue": 1
+      }
+    },
+    {
+      "crit": "Full-stack con convenciones",
+      "cond": "El framework marca la estructura",
+      "wins": {
+        "next": 2,
+        "nuxt": 2,
+        "sveltekit": 2,
+        "remix": 2,
+        "laravel": 2,
+        "rails": 2,
+        "django": 2
+      }
+    },
+    {
+      "crit": "CMS para equipo no técnico",
+      "cond": "Equipo editorial publicando a diario",
+      "wins": {
+        "wordpress": 2,
+        "contentful": 2,
+        "sanity": 2,
+        "strapi": 1,
+        "webflow": 1
+      }
+    },
+    {
+      "crit": "E-commerce",
+      "cond": "Tienda, checkout, catálogo de productos",
+      "wins": {
+        "shopify": 2,
+        "next": 1,
+        "nuxt": 1,
+        "laravel": 1,
+        "wordpress": 1
+      }
+    },
+    {
+      "crit": "Bundle pequeño / JS mínimo",
+      "cond": "Máximo rendimiento, menos KB al cliente",
+      "wins": {
+        "astro": 2,
+        "svelte": 2,
+        "sveltekit": 2,
+        "remix": 1,
+        "vue": 1
+      }
+    },
+    {
+      "crit": "Time-to-market muy rápido",
+      "cond": "Entregar en días, sin montar infra compleja",
+      "wins": {
+        "webflow": 2,
+        "framer": 2,
+        "bubble": 2,
+        "shopify": 2,
+        "supabase": 2,
+        "astro": 1,
+        "rails": 1
+      }
+    },
+    {
+      "crit": "Proyecto enterprise / gran equipo",
+      "cond": "Estructura, tipado, gobernanza del código",
+      "wins": {
+        "angular": 2,
+        "nest": 2,
+        "django": 2,
+        "laravel": 2,
+        "next": 1,
+        "contentful": 1
+      }
+    },
+    {
+      "crit": "MVP / startup validando idea",
+      "cond": "Ir rápido, pivotar fácil, mínima infra",
+      "wins": {
+        "bubble": 2,
+        "supabase": 2,
+        "rails": 2,
+        "laravel": 1,
+        "next": 1,
+        "webflow": 1
+      }
+    },
+    {
+      "crit": "Realtime (websockets, live data)",
+      "cond": "Chat, notificaciones, datos en tiempo real",
+      "wins": {
+        "supabase": 2,
+        "nest": 2,
+        "express": 1,
+        "next": 1,
+        "sveltekit": 1
+      }
+    }
+  ],
+  "guideRules": [
+    {
+      "if_": "El 80% del proyecto es contenido, SEO y páginas informativas",
+      "then": "Astro",
+      "note": "Añade un CMS headless (Strapi, Sanity) para contenido dinámico"
+    },
+    {
+      "if_": "Necesitas una app React con lógica compleja y SEO",
+      "then": "Next.js",
+      "note": "El estándar del mercado para React full-stack"
+    },
+    {
+      "if_": "El equipo prefiere Vue en lugar de React",
+      "then": "Nuxt",
+      "note": "Equivalente a Next.js en el ecosistema Vue"
+    },
+    {
+      "if_": "Quieres aprender las bases puras del frontend",
+      "then": "React + Vite",
+      "note": "Sin opiniones, tú montas todas las piezas"
+    },
+    {
+      "if_": "Necesitas máximo rendimiento y bundle mínimo",
+      "then": "Astro / SvelteKit",
+      "note": "Ambos priorizan JS mínimo al cliente"
+    },
+    {
+      "if_": "API en Python para proyectos AI/ML",
+      "then": "FastAPI",
+      "note": "Async nativo, validación automática, Swagger incluido"
+    },
+    {
+      "if_": "El stack es PHP o el cliente lo exige",
+      "then": "Laravel",
+      "note": "El framework PHP más elegante y productivo"
+    },
+    {
+      "if_": "Startup validando un MVP lo antes posible",
+      "then": "Rails o Bubble",
+      "note": "Rails si hay dev, Bubble si no hay equipo técnico"
+    },
+    {
+      "if_": "Backend Node.js para proyecto enterprise",
+      "then": "NestJS",
+      "note": "Modular, TypeScript nativo, inspirado en Angular"
+    },
+    {
+      "if_": "Equipo de contenido no técnico publicando a diario",
+      "then": "WordPress / Contentful",
+      "note": "Headless o clásico según complejidad del frontend"
+    },
+    {
+      "if_": "CMS headless personalizable open-source",
+      "then": "Strapi",
+      "note": "Self-hosted, API automática, sin vendor lock-in"
+    },
+    {
+      "if_": "Prioridad: entrega rápida con diseño visual sin backend",
+      "then": "Webflow / Framer",
+      "note": "No-code para sites de marketing y portfolios"
+    },
+    {
+      "if_": "Tienda online funcional desde el primer día",
+      "then": "Shopify",
+      "note": "Checkout, pagos y logística incluidos"
+    },
+    {
+      "if_": "Backend con auth, DB y storage sin configurar servidores",
+      "then": "Supabase",
+      "note": "Firebase open-source con PostgreSQL real"
+    },
+    {
+      "if_": "App con alta interactividad y formularios complejos",
+      "then": "Remix",
+      "note": "Loaders y actions sobre estándares web"
+    },
+    {
+      "if_": "Proyecto enterprise JS con estructura muy estricta",
+      "then": "Angular + NestJS",
+      "note": "El stack más opinado del mundo JS"
+    }
+  ]
+}

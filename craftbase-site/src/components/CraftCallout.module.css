@@ -1,0 +1,41 @@
+.callout {
+  margin: 1.25rem 0;
+  padding: 0.875rem 1rem;
+  border-left: 4px solid var(--craftbase-accent, var(--ifm-color-primary));
+  border-radius: 0.375rem;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.title {
+  margin: 0 0 0.35rem;
+  font-family: var(--craftbase-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.body {
+  font-size: var(--craftbase-fs-read);
+  line-height: var(--craftbase-lh-body);
+}
+
+.body :last-child {
+  margin-bottom: 0;
+}
+
+.info {
+  --craftbase-accent: #1a6fbe;
+}
+
+.warn {
+  --craftbase-accent: #9a3412;
+}
+
+.tip {
+  --craftbase-accent: #1a8a52;
+}
+
+[data-theme='dark'] .callout {
+  background: var(--ifm-color-emphasis-200);
+}

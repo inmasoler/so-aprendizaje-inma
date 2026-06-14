@@ -1,0 +1,50 @@
+[
+  {
+    "name": "HubSpot Private App (API Token)",
+    "type": "CRM Integration",
+    "color": "#f5a97f",
+    "def": "La forma correcta de autenticarte con la API de HubSpot desde tu backend. Creas una Private App en HubSpot, defines los scopes (permisos) que necesitas, y obtienes un token. Este token va en el header de cada request: Authorization: Bearer TOKEN.",
+    "example": "En Express: axios.post(\"https://api.hubapi.com/crm/v3/objects/contacts\", payload, { headers: { Authorization: `Bearer ${process.env.HUBSPOT_TOKEN}` } })",
+    "warn": "El token de HubSpot nunca va en el frontend. Si alguien lo extrae puede crear/borrar contactos en tu CRM."
+  },
+  {
+    "name": "Flujo de formulario seguro",
+    "type": "Patrón arquitectura",
+    "color": "#f5a97f",
+    "def": "Browser → POST /api/contact (tu servidor) → validación + anti-spam → POST HubSpot API. El browser nunca habla directamente con HubSpot. Tu Express valida los datos, aplica rate limiting y gestiona errores antes de reenviar a HubSpot.",
+    "example": "El formulario hace fetch(\"/api/contact\", { method: \"POST\", body: JSON.stringify({name, email, message}) }). Nginx lo redirige a Express. Express valida y llama a HubSpot.",
+    "warn": ""
+  },
+  {
+    "name": "Variables de entorno en producción",
+    "type": "Seguridad",
+    "color": "#f5a97f",
+    "def": "En producción no hay archivo .env en disco — las variables se inyectan directamente en el entorno del proceso. En Railway/Render/Fly.io hay un panel de \"Environment Variables\". En Docker Compose en tu servidor las defines en el .env (que está en .gitignore).",
+    "example": "process.env.HUBSPOT_TOKEN en Express lee la variable de entorno. En Railway la defines en Settings → Variables.",
+    "warn": ""
+  },
+  {
+    "name": "Rate Limiting en Express",
+    "type": "Anti-abuso",
+    "color": "#0a6b72",
+    "def": "Limitar cuántas peticiones puede hacer una misma IP en un período de tiempo. Previene que un bot envíe 1000 formularios. Librería express-rate-limit: máximo N requests por IP en M minutos.",
+    "example": "rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }) → máximo 5 envíos de formulario por IP cada 15 minutos.",
+    "warn": ""
+  },
+  {
+    "name": "CORS (Cross-Origin Resource Sharing)",
+    "type": "Seguridad web",
+    "color": "#0a6b72",
+    "def": "Mecanismo que controla qué dominios pueden hacer peticiones a tu API. Sin CORS configurado, un JS de otra web podría llamar a tu /api/contact. En Express: cors({ origin: \"https://miweb.com\" }) → solo tu dominio puede usar la API.",
+    "example": "El frontend en miweb.com hace fetch(\"/api/contact\"). Como es mismo origen (Nginx redirige internamente) no hay problema de CORS.",
+    "warn": ""
+  },
+  {
+    "name": "Logs y monitorización",
+    "type": "Operaciones",
+    "color": "#065f46",
+    "def": "En producción necesitas saber qué está pasando. Nginx tiene access.log y error.log. Express puede usar Morgan para logs de requests. En cPanel tienes métricas de tráfico y puedes ver los logs de Apache/Nginx desde el panel.",
+    "example": "tail -f /var/log/nginx/error.log → en tiempo real ves errores de Nginx. En Express: morgan(\"combined\") → loguea cada request con IP, status, tiempo.",
+    "warn": ""
+  }
+]

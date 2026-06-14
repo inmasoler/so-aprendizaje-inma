@@ -1,0 +1,345 @@
+{
+  "types": [
+    {
+      "type": "REST",
+      "desc": "Recursos identificados por URLs, métodos HTTP estándar, respuestas JSON. El estándar de facto para APIs web.",
+      "when": "CRUD, integraciones, mobile apps, microservicios",
+      "badge": "Recomendado"
+    },
+    {
+      "type": "GraphQL",
+      "desc": "Un solo endpoint; el cliente pide exactamente los campos que necesita. Schema tipado.",
+      "when": "Frontends complejos con datos anidados, apps móviles con ancho de banda limitado",
+      "badge": "Flexible"
+    },
+    {
+      "type": "WebSocket",
+      "desc": "Conexión bidireccional persistente. El servidor puede enviar datos sin que el cliente pregunte.",
+      "when": "Chat en tiempo real, notificaciones live, dashboards con updates constantes",
+      "badge": "Tiempo real"
+    }
+  ],
+  "principles": [
+    {
+      "name": "Stateless",
+      "desc": "Cada petición lleva toda la info necesaria. El servidor no guarda sesión entre requests. La autenticación va en headers o tokens, no en memoria del servidor."
+    },
+    {
+      "name": "Cliente-servidor",
+      "desc": "Separación clara: el cliente (React, chatbot, móvil) pide; el servidor (Express) responde. Evolucionan de forma independiente."
+    },
+    {
+      "name": "Cacheable",
+      "desc": "Las respuestas pueden marcarse como cacheables (headers Cache-Control, ETag). Reduce carga en peticiones repetidas."
+    },
+    {
+      "name": "Interfaz uniforme",
+      "desc": "Mismos métodos HTTP, mismos formatos JSON, mismas convenciones de URLs para todos los recursos. Predecible y documentable."
+    },
+    {
+      "name": "Sistema en capas",
+      "desc": "Proxies, load balancers, CDNs y firewalls pueden estar entre cliente y servidor sin que el cliente lo note."
+    },
+    {
+      "name": "Código bajo demanda",
+      "desc": "Opcional: el servidor puede enviar scripts ejecutables al cliente (poco usado en APIs JSON modernas)."
+    }
+  ],
+  "httpMethods": [
+    {
+      "method": "GET",
+      "use": "Leer un recurso o listar colección",
+      "idempotent": "Sí",
+      "body": "No",
+      "example": "GET /habitaciones — listar todas"
+    },
+    {
+      "method": "POST",
+      "use": "Crear un recurso nuevo",
+      "idempotent": "No",
+      "body": "Sí (JSON)",
+      "example": "POST /reservas — crear reserva"
+    },
+    {
+      "method": "PATCH",
+      "use": "Actualizar parcialmente un recurso existente",
+      "idempotent": "Sí",
+      "body": "Sí (JSON parcial)",
+      "example": "PATCH /reservas/42 — cambiar estado a confirmada"
+    },
+    {
+      "method": "DELETE",
+      "use": "Eliminar un recurso",
+      "idempotent": "Sí",
+      "body": "Opcional",
+      "example": "DELETE /reservas/42 — cancelar reserva"
+    }
+  ],
+  "dataLocations": [
+    {
+      "where": "URL param (:id)",
+      "rule": "Identifica UN recurso concreto en la ruta",
+      "example": "GET /habitaciones/:id/disponibilidad",
+      "express": "req.params.id",
+      "gold": "Siempre en la ruta, nunca en query para identificar recursos"
+    },
+    {
+      "where": "Query param (?key=val)",
+      "rule": "Filtros, paginación, fechas, búsqueda",
+      "example": "GET /disponibilidad?entrada=2026-06-10&salida=2026-06-15",
+      "express": "req.query.entrada",
+      "gold": "Opcional, múltiples pares clave=valor"
+    },
+    {
+      "where": "Body JSON",
+      "rule": "Datos a crear o modificar (POST/PATCH)",
+      "example": "{ \"cliente_id\": 3, \"habitacion_id\": 7, \"entrada\": \"2026-06-10\" }",
+      "express": "req.body",
+      "gold": "Solo en POST/PATCH/PUT — nunca en GET"
+    },
+    {
+      "where": "Headers",
+      "rule": "Metadatos: auth, content-type, API keys",
+      "example": "Authorization: Bearer sk-abc123",
+      "express": "req.headers.authorization",
+      "gold": "Credenciales SIEMPRE aquí, nunca en URL ni body público"
+    }
+  ],
+  "httpCodes": [
+    {
+      "code": "200",
+      "cls": "2xx",
+      "desc": "OK — petición exitosa con cuerpo de respuesta",
+      "example": "GET /habitaciones → lista de habitaciones"
+    },
+    {
+      "code": "201",
+      "cls": "2xx",
+      "desc": "Created — recurso creado correctamente",
+      "example": "POST /reservas → reserva nueva con id"
+    },
+    {
+      "code": "204",
+      "cls": "2xx",
+      "desc": "No Content — éxito sin cuerpo (DELETE, PATCH sin respuesta)",
+      "example": "DELETE /reservas/42 → vacío"
+    },
+    {
+      "code": "301",
+      "cls": "3xx",
+      "desc": "Moved Permanently — URL cambió de forma permanente",
+      "example": "Redirigir /api/v1 a /api/v2"
+    },
+    {
+      "code": "304",
+      "cls": "3xx",
+      "desc": "Not Modified — caché del cliente sigue válida",
+      "example": "GET con If-None-Match → sin reenviar JSON"
+    },
+    {
+      "code": "400",
+      "cls": "4xx",
+      "desc": "Bad Request — JSON malformado o campos inválidos",
+      "example": "POST /reservas sin fecha de entrada"
+    },
+    {
+      "code": "401",
+      "cls": "4xx",
+      "desc": "Unauthorized — falta API key o token inválido",
+      "example": "GET /disponibilidad sin Authorization header"
+    },
+    {
+      "code": "403",
+      "cls": "4xx",
+      "desc": "Forbidden — autenticado pero sin permiso",
+      "example": "DELETE /reservas de otro cliente"
+    },
+    {
+      "code": "404",
+      "cls": "4xx",
+      "desc": "Not Found — recurso no existe",
+      "example": "GET /habitaciones/999"
+    },
+    {
+      "code": "409",
+      "cls": "4xx",
+      "desc": "Conflict — estado incompatible con la operación",
+      "example": "Reservar habitación ya ocupada en esas fechas"
+    },
+    {
+      "code": "422",
+      "cls": "4xx",
+      "desc": "Unprocessable Entity — sintaxis OK pero lógica inválida",
+      "example": "salida anterior a entrada"
+    },
+    {
+      "code": "429",
+      "cls": "4xx",
+      "desc": "Too Many Requests — rate limit superado",
+      "example": "Chatbot hace 100 req/s al endpoint"
+    },
+    {
+      "code": "500",
+      "cls": "5xx",
+      "desc": "Internal Server Error — bug o fallo inesperado en el servidor",
+      "example": "MySQL caído, excepción no capturada"
+    },
+    {
+      "code": "503",
+      "cls": "5xx",
+      "desc": "Service Unavailable — servidor temporalmente no disponible",
+      "example": "Pool de conexiones MySQL agotado"
+    }
+  ],
+  "restCompare": [
+    {
+      "bad": "GET /getHabitaciones",
+      "good": "GET /habitaciones",
+      "why": "El verbo va en el método HTTP, no en la URL"
+    },
+    {
+      "bad": "POST /crearReserva",
+      "good": "POST /reservas",
+      "why": "La URL nombra el recurso (sustantivo), no la acción"
+    },
+    {
+      "bad": "GET /deleteReserva/42",
+      "good": "DELETE /reservas/42",
+      "why": "DELETE es el método; la URL solo identifica el recurso"
+    },
+    {
+      "bad": "POST /habitaciones/5/update",
+      "good": "PATCH /habitaciones/5",
+      "why": "Actualizar = PATCH sobre el recurso, no sub-ruta de acción"
+    }
+  ],
+  "mysqlTables": [
+    {
+      "name": "habitaciones",
+      "fields": [
+        {
+          "col": "id",
+          "type": "INT",
+          "note": "PK, AUTO_INCREMENT"
+        },
+        {
+          "col": "nombre",
+          "type": "VARCHAR(100)",
+          "note": "Ej: \"Suite Deluxe\""
+        },
+        {
+          "col": "capacidad",
+          "type": "INT",
+          "note": "Número de huéspedes"
+        },
+        {
+          "col": "precio_noche",
+          "type": "DECIMAL(10,2)",
+          "note": "Precio por noche"
+        },
+        {
+          "col": "activa",
+          "type": "BOOLEAN",
+          "note": "Default TRUE"
+        }
+      ]
+    },
+    {
+      "name": "clientes",
+      "fields": [
+        {
+          "col": "id",
+          "type": "INT",
+          "note": "PK, AUTO_INCREMENT"
+        },
+        {
+          "col": "nombre",
+          "type": "VARCHAR(150)",
+          "note": ""
+        },
+        {
+          "col": "email",
+          "type": "VARCHAR(255)",
+          "note": "UNIQUE"
+        },
+        {
+          "col": "telefono",
+          "type": "VARCHAR(20)",
+          "note": ""
+        },
+        {
+          "col": "created_at",
+          "type": "TIMESTAMP",
+          "note": "DEFAULT CURRENT_TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "name": "reservas",
+      "fields": [
+        {
+          "col": "id",
+          "type": "INT",
+          "note": "PK, AUTO_INCREMENT"
+        },
+        {
+          "col": "habitacion_id",
+          "type": "INT",
+          "note": "FK → habitaciones.id"
+        },
+        {
+          "col": "cliente_id",
+          "type": "INT",
+          "note": "FK → clientes.id"
+        },
+        {
+          "col": "fecha_entrada",
+          "type": "DATE",
+          "note": ""
+        },
+        {
+          "col": "fecha_salida",
+          "type": "DATE",
+          "note": ""
+        },
+        {
+          "col": "estado",
+          "type": "ENUM",
+          "note": "pendiente | confirmada | pdf_enviado | pdf_firmado | cancelada"
+        },
+        {
+          "col": "created_at",
+          "type": "TIMESTAMP",
+          "note": "DEFAULT CURRENT_TIMESTAMP"
+        }
+      ]
+    }
+  ],
+  "reservaEstados": [
+    {
+      "estado": "pendiente",
+      "desc": "Reserva creada, aún no confirmada por el hotel",
+      "color": "#b5870a"
+    },
+    {
+      "estado": "confirmada",
+      "desc": "Hotel acepta la reserva",
+      "color": "#1a8a52"
+    },
+    {
+      "estado": "pdf_enviado",
+      "desc": "Contrato PDF enviado al cliente por email",
+      "color": "#1a6fbe"
+    },
+    {
+      "estado": "pdf_firmado",
+      "desc": "Cliente firmó el documento — reserva cerrada",
+      "color": "#7040c0"
+    },
+    {
+      "estado": "cancelada",
+      "desc": "Reserva anulada (por cliente o hotel)",
+      "color": "#c02060"
+    }
+  ]
+}

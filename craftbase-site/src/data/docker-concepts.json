@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Contenedor (Container)",
+    "type": "Docker fundamental",
+    "color": "#0a6b72",
+    "def": "Unidad de software empaquetada con el código, runtime y dependencias. Aislado del sistema host pero más ligero que una VM. Cada servicio (Nginx, Express, Redis) corre en su propio contenedor.",
+    "example": "docker run -d nginx → lanza un contenedor Nginx aislado. El host no necesita tener Nginx instalado.",
+    "warn": ""
+  },
+  {
+    "name": "Docker Compose",
+    "type": "Orquestación local",
+    "color": "#0a6b72",
+    "def": "Herramienta para definir y arrancar múltiples contenedores con un solo archivo (docker-compose.yml). Define servicios, redes internas, volúmenes y variables de entorno. Ideal para desarrollo y proyectos pequeños.",
+    "example": "docker-compose up -d → arranca Nginx + Express + Redis todos juntos con su red interna configurada.",
+    "warn": ""
+  },
+  {
+    "name": "Imagen (Image)",
+    "type": "Docker fundamental",
+    "color": "#0a6b72",
+    "def": "Plantilla inmutable de la que se crean los contenedores. Se construye desde un Dockerfile. Una imagen de Node.js incluye el sistema base, Node, npm y tu código. El contenedor es una instancia en ejecución de una imagen.",
+    "example": "FROM node:20-alpine → COPY . . → RUN npm install → CMD [\"node\",\"index.js\"] → este Dockerfile define la imagen.",
+    "warn": ""
+  },
+  {
+    "name": "Red interna Docker",
+    "type": "Seguridad de red",
+    "color": "#0a6b72",
+    "def": "Docker Compose crea una red privada entre los contenedores. Solo Nginx es accesible desde fuera. El contenedor Express solo es alcanzable desde dentro de esa red — jamás desde internet directamente.",
+    "example": "Nginx hace proxy_pass http://express:3000. \"express\" es el nombre del servicio — resuelve solo dentro de la red Docker.",
+    "warn": ""
+  },
+  {
+    "name": "Nginx como Reverse Proxy",
+    "type": "Servidor web / Proxy",
+    "color": "#0a6b72",
+    "def": "Nginx recibe todas las peticiones públicas (HTTPS). Las que son archivos estáticos (/, /assets) las sirve directamente desde disco. Las que empiezan por /api/* las reenvía (proxy_pass) al contenedor Express interno.",
+    "example": "location /api/ { proxy_pass http://express:3000; } location / { root /usr/share/nginx/html; try_files $uri $uri/ /index.html; }",
+    "warn": ""
+  },
+  {
+    "name": "Variables de entorno (.env)",
+    "type": "Seguridad de credenciales",
+    "color": "#f5a97f",
+    "def": "Forma de pasar configuración sensible (tokens de API, contraseñas de DB) al contenedor sin hardcodearla en el código. Se definen en un archivo .env que nunca se sube a Git (.gitignore).",
+    "example": "En docker-compose.yml: environment: - HUBSPOT_API_KEY=${HUBSPOT_API_KEY}. El contenedor lo lee como process.env.HUBSPOT_API_KEY.",
+    "warn": "Nunca hagas console.log de variables de entorno en producción. Nunca las expongas en el frontend — el browser es público."
+  },
+  {
+    "name": "Volumen (Volume)",
+    "type": "Persistencia de datos",
+    "color": "#0a6b72",
+    "def": "Mecanismo para persistir datos generados por un contenedor. Sin volumen, los datos desaparecen cuando el contenedor se reinicia. Las bases de datos siempre deben usar volúmenes.",
+    "example": "volumes: - ./data/mysql:/var/lib/mysql → los datos de MySQL persisten en tu host aunque el contenedor se destruya y recree.",
+    "warn": ""
+  }
+]

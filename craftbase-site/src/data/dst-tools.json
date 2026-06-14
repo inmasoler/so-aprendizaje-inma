@@ -1,0 +1,155 @@
+[
+  {
+    "id": "csspeeper",
+    "name": "CSS Peeper",
+    "url": "https://csspeeper.com",
+    "type": "Extensión",
+    "cat": "inspeccion",
+    "emoji": "🔍",
+    "desc": "Extensión de Chrome usada por +500k diseñadores y devs. Inspecciona los estilos CSS de cualquier web con un clic: colores, tipografías, espaciados, assets. Exporta paletas completas sin abrir el inspector del browser."
+  },
+  {
+    "id": "cssstats",
+    "name": "CSS Stats",
+    "url": "https://cssstats.com",
+    "type": "Web App",
+    "cat": "inspeccion",
+    "emoji": "📊",
+    "desc": "Analiza el CSS de cualquier URL y devuelve estadísticas detalladas: número de colores únicos, fuentes, selectores, especificidad, tamaño total. Ideal para auditar la consistencia visual de un proyecto antes de crear un Design System."
+  },
+  {
+    "id": "color-extractly",
+    "name": "Color Extractly · Design Token Studio",
+    "url": "https://www.figma.com/community/plugin/1352239985929481996/color-extractly-design-token-studio",
+    "type": "Plugin Figma",
+    "cat": "color",
+    "emoji": "🎨",
+    "desc": "Plugin de Figma para extraer colores de cualquier diseño y exportarlos directamente como Design Tokens. Compatible con Token Studio. Acelera enormemente la creación de la paleta de color del sistema desde archivos Figma existentes."
+  },
+  {
+    "id": "figma-color-ramp-generator",
+    "name": "Color Ramp Generator",
+    "url": "https://www.figma.com/community/search?resource_type=plugins&query=Color%20Ramp%20Generator",
+    "type": "Plugin Figma",
+    "cat": "color",
+    "emoji": "🌈",
+    "desc": "Plugin de Figma para generar rampas de color (50-900) de forma consistente y validar contraste básico para decisiones de accesibilidad en UI."
+  },
+  {
+    "id": "ok-color",
+    "name": "OK Color",
+    "url": "https://www.figma.com/community/search?resource_type=plugins&query=OK%20Color",
+    "type": "Plugin Figma",
+    "cat": "color",
+    "emoji": "🎯",
+    "desc": "Plugin de Figma para trabajar color en espacios perceptuales tipo OKLCH y construir paletas/rampas más uniformes con mejor control de contraste y accesibilidad."
+  },
+  {
+    "id": "storybook",
+    "name": "Storybook",
+    "url": "https://storybook.js.org",
+    "type": "Herramienta Open Source",
+    "cat": "documentacion",
+    "emoji": "📚",
+    "desc": "Herramienta estándar para desarrollar y documentar componentes UI de forma aislada. Cada componente tiene \"stories\" que muestran todos sus estados posibles (default, hover, disabled, loading, etc.). Incluye addons para a11y, contraste, responsividad y tests visuales."
+  },
+  {
+    "id": "figma-library",
+    "name": "Figma Component Library",
+    "url": "https://www.figma.com/design/",
+    "type": "Feature Figma",
+    "cat": "componentes",
+    "emoji": "🧩",
+    "desc": "Sistema de componentes compartidos en Figma (main components + instances). Permite sincronizar diseños entre archivos. Versioning de componentes. Base visual para el Design System — documentación viviente de cómo se ven y varían los componentes."
+  },
+  {
+    "id": "tokens-studio",
+    "name": "Tokens Studio (Design Tokens)",
+    "url": "https://tokens.studio",
+    "type": "Plugin Figma",
+    "cat": "tokens",
+    "emoji": "🪙",
+    "desc": "Plugin de Figma para gestionar Design Tokens directamente en Figma (colores, tipografía, espaciado). Exporta tokens en múltiples formatos (CSS, JSON, Tailwind, iOS, Android). Sincronización bidireccional con repos. La herramienta estándar para token management en Figma."
+  },
+  {
+    "id": "chromatic",
+    "name": "Chromatic",
+    "url": "https://chromatic.com",
+    "type": "Servicio SaaS",
+    "cat": "documentacion",
+    "emoji": "🎨",
+    "desc": "Servicio de testing visual para Storybook. Detecta cambios visuales automáticamente en cada cambio de código. Previene regresiones visuales en componentes. Integración directa con CI/CD. Esencial para mantener consistencia del Design System en el tiempo."
+  },
+  {
+    "id": "supernova",
+    "name": "Supernova",
+    "url": "https://supernova.io",
+    "type": "Plataforma SaaS",
+    "cat": "documentacion",
+    "emoji": "⚡",
+    "desc": "Plataforma de documentación de Design Systems con generación automática de documentación desde Figma. Crea sitios bonitos de documentación, mantiene sincronización Figma-Code, genera código para componentes, etc. Alternativa completa a build manual de docs."
+  },
+  {
+    "id": "zeroheight",
+    "name": "Zeroheight",
+    "url": "https://zeroheight.com",
+    "type": "Plataforma SaaS",
+    "cat": "documentacion",
+    "emoji": "📖",
+    "desc": "Plataforma de documentación de Design Systems optimizada para equipos grandes. Documentación visual + código ejemplificado + integración Figma. Gestión de versiones del DS. Usada por Spotify, Slack, IBM. Ideal si tienes presupuesto para herramienta dedicada."
+  },
+  {
+    "id": "radix-ui",
+    "name": "Radix UI",
+    "url": "https://www.radix-ui.com",
+    "type": "Component Library Open Source",
+    "cat": "componentes",
+    "emoji": "🧩",
+    "desc": "Librería de componentes headless para React. Proporciona lógica, accesibilidad (ARIA, keyboard nav) y comportamiento, sin estilos. Tú aplicas tu propio CSS. Usado como base para muchos Design Systems. Documentación impecable."
+  },
+  {
+    "id": "shadcn-ui",
+    "name": "shadcn/ui",
+    "url": "https://ui.shadcn.com",
+    "type": "Component Library Open Source",
+    "cat": "componentes",
+    "emoji": "🧩",
+    "desc": "Colección de componentes copiables (copy-paste) basados en Radix UI. No es un paquete npm sino código que controlas totalmente en tu repo. Ideal para proyectos que quieren customización máxima desde el inicio. Integrada con Tailwind y Figma Variables."
+  },
+  {
+    "id": "figma-variables",
+    "name": "Figma Variables",
+    "url": "https://www.figma.com/design/",
+    "type": "Feature Figma",
+    "cat": "tokens",
+    "emoji": "🪙",
+    "desc": "Sistema nativo de variables en Figma (sin plugins). Soporta colores, números, strings, booleanos. Vinculación bidireccional con componentes. Modos para themes (light/dark, brand A/B). Sintaxis export-to-code con APIs oficiales. El futuro del token management en Figma."
+  },
+  {
+    "id": "style-dictionary",
+    "name": "Style Dictionary",
+    "url": "https://amzn.github.io/style-dictionary",
+    "type": "CLI",
+    "cat": "tokens",
+    "emoji": "🧰",
+    "desc": "Herramienta open source de Amazon para transformar Design Tokens en artefactos por plataforma (CSS, iOS, Android, etc.). Pieza central para pipelines de tokenización multimarca y publicación automatizada."
+  },
+  {
+    "id": "shoelace",
+    "name": "Shoelace (Web Components)",
+    "url": "https://shoelace.style",
+    "type": "Component Library Open Source",
+    "cat": "componentes",
+    "emoji": "🧩",
+    "desc": "Biblioteca de componentes basada en Web Components, agnóstica de framework. Muy útil para equipos multi-stack que necesitan una base común de componentes reutilizables en React, Vue, Angular o vanilla."
+  },
+  {
+    "id": "open-props",
+    "name": "Open Props",
+    "url": "https://open-props.style",
+    "type": "Librería",
+    "cat": "tokens",
+    "emoji": "🪙",
+    "desc": "Colección de variables CSS predefinidas para color, tipografía, spacing y motion. Útil como referencia de naming y escalas al bootstrapear un sistema de tokens antes de personalizarlo."
+  }
+]

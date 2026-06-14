@@ -1,0 +1,17 @@
+---
+title: Seguridad
+sidebar_position: 6
+visibility: public
+---
+
+import CraftCallout from '@site/src/components/CraftCallout';
+import {CraftSecurityGrid} from '@site/src/components/CraftDepSections';
+import items from '@site/src/data/security-items.json';
+
+# Seguridad
+
+<CraftCallout variant="warn">
+  SSL, SSH, WAF y backups no son opcionales en producción. Esta lista recoge los controles mínimos antes de publicar.
+</CraftCallout>
+
+<CraftSecurityGrid items={items} />

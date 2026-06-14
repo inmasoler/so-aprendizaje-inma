@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "aria-patterns": {
+      "source": "weAAAre/a11y-agents-kit",
+      "sourceType": "github",
+      "skillPath": "skills/aria-patterns/SKILL.md",
+      "computedHash": "57e999414dc1bbbd5136f8e1e5d417faf49c1dc9c938128bb938df30a31ef8b2"
+    },
+    "chrome-extensions": {
+      "source": "GoogleChrome/modern-web-guidance",
+      "sourceType": "github",
+      "skillPath": "skills/chrome-extensions/SKILL.md",
+      "computedHash": "ee82feb42b8858b287f449600438ee54a4f900860738ce2aa0ef1be831973480"
+    },
+    "modern-web-guidance": {
+      "source": "GoogleChrome/modern-web-guidance",
+      "sourceType": "github",
+      "skillPath": "skills/modern-web-guidance/SKILL.md",
+      "computedHash": "e0d9a1e43903940daf76e0ae454efafaf149dd0c7274ec363ed8370fa33e529e"
+    }
+  }
+}

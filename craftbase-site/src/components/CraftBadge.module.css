@@ -1,0 +1,41 @@
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--craftbase-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.live {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.wip {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.plan {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+[data-theme='dark'] .live {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+[data-theme='dark'] .wip {
+  background: #78350f;
+  color: #fde68a;
+}
+
+[data-theme='dark'] .plan {
+  background: #312e81;
+  color: #c7d2fe;
+}

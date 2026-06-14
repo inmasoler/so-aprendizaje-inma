@@ -84,29 +84,43 @@ const GUIDE_RULES = [
 // DATA: GLOSSARY
 // ═══════════════════════════════════════
 const GLOSSARY = [
-  {term:'SSR',             cat:'rendering',     def:'Server-Side Rendering. La página HTML se genera en el servidor en cada petición. El usuario recibe HTML listo, no un JS vacío que luego se rellena. Mejora SEO y primera carga visible.', example:'Next.js con getServerSideProps genera una página de producto en el servidor antes de enviarla al browser.'},
-  {term:'SSG',             cat:'rendering',     def:'Static Site Generation. Las páginas HTML se generan en el momento del build, no en cada petición. Velocísimo y barato de servir. Ideal cuando el contenido no cambia por usuario.', example:'Astro genera tu blog completo en HTML durante el deploy. No hay servidor procesando cada visita.'},
-  {term:'CSR',             cat:'rendering',     def:'Client-Side Rendering. El servidor envía un HTML casi vacío + un JS grande. El browser ejecuta el JS y construye la página. Peor SEO y primera carga más lenta, pero muy reactivo tras cargar.', example:'Una SPA de React pura (Create React App) es CSR: el HTML inicial tiene un solo div vacío.'},
-  {term:'ISR',             cat:'rendering',     def:'Incremental Static Regeneration. Híbrido: genera páginas estáticas pero las regenera en background cada N segundos. Combina velocidad de SSG con frescura de SSR.', example:'Tu tienda en Next.js regenera la página de producto cada 60 segundos aunque sirva HTML estático en cache.'},
-  {term:'Hydration',       cat:'rendering',     def:'El proceso de "dar vida" al HTML estático: el JS descargado conecta los event handlers y el estado a la estructura HTML ya existente. Si falla, el HTML se ve pero los botones no hacen nada.', example:'Astro envía HTML puro. Cuando el usuario hace scroll y aparece un slider, Astro hidrata solo ese componente.'},
-  {term:'Islands Architecture',cat:'rendering',def:'Patrón donde la mayoría de la página es HTML estático y solo pequeñas "islas" son componentes interactivos que se hidratan. Minimiza el JS enviado al cliente.', example:'Astro usa este patrón: tu navbar y footer son HTML puro, pero el carrusel es una isla React que carga solo cuando es visible.'},
-  {term:'API Endpoint',    cat:'arquitectura',  def:'Una URL específica que tu servidor expone para recibir o devolver datos. Como una ventanilla: tú preguntas a /api/productos y el servidor te devuelve la lista en JSON.', example:'GET /api/users/123 devuelve el usuario con id 123. POST /api/users crea uno nuevo.'},
-  {term:'REST',            cat:'arquitectura',  def:'Estilo de diseño de APIs usando HTTP (GET, POST, PUT, DELETE) con URLs que representan recursos. El estándar más común para comunicar frontend y backend.', example:'GET /api/posts → lista posts. POST /api/posts → crea post. DELETE /api/posts/5 → borra post 5.'},
-  {term:'GraphQL',         cat:'arquitectura',  def:'Alternativa a REST donde el cliente especifica exactamente qué datos quiere en una sola petición. Evita over-fetching (recibir más datos de los necesarios) y under-fetching.', example:'En REST necesitarías 3 llamadas para usuario + posts + comentarios. En GraphQL una sola query trae exactamente lo que pides.'},
-  {term:'Middleware',      cat:'arquitectura',  def:'Código que se ejecuta entre que llega una petición al servidor y llega a tu lógica principal. Útil para auth, logging, validación o transformar datos en tránsito.', example:'En Express: el middleware de auth verifica el token JWT antes de que la petición llegue a tu función que devuelve los datos del usuario.'},
-  {term:'State Management',cat:'datos',         def:'Sistema para gestionar el estado (datos que cambian) de tu app. Cuando el estado es complejo o compartido entre muchos componentes, necesitas una solución dedicada como Redux, Zustand o Pinia.', example:'Un carrito de compra que debe estar disponible en el header, la página de producto y el checkout necesita state management.'},
-  {term:'Fetch / Data Fetching',cat:'datos',    def:'El proceso de obtener datos de una API externa o propia. En el frontend se hace con fetch(), axios o librerías como React Query / TanStack Query que añaden cache y estados de carga.', example:'Al cargar tu perfil, el frontend hace fetch(\'/api/me\') y mientras espera muestra un spinner.'},
-  {term:'ORM',             cat:'datos',         def:'Object-Relational Mapper. Librería que te permite interactuar con la base de datos usando código en lugar de SQL puro. Convierte filas de tabla en objetos de tu lenguaje.', example:'Con Prisma (ORM): const users = await prisma.user.findMany() en lugar de SELECT * FROM users;'},
-  {term:'Token / JWT',     cat:'datos',         def:'JSON Web Token. Un string codificado que contiene información del usuario (id, rol, expiración) y viaja en cada petición para demostrar que estás autenticado sin consultar la DB cada vez.', example:'Tras hacer login, el servidor te da un JWT. Lo guardas en localStorage y lo mandas en el header de cada petición: Authorization: Bearer <token>'},
-  {term:'Build',           cat:'deploy',        def:'El proceso de transformar tu código fuente (TypeScript, JSX, SCSS) en archivos optimizados que el browser puede entender (JS, CSS, HTML). Incluye minificación, tree-shaking y optimización de imágenes.', example:'npm run build convierte tus archivos .jsx en un directorio /dist con JS minimizado y con hash en el nombre para cache-busting.'},
-  {term:'CI/CD',           cat:'deploy',        def:'Continuous Integration / Continuous Deployment. Sistema que automáticamente testea y despliega tu código cada vez que haces push. Si los tests pasan, va a producción solo.', example:'Cada vez que haces git push, GitHub Actions ejecuta los tests y si pasan, Vercel despliega automáticamente en 2 minutos.'},
-  {term:'CDN',             cat:'deploy',        def:'Content Delivery Network. Red de servidores distribuidos por el mundo que sirven tus archivos estáticos desde el servidor más cercano al usuario. Reduce latencia enormemente.', example:'Un usuario en Tokio que visita tu web europea recibe las imágenes y CSS desde un servidor CDN en Asia, no desde tu servidor en Frankfurt.'},
-  {term:'Edge Functions',  cat:'deploy',        def:'Funciones que se ejecutan en los nodos del CDN, no en un servidor central. Latencia casi cero porque se ejecutan "cerca" del usuario. Perfectas para auth, personalizaciones y A/B testing.', example:'Vercel Edge Functions: la lógica de redirección según el país del usuario se ejecuta en el nodo CDN más cercano, no en tu servidor de Frankfurt.'},
-  {term:'Design Token',    cat:'ds',            def:'Variable que almacena un valor de diseño (color, tamaño, espaciado, tipografía) de forma nombrada y reutilizable. Son la fuente de verdad que conecta Figma con el código.', example:'El token --color-primary: #0055FF en CSS corresponde al "Primary/500" en Figma. Si cambia en Figma, se actualiza en código automáticamente.'},
-  {term:'Component Library',cat:'ds',           def:'Colección de componentes UI reutilizables (botones, inputs, modales) con su código y documentación. Es la implementación en código del Design System.', example:'shadcn/ui es una component library: instalas el paquete y tienes Button, Dialog, Input listos para usar con tokens ya configurados.'},
-  {term:'Headless Component',cat:'ds',          def:'Componente que provee la lógica y accesibilidad (ARIA, keyboard nav, estados) pero sin estilos visuales. Tú añades el CSS. Máxima flexibilidad visual manteniendo la funcionalidad.', example:'Radix UI provee un Headless Dialog: gestiona el foco, el escape, el overlay y el ARIA, pero tú le pones los estilos que quieras.'},
-  {term:'Storybook',       cat:'ds',            def:'Herramienta para desarrollar y documentar componentes UI de forma aislada. Cada componente tiene sus "stories" que muestran todos sus estados posibles. Es la UI del Design System.', example:'En Storybook puedes ver tu Button en estado default, hover, disabled, loading y con icono, todo sin abrir la app real.'},
-  {term:'OKLCH',           cat:'ds',            def:'Modelo de color perceptual: L (lightness), C (chroma) y H (hue). En muchos flujos de diseño el chroma se gestiona como porcentaje relativo para mantener una intensidad coherente entre tonos y estados.', example:'En una rampa: mismo hue, L de 95 a 25 y C ajustado por porcentaje según cada paso para conservar contraste visual.'},
+  {term:'SSR',             cat:'rendering',     def:'El HTML se crea en el server en cada visita. La página llega lista. No hace falta esperar al JS. Ayuda al SEO.', example:'Next.js con getServerSideProps crea la página en el server antes de enviarla.'},
+  {term:'SSG',             cat:'rendering',     def:'El HTML se crea al hacer build, no en cada visita. Es muy rápido y barato de servir. Ideal si el contenido es igual para todos.', example:'Astro genera tu blog en HTML al desplegar. No hay server por visita.'},
+  {term:'CSR',             cat:'rendering',     def:'El server manda HTML casi vacío y mucho JS. El navegador monta la página. Al inicio carga peor, pero luego es muy ágil.', example:'Una SPA de React pura: el HTML inicial solo tiene un div vacío.'},
+  {term:'ISR',             cat:'rendering',     def:'Sirve HTML estático y lo renueva en segundo plano cada N segundos. Une velocidad y datos frescos.', example:'Next.js sirve caché y renueva la ficha de producto cada 60 segundos.'},
+  {term:'Hydration',       cat:'rendering',     def:'El JS engancha clics y estado al HTML que ya tienes. Si falla, se ve la web pero los botones no van.', example:'Astro manda HTML puro y hidrata solo el slider al hacer scroll.'},
+  {term:'Islands Architecture',cat:'rendering',def:'Casi todo es HTML fijo. Solo trozos pequeños son interactivos. Así envías poco JS.', example:'Navbar en HTML puro; el carrusel es una isla React al ser visible.'},
+  {term:'API Endpoint',    cat:'arquitectura',  def:'URL del server que da o recibe datos. Pides /api/productos y recibes JSON.', example:'GET /api/users/123 devuelve el user 123. POST /api/users crea uno.'},
+  {term:'REST',            cat:'arquitectura',  def:'API con GET, POST, PUT y DELETE. Cada URL es un recurso. Es el estilo más usado.', example:'GET /api/posts lista. POST /api/posts crea. DELETE /api/posts/5 borra.'},
+  {term:'GraphQL',         cat:'arquitectura',  def:'Pides solo los campos que necesitas en una llamada. Evitas traer datos de más.', example:'REST haría 3 llamadas; GraphQL trae user, posts y comentarios en una.'},
+  {term:'Middleware',      cat:'arquitectura',  def:'Código entre la petición y tu lógica. Sirve para login, logs o validar.', example:'En Express revisa el token antes de devolver datos del user.'},
+  {term:'State Management',cat:'datos',         def:'Guarda datos que cambian en la app. Si muchos componentes los comparten, usa Redux, Zustand o Pinia.', example:'Un carrito en header, producto y pago necesita state management.'},
+  {term:'Fetch / Data Fetching',cat:'datos',    def:'Pedir datos a una API con fetch o axios. React Query añade caché y spinners.', example:'Al abrir perfil: fetch(\'/api/me\') y spinner mientras carga.'},
+  {term:'ORM',             cat:'datos',         def:'Pasa de tablas SQL a objetos en código. No escribes SQL a mano en cada query.', example:'Prisma: await prisma.user.findMany() en vez de SELECT * FROM users.'},
+  {term:'Token / JWT',     cat:'datos',         def:'Texto firmado con id, rol y caducidad del user. Va en cada petición para probar login.', example:'Tras login guardas el JWT en Authorization: Bearer <token>.'},
+  {term:'Build',           cat:'deploy',        def:'Pasa tu código a archivos listos para el navegador. Minifica y empaqueta assets.', example:'npm run build crea /dist con JS pequeño y nombres con hash.'},
+  {term:'CI/CD',           cat:'deploy',        def:'Tests y deploy solos en cada push. Si pasan los tests, sube a producción.', example:'Push a GitHub → tests → Vercel despliega si todo va bien.'},
+  {term:'CDN',             cat:'deploy',        def:'Red de servers que sirve archivos cerca del user. Baja la latencia.', example:'Un user en Tokio recibe CSS desde Asia, no desde Europa.'},
+  {term:'Edge Functions',  cat:'deploy',        def:'Código que corre en nodos del CDN, cerca del user. Sirve para login o tests A/B.', example:'Redirigir por país en Vercel edge, no en tu server central.'},
+  {term:'Design Token',    cat:'ds',            def:'Nombre para un valor de diseño: color, tamaño o espacio. Une Figma y código.', example:'--color-primary: #0055FF en CSS = Primary/500 en Figma.'},
+  {term:'Component Library',cat:'ds',           def:'Piezas UI listas: botones, inputs, modales. Es el design system en código.', example:'shadcn/ui trae Button, Dialog e Input con tokens listos.'},
+  {term:'Headless Component',cat:'ds',          def:'Da lógica y a11y sin CSS. Tú pones los estilos.', example:'Radix Dialog maneja foco y escape; tú defines el look.'},
+  {term:'Storybook',       cat:'ds',            def:'Prueba componentes solos. Ves todos los estados sin abrir la app.', example:'Button en default, hover, disabled y loading en Storybook.'},
+  {term:'OKLCH',           cat:'ds',            def:'Forma de color con luz, croma y tono. Ayuda a hacer rampas uniformes.', example:'Misma tonalidad: L de 95 a 25 y croma por paso.'},
+  {term:'Node.js',         cat:'ecosistema',    def:'Corre JS fuera del navegador. Scripts, servers, builds y MCPs. Cada repo puede pedir una versión.', example:'node script.js corre un file. npm run build compila Astro.'},
+  {term:'npm',             cat:'ecosistema',    def:'Instala libs y corre scripts de package.json. Viene con Node.', example:'npm install express añade Express. npm run dev arranca dev.'},
+  {term:'npx',             cat:'ecosistema',    def:'Corre un paquete sin instalarlo global. Cursor lo usa para MCPs.', example:'npx -y @weaaare/mcp-a11y-color arranca el MCP de contraste.'},
+  {term:'nvm',             cat:'ecosistema',    def:'Cambia la versión de Node en tu PC. En Windows: nvm-windows.', example:'nvm install 24 && nvm use 24. .nvmrc dice la versión del repo.'},
+  {term:'pnpm',            cat:'ecosistema',    def:'Como npm pero más rápido y con menos disco. Muy usado en monorepos.', example:'pnpm install instala. pnpm dev = npm run dev con menos espacio.'},
+  {term:'package.json',    cat:'ecosistema',    def:'Lista nombre, deps y scripts del repo. npm lo lee primero.', example:'"dev": "astro dev" → npm run dev arranca Astro.'},
+  {term:'node_modules',    cat:'ecosistema',    def:'Carpeta con libs instaladas. No va a Git. Recrea con npm install.', example:'Clonas repo → npm install → node_modules listo.'},
+  {term:'.nvmrc',          cat:'ecosistema',    def:'Texto con la versión de Node del repo. nvm la usa al entrar.', example:'24.12.0 dentro → nvm use activa Node 24.'},
+  {term:'PATH',            cat:'ecosistema',    def:'Lista de carpetas donde el terminal busca programas. Sin PATH no encuentra node.', example:'mcp-npx.cmd usa Node de .tools/node/ sin tocar PATH global.'},
+  {term:'MCP',             cat:'ecosistema',    def:'Conecta tools (color, Figma, DB) al agente de Cursor. Cada MCP es un mini-server.', example:'.cursor/mcp.json define a11y-color y a11y-readability aquí.'},
+  {term:'Agent Skill',     cat:'ecosistema',    def:'SKILL.md con reglas que el agente lee al codificar. No es código ejecutable.', example:'aria-patterns en .agents/skills/ guía tabs y modales.'},
+  {term:'Git',             cat:'ecosistema',    def:'Guarda versiones del código y ramas. Flujo: add → commit → push.', example:'git add . → git commit -m "msg" → git push a GitHub.'},
+  {term:'Dependencia',     cat:'ecosistema',    def:'Lib que usa tu repo. dependencies = prod; devDependencies = solo dev.', example:'"express" en dependencies → npm install lo baja.'},
+  {term:'Registry (npm)',  cat:'ecosistema',    def:'Catálogo en npmjs.com. npm install y npx buscan ahí.', example:'@weaaare/mcp-a11y-color vive en npm bajo @weaaare.'},
 ];
 
 // ═══════════════════════════════════════
@@ -257,9 +271,9 @@ function renderFrameworks() {
 
 function renderGlossary() {
   const grid = document.getElementById('glossary-grid');
-  const catColors = {rendering:'rgba(126,184,247,0.15)',arquitectura:'rgba(168,240,200,0.15)',datos:'rgba(245,169,127,0.15)',deploy:'rgba(201,167,245,0.15)',ds:'rgba(126,184,247,0.12)'};
-  const catText = {rendering:'#1e40af',arquitectura:'#065f46',datos:'#9a3412',deploy:'#6d28d9',ds:'#1e40af'};
-  const catLabels = {rendering:'Renderizado',arquitectura:'Arquitectura',datos:'Datos y estado',deploy:'Deploy',ds:'Design Systems'};
+  const catColors = {rendering:'rgba(126,184,247,0.15)',arquitectura:'rgba(168,240,200,0.15)',datos:'rgba(245,169,127,0.15)',deploy:'rgba(201,167,245,0.15)',ds:'rgba(126,184,247,0.12)',ecosistema:'rgba(124,58,237,0.12)'};
+  const catText = {rendering:'#1e40af',arquitectura:'#065f46',datos:'#9a3412',deploy:'#6d28d9',ds:'#1e40af',ecosistema:'#5b21b6'};
+  const catLabels = {rendering:'Renderizado',arquitectura:'Arquitectura',datos:'Datos y estado',deploy:'Deploy',ds:'Design Systems',ecosistema:'Ecosistema dev'};
 
   GLOSSARY.forEach(g => {
     const item = document.createElement('div');
@@ -388,13 +402,93 @@ function renderRoadmap() {
 }
 
 // ═══════════════════════════════════════
-// TAB SWITCHING
+// TEXT SIZE TOGGLE (16px default → 18px large)
 // ═══════════════════════════════════════
+const TEXT_SIZE_KEY = 'craftbase-text-size';
+
+function _initTextSizeToggle() {
+  const btn = document.getElementById('text-size-toggle');
+  if (!btn) return;
+
+  function apply(large) {
+    document.documentElement.dataset.textSize = large ? 'large' : 'normal';
+    btn.setAttribute('aria-pressed', large ? 'true' : 'false');
+    btn.setAttribute('aria-label', large ? 'Desactivar texto más grande' : 'Activar texto más grande');
+    try {
+      localStorage.setItem(TEXT_SIZE_KEY, large ? 'large' : 'normal');
+    } catch (e) { /* private mode */ }
+  }
+
+  apply(document.documentElement.dataset.textSize === 'large');
+
+  btn.addEventListener('click', () => {
+    apply(document.documentElement.dataset.textSize !== 'large');
+  });
+}
+
+// ═══════════════════════════════════════
+// TAB SWITCHING (ARIA tabs — automatic activation)
+// ═══════════════════════════════════════
+function _syncMainTabs(activeId) {
+  document.querySelectorAll('.tabitem[data-tab]').forEach(tab => {
+    const isActive = tab.dataset.tab === activeId;
+    tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    tab.setAttribute('tabindex', isActive ? '0' : '-1');
+  });
+  document.querySelectorAll('.panel[id^="panel-"]').forEach(panel => {
+    const isActive = panel.id === 'panel-' + activeId;
+    panel.classList.toggle('active', isActive);
+    panel.toggleAttribute('hidden', !isActive);
+  });
+}
+
 function switchTab(id, btn) {
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tabitem').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
+  _syncMainTabs(id);
+  document.querySelectorAll('.tabitem').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+function _initMainTabs() {
+  const tablist = document.getElementById('tabnav-scroll');
+  if (!tablist) return;
+
+  tablist.querySelectorAll('.tabitem[data-tab]').forEach(tab => {
+    const id = tab.dataset.tab;
+    tab.setAttribute('role', 'tab');
+    tab.id = 'tab-' + id;
+    tab.setAttribute('aria-controls', 'panel-' + id);
+    if (!tab.hasAttribute('aria-selected')) {
+      tab.setAttribute('aria-selected', tab.classList.contains('active') ? 'true' : 'false');
+    }
+    if (!tab.hasAttribute('tabindex')) {
+      tab.setAttribute('tabindex', tab.classList.contains('active') ? '0' : '-1');
+    }
+  });
+
+  document.querySelectorAll('.panel[id^="panel-"]').forEach(panel => {
+    const tabId = panel.id.replace('panel-', '');
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', 'tab-' + tabId);
+    panel.toggleAttribute('hidden', !panel.classList.contains('active'));
+  });
+
+  tablist.addEventListener('keydown', e => {
+    const tabs = [...tablist.querySelectorAll('.tabitem[data-tab]')];
+    const idx = tabs.indexOf(document.activeElement);
+    if (idx === -1) return;
+
+    let next = idx;
+    if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
+    else if (e.key === 'ArrowLeft') next = (idx - 1 + tabs.length) % tabs.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = tabs.length - 1;
+    else return;
+
+    e.preventDefault();
+    const target = tabs[next];
+    switchTab(target.dataset.tab, target);
+    target.focus();
+  });
 }
 
 function showStab(id, btn, prefix) {
@@ -902,8 +996,8 @@ function renderDespliegue() {
     <thead><tr><th>Tipo</th><th>Nombre completo</th><th>Para qué sirve</th><th>Ejemplo</th><th>Precaución</th></tr></thead>
     <tbody>${DNS_RECORDS.map(r=>`<tr>
       <td>${r.type}</td><td>${r.full}</td><td>${r.desc}</td>
-      <td style="font-family:var(--mono);font-size:0.58rem;color:var(--t7)">${r.example}</td>
-      <td style="font-size:0.6rem;color:${r.warn?'#f5a97f':'var(--border2)'}">${r.warn||'—'}</td>
+      <td class="dns-cell-example">${r.example}</td>
+      <td class="${r.warn ? 'dns-cell-warn' : 'dns-cell-warn-empty'}">${r.warn||'—'}</td>
     </tr>`).join('')}</tbody>
   </table>`;
   tableWrap.appendChild(t);
@@ -1726,9 +1820,266 @@ function dstDeleteTool(id) {
 }
 
 // ═══════════════════════════════════════
+// TABNAV SCROLL ARROWS
+// ═══════════════════════════════════════
+function _initTabnavArrows() {
+  const nav   = document.getElementById('tabnav-scroll');
+  const left  = document.getElementById('tabnav-left');
+  const right = document.getElementById('tabnav-right');
+  if (!nav || !left || !right) return;
+
+  function sync() {
+    left.disabled  = nav.scrollLeft <= 2;
+    right.disabled = nav.scrollLeft + nav.clientWidth >= nav.scrollWidth - 2;
+  }
+
+  nav.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+}
+
+// ═══════════════════════════════════════
+// FRAMEWORKS TABLE SCROLL ARROWS
+// ═══════════════════════════════════════
+function initFwTableArrows() {
+  const wrap  = document.getElementById('fw-tbl-scroll');
+  const left  = document.getElementById('fw-tbl-left');
+  const right = document.getElementById('fw-tbl-right');
+  if (!wrap || !left || !right) return;
+
+  function sync() {
+    left.disabled  = wrap.scrollLeft <= 2;
+    right.disabled = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 2;
+  }
+
+  wrap.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  sync();
+}
+
+function fwTblScroll(dir) {
+  const wrap = document.getElementById('fw-tbl-scroll');
+  if (wrap) wrap.scrollBy({ left: dir * 300, behavior: 'smooth' });
+}
+
+function tabnavScroll(dir) {
+  const nav = document.getElementById('tabnav-scroll');
+  if (nav) nav.scrollBy({ left: dir * 220, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════
+// DATA: APIs & MySQL
+// ═══════════════════════════════════════
+
+const API_TYPES = [
+  { type: 'REST', desc: 'Recursos identificados por URLs, métodos HTTP estándar, respuestas JSON. El estándar de facto para APIs web.', when: 'CRUD, integraciones, mobile apps, microservicios', badge: 'Recomendado' },
+  { type: 'GraphQL', desc: 'Un solo endpoint; el cliente pide exactamente los campos que necesita. Schema tipado.', when: 'Frontends complejos con datos anidados, apps móviles con ancho de banda limitado', badge: 'Flexible' },
+  { type: 'WebSocket', desc: 'Conexión bidireccional persistente. El servidor puede enviar datos sin que el cliente pregunte.', when: 'Chat en tiempo real, notificaciones live, dashboards con updates constantes', badge: 'Tiempo real' },
+];
+
+const API_REST_PRINCIPLES = [
+  { name: 'Stateless', desc: 'Cada petición lleva toda la info necesaria. El servidor no guarda sesión entre requests. La autenticación va en headers o tokens, no en memoria del servidor.' },
+  { name: 'Cliente-servidor', desc: 'Separación clara: el cliente (React, chatbot, móvil) pide; el servidor (Express) responde. Evolucionan de forma independiente.' },
+  { name: 'Cacheable', desc: 'Las respuestas pueden marcarse como cacheables (headers Cache-Control, ETag). Reduce carga en peticiones repetidas.' },
+  { name: 'Interfaz uniforme', desc: 'Mismos métodos HTTP, mismos formatos JSON, mismas convenciones de URLs para todos los recursos. Predecible y documentable.' },
+  { name: 'Sistema en capas', desc: 'Proxies, load balancers, CDNs y firewalls pueden estar entre cliente y servidor sin que el cliente lo note.' },
+  { name: 'Código bajo demanda', desc: 'Opcional: el servidor puede enviar scripts ejecutables al cliente (poco usado en APIs JSON modernas).' },
+];
+
+const API_HTTP_METHODS = [
+  { method: 'GET', use: 'Leer un recurso o listar colección', idempotent: 'Sí', body: 'No', example: 'GET /habitaciones — listar todas' },
+  { method: 'POST', use: 'Crear un recurso nuevo', idempotent: 'No', body: 'Sí (JSON)', example: 'POST /reservas — crear reserva' },
+  { method: 'PATCH', use: 'Actualizar parcialmente un recurso existente', idempotent: 'Sí', body: 'Sí (JSON parcial)', example: 'PATCH /reservas/42 — cambiar estado a confirmada' },
+  { method: 'DELETE', use: 'Eliminar un recurso', idempotent: 'Sí', body: 'Opcional', example: 'DELETE /reservas/42 — cancelar reserva' },
+];
+
+const API_DATA_LOCATIONS = [
+  { where: 'URL param (:id)', rule: 'Identifica UN recurso concreto en la ruta', example: 'GET /habitaciones/:id/disponibilidad', express: 'req.params.id', gold: 'Siempre en la ruta, nunca en query para identificar recursos' },
+  { where: 'Query param (?key=val)', rule: 'Filtros, paginación, fechas, búsqueda', example: 'GET /disponibilidad?entrada=2026-06-10&salida=2026-06-15', express: 'req.query.entrada', gold: 'Opcional, múltiples pares clave=valor' },
+  { where: 'Body JSON', rule: 'Datos a crear o modificar (POST/PATCH)', example: '{ "cliente_id": 3, "habitacion_id": 7, "entrada": "2026-06-10" }', express: 'req.body', gold: 'Solo en POST/PATCH/PUT — nunca en GET' },
+  { where: 'Headers', rule: 'Metadatos: auth, content-type, API keys', example: 'Authorization: Bearer sk-abc123', express: 'req.headers.authorization', gold: 'Credenciales SIEMPRE aquí, nunca en URL ni body público' },
+];
+
+const API_HTTP_CODES = [
+  { code: '200', cls: '2xx', desc: 'OK — petición exitosa con cuerpo de respuesta', example: 'GET /habitaciones → lista de habitaciones' },
+  { code: '201', cls: '2xx', desc: 'Created — recurso creado correctamente', example: 'POST /reservas → reserva nueva con id' },
+  { code: '204', cls: '2xx', desc: 'No Content — éxito sin cuerpo (DELETE, PATCH sin respuesta)', example: 'DELETE /reservas/42 → vacío' },
+  { code: '301', cls: '3xx', desc: 'Moved Permanently — URL cambió de forma permanente', example: 'Redirigir /api/v1 a /api/v2' },
+  { code: '304', cls: '3xx', desc: 'Not Modified — caché del cliente sigue válida', example: 'GET con If-None-Match → sin reenviar JSON' },
+  { code: '400', cls: '4xx', desc: 'Bad Request — JSON malformado o campos inválidos', example: 'POST /reservas sin fecha de entrada' },
+  { code: '401', cls: '4xx', desc: 'Unauthorized — falta API key o token inválido', example: 'GET /disponibilidad sin Authorization header' },
+  { code: '403', cls: '4xx', desc: 'Forbidden — autenticado pero sin permiso', example: 'DELETE /reservas de otro cliente' },
+  { code: '404', cls: '4xx', desc: 'Not Found — recurso no existe', example: 'GET /habitaciones/999' },
+  { code: '409', cls: '4xx', desc: 'Conflict — estado incompatible con la operación', example: 'Reservar habitación ya ocupada en esas fechas' },
+  { code: '422', cls: '4xx', desc: 'Unprocessable Entity — sintaxis OK pero lógica inválida', example: 'salida anterior a entrada' },
+  { code: '429', cls: '4xx', desc: 'Too Many Requests — rate limit superado', example: 'Chatbot hace 100 req/s al endpoint' },
+  { code: '500', cls: '5xx', desc: 'Internal Server Error — bug o fallo inesperado en el servidor', example: 'MySQL caído, excepción no capturada' },
+  { code: '503', cls: '5xx', desc: 'Service Unavailable — servidor temporalmente no disponible', example: 'Pool de conexiones MySQL agotado' },
+];
+
+const API_REST_COMPARE = [
+  { bad: 'GET /getHabitaciones', good: 'GET /habitaciones', why: 'El verbo va en el método HTTP, no en la URL' },
+  { bad: 'POST /crearReserva', good: 'POST /reservas', why: 'La URL nombra el recurso (sustantivo), no la acción' },
+  { bad: 'GET /deleteReserva/42', good: 'DELETE /reservas/42', why: 'DELETE es el método; la URL solo identifica el recurso' },
+  { bad: 'POST /habitaciones/5/update', good: 'PATCH /habitaciones/5', why: 'Actualizar = PATCH sobre el recurso, no sub-ruta de acción' },
+];
+
+const MYSQL_TABLES = [
+  { name: 'habitaciones', fields: [
+    { col: 'id', type: 'INT', note: 'PK, AUTO_INCREMENT' },
+    { col: 'nombre', type: 'VARCHAR(100)', note: 'Ej: "Suite Deluxe"' },
+    { col: 'capacidad', type: 'INT', note: 'Número de huéspedes' },
+    { col: 'precio_noche', type: 'DECIMAL(10,2)', note: 'Precio por noche' },
+    { col: 'activa', type: 'BOOLEAN', note: 'Default TRUE' },
+  ]},
+  { name: 'clientes', fields: [
+    { col: 'id', type: 'INT', note: 'PK, AUTO_INCREMENT' },
+    { col: 'nombre', type: 'VARCHAR(150)', note: '' },
+    { col: 'email', type: 'VARCHAR(255)', note: 'UNIQUE' },
+    { col: 'telefono', type: 'VARCHAR(20)', note: '' },
+    { col: 'created_at', type: 'TIMESTAMP', note: 'DEFAULT CURRENT_TIMESTAMP' },
+  ]},
+  { name: 'reservas', fields: [
+    { col: 'id', type: 'INT', note: 'PK, AUTO_INCREMENT' },
+    { col: 'habitacion_id', type: 'INT', note: 'FK → habitaciones.id' },
+    { col: 'cliente_id', type: 'INT', note: 'FK → clientes.id' },
+    { col: 'fecha_entrada', type: 'DATE', note: '' },
+    { col: 'fecha_salida', type: 'DATE', note: '' },
+    { col: 'estado', type: 'ENUM', note: 'pendiente | confirmada | pdf_enviado | pdf_firmado | cancelada' },
+    { col: 'created_at', type: 'TIMESTAMP', note: 'DEFAULT CURRENT_TIMESTAMP' },
+  ]},
+];
+
+const RESERVA_ESTADOS = [
+  { estado: 'pendiente', desc: 'Reserva creada, aún no confirmada por el hotel', color: '#b5870a' },
+  { estado: 'confirmada', desc: 'Hotel acepta la reserva', color: '#1a8a52' },
+  { estado: 'pdf_enviado', desc: 'Contrato PDF enviado al cliente por email', color: '#1a6fbe' },
+  { estado: 'pdf_firmado', desc: 'Cliente firmó el documento — reserva cerrada', color: '#7040c0' },
+  { estado: 'cancelada', desc: 'Reserva anulada (por cliente o hotel)', color: '#c02060' },
+];
+
+function _apiTable(headers, rows, firstColBold) {
+  return `<div class="api-table-wrap"><table class="api-table">
+    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td${firstColBold && i === 0 ? '' : ''}>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function renderApiMysql() {
+  const typesWrap = document.getElementById('api-types-table-wrap');
+  if (typesWrap) {
+    typesWrap.innerHTML = _apiTable(
+      ['Tipo', 'Descripción', 'Cuándo usarlo', ''],
+      API_TYPES.map(t => [t.type, t.desc, t.when, `<span class="api-badge" style="background:rgba(124,58,237,0.12);color:var(--tapi);border:1px solid rgba(124,58,237,0.3)">${t.badge}</span>`])
+    );
+  }
+
+  const principlesGrid = document.getElementById('api-principles-grid');
+  if (principlesGrid) {
+    principlesGrid.innerHTML = API_REST_PRINCIPLES.map(p => `
+      <div class="api-card">
+        <div class="api-card-title">${p.name}</div>
+        <div style="font-size:0.63rem;color:var(--muted);line-height:1.55">${p.desc}</div>
+      </div>`).join('');
+  }
+
+  const methodsWrap = document.getElementById('api-methods-table-wrap');
+  if (methodsWrap) {
+    methodsWrap.innerHTML = _apiTable(
+      ['Método', 'Cuándo usar', 'Idempotente', 'Body', 'Ejemplo REST'],
+      API_HTTP_METHODS.map(m => [
+        `<span class="api-badge" style="background:rgba(124,58,237,0.12);color:var(--tapi);border:1px solid rgba(124,58,237,0.3)">${m.method}</span>`,
+        m.use, m.idempotent, m.body, `<code>${m.example}</code>`
+      ])
+    );
+  }
+
+  const dataWrap = document.getElementById('api-data-table-wrap');
+  if (dataWrap) {
+    dataWrap.innerHTML = _apiTable(
+      ['Dónde van los datos', 'Regla', 'Ejemplo real', 'Express', 'Regla de oro'],
+      API_DATA_LOCATIONS.map(d => [d.where, d.rule, `<code style="font-size:0.58rem">${d.example}</code>`, `<code>${d.express}</code>`, d.gold])
+    );
+  }
+
+  const codesWrap = document.getElementById('api-codes-table-wrap');
+  if (codesWrap) {
+    codesWrap.innerHTML = _apiTable(
+      ['Código', 'Descripción', 'Ejemplo proyecto reservas'],
+      API_HTTP_CODES.map(c => [
+        `<span class="api-badge api-badge-${c.cls}">${c.code}</span>`,
+        c.desc, c.example
+      ])
+    );
+  }
+
+  const restWrap = document.getElementById('api-rest-compare-wrap');
+  if (restWrap) {
+    restWrap.innerHTML = _apiTable(
+      ['❌ Acción en URL', '✓ Recurso REST', 'Por qué'],
+      API_REST_COMPARE.map(r => [`<code>${r.bad}</code>`, `<code>${r.good}</code>`, r.why])
+    );
+  }
+
+  const tablesGrid = document.getElementById('api-mysql-tables-grid');
+  if (tablesGrid) {
+    tablesGrid.innerHTML = MYSQL_TABLES.map(t => `
+      <div class="api-card">
+        <div class="api-card-title">${t.name}</div>
+        <table class="api-table" style="min-width:0;margin-top:0.5rem">
+          <thead><tr><th>Campo</th><th>Tipo</th><th>Notas</th></tr></thead>
+          <tbody>${t.fields.map(f => `<tr><td>${f.col}</td><td>${f.type}</td><td style="color:var(--muted);font-size:0.58rem">${f.note}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>`).join('');
+  }
+
+  const estadosGrid = document.getElementById('api-reserva-estados-grid');
+  if (estadosGrid) {
+    estadosGrid.innerHTML = RESERVA_ESTADOS.map((e, i) => `
+      <div class="api-card" style="border-left:3px solid ${e.color}">
+        <div class="api-card-title" style="color:${e.color}">${e.estado}${i < RESERVA_ESTADOS.length - 1 ? ' →' : ''}</div>
+        <div style="font-size:0.63rem;color:var(--muted);line-height:1.55">${e.desc}</div>
+      </div>`).join('');
+  }
+}
+
+function showApiTab(id, btn) { _sp('.api-panel', '.api-stab', id, btn); }
+
+// ═══════════════════════════════════════
+// JAVASCRIPT PANEL
+// ═══════════════════════════════════════
+function showJsSection(id, btn) {
+  document.querySelectorAll('.js-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.js-navitem').forEach(b => b.classList.remove('active'));
+  document.getElementById('js-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function sidenavNav(type, dir) {
+  const items = [...document.querySelectorAll(
+    type === 'diseno' ? '.diseno-navitem' : '.js-navitem'
+  )];
+  const cur = items.findIndex(el => el.classList.contains('active'));
+  const next = cur + dir;
+  if (next >= 0 && next < items.length) {
+    items[next].click();
+    items[next].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+function showJsStab(id, btn) {
+  const sec = btn.closest('.js-section');
+  sec.querySelectorAll('.js-subpanel').forEach(p => p.classList.remove('active'));
+  btn.closest('.subtabs').querySelectorAll('.js-stab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 renderFrameworks();
+initFwTableArrows();
 renderGlossary();
 renderDsGlosario();
 renderVibetips();
@@ -1737,3 +2088,7 @@ renderDespliegue();
 renderDockerCurso();
 renderDsTools();
 renderRoadmap();
+renderApiMysql();
+_initTextSizeToggle();
+_initMainTabs();
+_initTabnavArrows();

@@ -1,0 +1,50 @@
+[
+  {
+    "icon": "🔒",
+    "name": "SSL/TLS (HTTPS)",
+    "level": "critical",
+    "desc": "Cifra toda la comunicación entre browser y servidor. Sin SSL los datos van en texto plano — contraseñas, formularios, tokens incluidos. <strong>Let's Encrypt</strong> lo da gratis. cPanel lo instala con AutoSSL. Obliga siempre al redirect HTTP→HTTPS."
+  },
+  {
+    "icon": "🤖",
+    "name": "Bloqueo de bots IA",
+    "level": "high",
+    "desc": "Los crawlers de IA (GPTBot, ClaudeBot, Bingbot) pueden sobrecargar tu servidor haciendo miles de peticiones. <strong>Cloudflare WAF</strong> permite crear reglas para bloquearlos por User-Agent o por comportamiento anómalo. También puedes usar robots.txt aunque no todos lo respetan."
+  },
+  {
+    "icon": "🛡️",
+    "name": "Cloudflare WAF",
+    "level": "high",
+    "desc": "Web Application Firewall. Filtra tráfico malicioso antes de que llegue a tu servidor. Puedes definir <strong>security rules</strong>: bloquear IPs, países, User-Agents, patrones de request. Gratuito en el plan Free de Cloudflare para reglas básicas."
+  },
+  {
+    "icon": "🖼️",
+    "name": "Image Hammering",
+    "level": "medium",
+    "desc": "Ataque donde bots hacen miles de peticiones a tus imágenes para consumir bandwidth y sobrecargar el servidor. En Cloudflare puedes crear reglas que limiten requests por IP/tiempo o bloqueen peticiones de imágenes sin referrer válido."
+  },
+  {
+    "icon": "🔑",
+    "name": "SSH con claves",
+    "level": "critical",
+    "desc": "Desactiva el acceso SSH por contraseña — son vulnerables a ataques de fuerza bruta. Usa <strong>pares de clave pública/privada</strong>. La clave privada nunca sale de tu máquina. En cPanel puedes gestionar las SSH keys autorizadas."
+  },
+  {
+    "icon": "🌐",
+    "name": "Cloudflare como proxy",
+    "level": "high",
+    "desc": "Al poner tu dominio detrás de Cloudflare (proxy activado, icono naranja), la IP real de tu servidor queda oculta. Los atacantes solo ven IPs de Cloudflare. Esto también activa DDoS protection automática y el CDN."
+  },
+  {
+    "icon": "📧",
+    "name": "SPF / DKIM / DMARC",
+    "level": "medium",
+    "desc": "Registros DNS que autentican tus emails y evitan que otros envíen emails suplantando tu dominio. SPF define qué servidores pueden enviar email por ti. DKIM firma los emails. DMARC define qué hacer si fallan las verificaciones."
+  },
+  {
+    "icon": "💾",
+    "name": "Backups regulares",
+    "level": "critical",
+    "desc": "<strong>JetBackup 5</strong> en cPanel automatiza copias de archivos y bases de datos. La regla 3-2-1: 3 copias, en 2 medios distintos, 1 fuera del servidor. Prueba la restauración periódicamente — un backup no verificado no es un backup."
+  }
+]

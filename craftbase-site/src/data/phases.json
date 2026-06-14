@@ -1,0 +1,96 @@
+[
+  {
+    "num": "Fase 01",
+    "title": "Fundamentos de Decisión",
+    "status": "live",
+    "statusLabel": "En vivo",
+    "why": "La base de todo: entender qué tecnología usar en cada contexto y cómo medir si lo que construyes tiene calidad. Sin esto, el VibeCoding produce cajas negras que no entiendes.",
+    "connection": "Elegir Astro (Frameworks) afecta directamente las métricas de \"Velocidad de entrega\" y \"Bundle pequeño\" del Design System.",
+    "items": [
+      {
+        "name": "Matriz de Frameworks",
+        "tag": "live",
+        "tagColor": "#a8f0c8",
+        "desc": "25 tecnologías, 5 categorías, criterios de decisión y guía rápida. Base para decidir qué pedirle a la IA."
+      },
+      {
+        "name": "Métricas de Design Systems",
+        "tag": "live",
+        "tagColor": "#a8f0c8",
+        "desc": "6 categorías de métricas para medir si lo que la IA construye es consistente, reutilizable y de calidad."
+      }
+    ]
+  },
+  {
+    "num": "Fase 02",
+    "title": "Vocabulario y Recetas",
+    "status": "next",
+    "statusLabel": "Siguiente",
+    "why": "La IA usa términos técnicos constantemente. Sin entenderlos, no puedes guiarla bien ni detectar cuando el código que genera es incorrecto. Los prompts estructurales son las \"recetas\" para obtener código de calidad.",
+    "connection": "Entender \"Hydration\" (Glosario) te permite usar correctamente el prompt de Islands Architecture (VibeTips) para que Astro genere el código óptimo.",
+    "items": [
+      {
+        "name": "Glosario Técnico",
+        "tag": "wip",
+        "tagColor": "var(--t1)",
+        "desc": "~25 términos que la IA usa y confunden. Con definición, ejemplo práctico y relación con los frameworks de la Fase 01."
+      },
+      {
+        "name": "VibeTips · Prompts",
+        "tag": "wip",
+        "tagColor": "var(--t1)",
+        "desc": "Recetas de prompts estructurales por framework y tipo de tarea. Copia, adapta y úsalos para guiar a la IA hacia código de calidad."
+      }
+    ]
+  },
+  {
+    "num": "Fase 03",
+    "title": "Infraestructura y Deploy",
+    "status": "later",
+    "statusLabel": "Planificado",
+    "why": "Saber hacer algo no sirve si no sabes dónde \"vivirá\". Esta fase cierra el ciclo: desde decidir el framework hasta dónde y cómo desplegarlo, con los costes reales de cada opción.",
+    "connection": "\"Elegí Astro → ¿Vercel o Cloudflare Pages? ¿Qué es una Edge Function?\" — conecta decisiones de Frameworks con el destino final del proyecto.",
+    "items": [
+      {
+        "name": "Matriz de Hosting",
+        "tag": "plan",
+        "tagColor": "var(--muted)",
+        "desc": "Vercel, Netlify, Railway, Render, Fly.io, Cloudflare. Cuándo usar cada uno, costes reales y compatibilidad con frameworks."
+      },
+      {
+        "name": "Guía de Dominio y DNS",
+        "tag": "plan",
+        "tagColor": "var(--muted)",
+        "desc": "Qué es un dominio, qué es DNS, cómo conectar tu dominio a Vercel/Netlify. El paso que siempre confunde a no-devs."
+      }
+    ]
+  },
+  {
+    "num": "Fase 04",
+    "title": "Flujo de Trabajo Completo",
+    "status": "later",
+    "statusLabel": "Planificado",
+    "why": "Integrar todo en un flujo de trabajo real de VibeCoding: desde la idea hasta producción, usando las herramientas de este OS como brújula en cada decisión.",
+    "connection": "Un flujo que conecta todos los módulos: Idea → Glosario (entiendo los términos) → Frameworks (elijo la tecnología) → VibeTips (prompts correctos) → Hosting (dónde lo subo) → DS Metrics (mido la calidad).",
+    "items": [
+      {
+        "name": "Canvas de Proyecto",
+        "tag": "plan",
+        "tagColor": "var(--muted)",
+        "desc": "Plantilla interactiva para definir un proyecto: tipo de web, interactividad, equipo, budget y tiempo → el OS recomienda el stack completo."
+      },
+      {
+        "name": "Checklist de Calidad",
+        "tag": "plan",
+        "tagColor": "var(--muted)",
+        "desc": "Lista de verificación antes de publicar: accesibilidad, rendimiento, consistencia de DS, seguridad básica. Adaptada a no-devs."
+      },
+      {
+        "name": "Diario de Aprendizaje",
+        "tag": "plan",
+        "tagColor": "var(--muted)",
+        "desc": "Sección para registrar decisiones tomadas, errores cometidos y conceptos aprendidos en cada proyecto de VibeCoding."
+      }
+    ]
+  }
+]

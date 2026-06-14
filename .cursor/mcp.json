@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "a11y-color": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "scripts\\mcp-npx.cmd",
+        "@weaaare/mcp-a11y-color"
+      ]
+    },
+    "a11y-readability": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "scripts\\mcp-npx.cmd",
+        "@weaaare/mcp-a11y-readability"
+      ]
+    }
+  }
+}

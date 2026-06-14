@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Nameserver (NS)",
+    "type": "Concepto DNS",
+    "color": "#0a6b72",
+    "def": "El servidor que almacena y sirve la tabla de registros DNS de tu dominio. Cuando compras un dominio, puedes apuntar sus NS a los de tu hosting (Verpex, Cloudflare, etc.) para que ese servidor controle todos tus registros.",
+    "example": "Compras el dominio en Namecheap → cambias los NS a ns1.verpex.com → ahora cPanel de Verpex gestiona el DNS.",
+    "warn": ""
+  },
+  {
+    "name": "Zona DNS",
+    "type": "Concepto DNS",
+    "color": "#0a6b72",
+    "def": "El archivo completo de configuración de todos los registros DNS de un dominio. En cPanel puedes editarla directamente desde \"Zone Editor\" o \"DNS Zone\". Un error aquí puede tumbar tu web o email.",
+    "example": "La zona DNS de miweb.com contiene sus registros A, MX, TXT, CNAME y NS en un único archivo de configuración.",
+    "warn": ""
+  },
+  {
+    "name": "TTL (Time To Live)",
+    "type": "Concepto DNS",
+    "color": "#0a6b72",
+    "def": "Tiempo en segundos que los resolvers DNS cachean un registro antes de volver a consultarlo. TTL bajo (300s) = cambios rápidos pero más consultas. TTL alto (86400s = 24h) = cambios lentos pero más eficiente.",
+    "example": "Antes de migrar un servidor, baja el TTL a 300s. Así si hay problemas, la reversión se propaga en minutos.",
+    "warn": ""
+  },
+  {
+    "name": "Propagación DNS",
+    "type": "Concepto DNS",
+    "color": "#0a6b72",
+    "def": "El tiempo que tarda un cambio de DNS en llegar a todos los resolvers del mundo. Puede tardar desde minutos hasta 48h dependiendo del TTL anterior y los caches de los ISPs.",
+    "example": "Cambias el registro A de tu dominio. En España ya apunta al nuevo servidor pero en EEUU aún va al antiguo. Esto es propagación en curso.",
+    "warn": ""
+  }
+]

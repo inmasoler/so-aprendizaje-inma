@@ -1,0 +1,9 @@
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tools :global(.navbar__search) {
+  margin-left: 0;
+}

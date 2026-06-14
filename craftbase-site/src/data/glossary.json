@@ -1,0 +1,236 @@
+[
+  {
+    "term": "SSR",
+    "cat": "rendering",
+    "def": "El HTML se crea en el server en cada visita. La página llega lista. No hace falta esperar al JS. Ayuda al SEO.",
+    "example": "Next.js con getServerSideProps crea la página en el server antes de enviarla."
+  },
+  {
+    "term": "SSG",
+    "cat": "rendering",
+    "def": "El HTML se crea al hacer build, no en cada visita. Es muy rápido y barato de servir. Ideal si el contenido es igual para todos.",
+    "example": "Astro genera tu blog en HTML al desplegar. No hay server por visita."
+  },
+  {
+    "term": "CSR",
+    "cat": "rendering",
+    "def": "El server manda HTML casi vacío y mucho JS. El navegador monta la página. Al inicio carga peor, pero luego es muy ágil.",
+    "example": "Una SPA de React pura: el HTML inicial solo tiene un div vacío."
+  },
+  {
+    "term": "ISR",
+    "cat": "rendering",
+    "def": "Sirve HTML estático y lo renueva en segundo plano cada N segundos. Une velocidad y datos frescos.",
+    "example": "Next.js sirve caché y renueva la ficha de producto cada 60 segundos."
+  },
+  {
+    "term": "Hydration",
+    "cat": "rendering",
+    "def": "El JS engancha clics y estado al HTML que ya tienes. Si falla, se ve la web pero los botones no van.",
+    "example": "Astro manda HTML puro y hidrata solo el slider al hacer scroll."
+  },
+  {
+    "term": "Islands Architecture",
+    "cat": "rendering",
+    "def": "Casi todo es HTML fijo. Solo trozos pequeños son interactivos. Así envías poco JS.",
+    "example": "Navbar en HTML puro; el carrusel es una isla React al ser visible."
+  },
+  {
+    "term": "API Endpoint",
+    "cat": "arquitectura",
+    "def": "URL del server que da o recibe datos. Pides /api/productos y recibes JSON.",
+    "example": "GET /api/users/123 devuelve el user 123. POST /api/users crea uno."
+  },
+  {
+    "term": "REST",
+    "cat": "arquitectura",
+    "def": "API con GET, POST, PUT y DELETE. Cada URL es un recurso. Es el estilo más usado.",
+    "example": "GET /api/posts lista. POST /api/posts crea. DELETE /api/posts/5 borra."
+  },
+  {
+    "term": "GraphQL",
+    "cat": "arquitectura",
+    "def": "Pides solo los campos que necesitas en una llamada. Evitas traer datos de más.",
+    "example": "REST haría 3 llamadas; GraphQL trae user, posts y comentarios en una."
+  },
+  {
+    "term": "Middleware",
+    "cat": "arquitectura",
+    "def": "Código entre la petición y tu lógica. Sirve para login, logs o validar.",
+    "example": "En Express revisa el token antes de devolver datos del user."
+  },
+  {
+    "term": "State Management",
+    "cat": "datos",
+    "def": "Guarda datos que cambian en la app. Si muchos componentes los comparten, usa Redux, Zustand o Pinia.",
+    "example": "Un carrito en header, producto y pago necesita state management."
+  },
+  {
+    "term": "Fetch / Data Fetching",
+    "cat": "datos",
+    "def": "Pedir datos a una API con fetch o axios. React Query añade caché y spinners.",
+    "example": "Al abrir perfil: fetch('/api/me') y spinner mientras carga."
+  },
+  {
+    "term": "ORM",
+    "cat": "datos",
+    "def": "Pasa de tablas SQL a objetos en código. No escribes SQL a mano en cada query.",
+    "example": "Prisma: await prisma.user.findMany() en vez de SELECT * FROM users."
+  },
+  {
+    "term": "Token / JWT",
+    "cat": "datos",
+    "def": "Texto firmado con id, rol y caducidad del user. Va en cada petición para probar login.",
+    "example": "Tras login guardas el JWT en Authorization: Bearer <token>."
+  },
+  {
+    "term": "Build",
+    "cat": "deploy",
+    "def": "Pasa tu código a archivos listos para el navegador. Minifica y empaqueta assets.",
+    "example": "npm run build crea /dist con JS pequeño y nombres con hash."
+  },
+  {
+    "term": "CI/CD",
+    "cat": "deploy",
+    "def": "Tests y deploy solos en cada push. Si pasan los tests, sube a producción.",
+    "example": "Push a GitHub → tests → Vercel despliega si todo va bien."
+  },
+  {
+    "term": "CDN",
+    "cat": "deploy",
+    "def": "Red de servers que sirve archivos cerca del user. Baja la latencia.",
+    "example": "Un user en Tokio recibe CSS desde Asia, no desde Europa."
+  },
+  {
+    "term": "Edge Functions",
+    "cat": "deploy",
+    "def": "Código que corre en nodos del CDN, cerca del user. Sirve para login o tests A/B.",
+    "example": "Redirigir por país en Vercel edge, no en tu server central."
+  },
+  {
+    "term": "Design Token",
+    "cat": "ds",
+    "def": "Nombre para un valor de diseño: color, tamaño o espacio. Une Figma y código.",
+    "example": "--color-primary: #0055FF en CSS = Primary/500 en Figma."
+  },
+  {
+    "term": "Component Library",
+    "cat": "ds",
+    "def": "Piezas UI listas: botones, inputs, modales. Es el design system en código.",
+    "example": "shadcn/ui trae Button, Dialog e Input con tokens listos."
+  },
+  {
+    "term": "Headless Component",
+    "cat": "ds",
+    "def": "Da lógica y a11y sin CSS. Tú pones los estilos.",
+    "example": "Radix Dialog maneja foco y escape; tú defines el look."
+  },
+  {
+    "term": "Storybook",
+    "cat": "ds",
+    "def": "Prueba componentes solos. Ves todos los estados sin abrir la app.",
+    "example": "Button en default, hover, disabled y loading en Storybook."
+  },
+  {
+    "term": "OKLCH",
+    "cat": "ds",
+    "def": "Forma de color con luz, croma y tono. Ayuda a hacer rampas uniformes.",
+    "example": "Misma tonalidad: L de 95 a 25 y croma por paso."
+  },
+  {
+    "term": "Node.js",
+    "cat": "ecosistema",
+    "def": "Corre JS fuera del navegador. Scripts, servers, builds y MCPs. Cada repo puede pedir una versión.",
+    "example": "node script.js corre un file. npm run build compila Astro."
+  },
+  {
+    "term": "npm",
+    "cat": "ecosistema",
+    "def": "Instala libs y corre scripts de package.json. Viene con Node.",
+    "example": "npm install express añade Express. npm run dev arranca dev."
+  },
+  {
+    "term": "npx",
+    "cat": "ecosistema",
+    "def": "Corre un paquete sin instalarlo global. Cursor lo usa para MCPs.",
+    "example": "npx -y @weaaare/mcp-a11y-color arranca el MCP de contraste."
+  },
+  {
+    "term": "nvm",
+    "cat": "ecosistema",
+    "def": "Cambia la versión de Node en tu PC. En Windows: nvm-windows.",
+    "example": "nvm install 24 && nvm use 24. .nvmrc dice la versión del repo."
+  },
+  {
+    "term": "pnpm",
+    "cat": "ecosistema",
+    "def": "Como npm pero más rápido y con menos disco. Muy usado en monorepos.",
+    "example": "pnpm install instala. pnpm dev = npm run dev con menos espacio."
+  },
+  {
+    "term": "package.json",
+    "cat": "ecosistema",
+    "def": "Lista nombre, deps y scripts del repo. npm lo lee primero.",
+    "example": "\"dev\": \"astro dev\" → npm run dev arranca Astro."
+  },
+  {
+    "term": "node_modules",
+    "cat": "ecosistema",
+    "def": "Carpeta con libs instaladas. No va a Git. Recrea con npm install.",
+    "example": "Clonas repo → npm install → node_modules listo."
+  },
+  {
+    "term": ".nvmrc",
+    "cat": "ecosistema",
+    "def": "Texto con la versión de Node del repo. nvm la usa al entrar.",
+    "example": "24.12.0 dentro → nvm use activa Node 24."
+  },
+  {
+    "term": "PATH",
+    "cat": "ecosistema",
+    "def": "Lista de carpetas donde el terminal busca programas. Sin PATH no encuentra node.",
+    "example": "mcp-npx.cmd usa Node de .tools/node/ sin tocar PATH global."
+  },
+  {
+    "term": "MCP",
+    "cat": "ecosistema",
+    "def": "Conecta tools (color, Figma, DB) al agente de Cursor. Cada MCP es un mini-server.",
+    "example": ".cursor/mcp.json define a11y-color y a11y-readability aquí."
+  },
+  {
+    "term": "Agent Skill",
+    "cat": "ecosistema",
+    "def": "SKILL.md con reglas que el agente lee al codificar. No es código ejecutable.",
+    "example": "aria-patterns en .agents/skills/ guía tabs y modales."
+  },
+  {
+    "term": "Git",
+    "cat": "ecosistema",
+    "def": "Guarda versiones del código y ramas. Flujo: add → commit → push.",
+    "example": "git add . → git commit -m \"msg\" → git push a GitHub."
+  },
+  {
+    "term": "Dependencia",
+    "cat": "ecosistema",
+    "def": "Lib que usa tu repo. dependencies = prod; devDependencies = solo dev.",
+    "example": "\"express\" en dependencies → npm install lo baja."
+  },
+  {
+    "term": "Registry (npm)",
+    "cat": "ecosistema",
+    "def": "Catálogo en npmjs.com. npm install y npx buscan ahí.",
+    "example": "@weaaare/mcp-a11y-color vive en npm bajo @weaaare."
+  },
+  {
+    "term": "Frontmatter",
+    "cat": "ecosistema",
+    "def": "Bloque YAML al inicio de un archivo Markdown o MDX con metadatos del documento: título, fecha, tags o visibilidad. No es el cuerpo del texto; el generador del sitio (Docusaurus, Astro) lo lee al compilar.",
+    "example": "---\\ntitle: Glosario\\nvisibility: public\\n---\\n\\n# Contenido del doc…"
+  },
+  {
+    "term": "Zod",
+    "cat": "ecosistema",
+    "def": "Librería npm para validar en runtime que un objeto cumple un esquema. En sitios estáticos suele usarse en build para comprobar frontmatter o JSON antes de publicar.",
+    "example": "const schema = z.object({ title: z.string() }); schema.parse(frontmatter);"
+  }
+]
